@@ -10,11 +10,11 @@ import { IBindingTemplate } from "../../templates/IBindingTemplate";
 import { IFunctionWizardContext } from "../createFunction/IFunctionWizardContext";
 
 export interface IBindingWizardContext extends IFunctionWizardContext {
-    functionJsonPath: string;
-    language: ProjectLanguage;
-    version: FuncVersion;
-    bindingDirection?: string;
-    bindingTemplate?: IBindingTemplate;
-    binding?: IFunctionBinding;
-    bindingName?: string;
+	functionJsonPath: string;
+	language: ProjectLanguage;
+	version: FuncVersion;
+	bindingDirection?: string;
+	bindingTemplate?: IBindingTemplate;
+	binding?: IFunctionBinding;
+	bindingName?: string;
 }

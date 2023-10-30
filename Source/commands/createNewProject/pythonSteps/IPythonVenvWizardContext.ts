@@ -7,11 +7,11 @@ import { IActionContext } from "@microsoft/vscode-azext-utils";
 import { FuncVersion } from "../../../FuncVersion";
 
 export interface IPythonVenvWizardContext extends IActionContext {
-    projectPath: string;
-    version: FuncVersion;
-    pythonAlias?: string;
-    manuallyEnterAlias?: boolean;
-    useExistingVenv?: boolean;
-    venvName?: string;
-    suppressSkipVenv?: boolean;
+	projectPath: string;
+	version: FuncVersion;
+	pythonAlias?: string;
+	manuallyEnterAlias?: boolean;
+	useExistingVenv?: boolean;
+	venvName?: string;
+	suppressSkipVenv?: boolean;
 }

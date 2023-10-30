@@ -15,23 +15,39 @@ import { SqlDatabaseConnectionExecuteStep } from "./SqlDatabaseConnectionExecute
 import { SqlDatabaseConnectionPromptStep } from "./SqlDatabaseConnectionPromptStep";
 
 // Supports validation on both 'debug' and 'deploy'
-export async function validateSqlDbConnection(context: Omit<ISetConnectionSettingContext, 'projectPath'>, projectPath: string, options?: IConnectionPromptOptions): Promise<void> {
-    const sqlDbConnection: string | undefined = await getLocalSettingsConnectionString(context, ConnectionKey.SQL, projectPath);
+export async function validateSqlDbConnection(
+	context: Omit<ISetConnectionSettingContext, "projectPath">,
+	projectPath: string,
+	options?: IConnectionPromptOptions
+): Promise<void> {
+	const sqlDbConnection: string | undefined =
+		await getLocalSettingsConnectionString(
+			context,
+			ConnectionKey.SQL,
+			projectPath
+		);
 
-    if (sqlDbConnection) {
-        if (context.action === CodeAction.Deploy) {
-            // Found a valid connection in deploy mode. Set it for deploy.
-            context[ConnectionKey.SQL] = sqlDbConnection;
-        }
-        // Found a valid connection in debug or deploy mode. Skip the wizard.
-        return;
-    }
+	if (sqlDbConnection) {
+		if (context.action === CodeAction.Deploy) {
+			// Found a valid connection in deploy mode. Set it for deploy.
+			context[ConnectionKey.SQL] = sqlDbConnection;
+		}
+		// Found a valid connection in debug or deploy mode. Skip the wizard.
+		return;
+	}
 
-    const wizardContext: ISqlDatabaseConnectionWizardContext = Object.assign(context, { projectPath });
-    const wizard: AzureWizard<IEventHubsConnectionWizardContext> = new AzureWizard(wizardContext, {
-        promptSteps: [new SqlDatabaseConnectionPromptStep(options), new SqlDatabaseListStep()],
-        executeSteps: [new SqlDatabaseConnectionExecuteStep()]
-    });
-    await wizard.prompt();
-    await wizard.execute();
+	const wizardContext: ISqlDatabaseConnectionWizardContext = Object.assign(
+		context,
+		{ projectPath }
+	);
+	const wizard: AzureWizard<IEventHubsConnectionWizardContext> =
+		new AzureWizard(wizardContext, {
+			promptSteps: [
+				new SqlDatabaseConnectionPromptStep(options),
+				new SqlDatabaseListStep(),
+			],
+			executeSteps: [new SqlDatabaseConnectionExecuteStep()],
+		});
+	await wizard.prompt();
+	await wizard.execute();
 }

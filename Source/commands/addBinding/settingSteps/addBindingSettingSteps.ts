@@ -4,7 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { AzureWizardPromptStep } from "@microsoft/vscode-azext-utils";
-import { IBindingSetting, ResourceType, ValueType } from "../../../templates/IBindingTemplate";
+import {
+	IBindingSetting,
+	ResourceType,
+	ValueType,
+} from "../../../templates/IBindingTemplate";
 import { IBindingWizardContext } from "../IBindingWizardContext";
 import { BindingNameStep } from "./BindingNameStep";
 import { BooleanPromptStep } from "./BooleanPromptStep";
@@ -13,31 +17,34 @@ import { LocalAppSettingListStep } from "./LocalAppSettingListStep";
 import { StringPromptStep } from "./StringPromptStep";
 import { EventHubNameStep } from "./eventHub/EventHubNameStep";
 
-export function addBindingSettingSteps(settings: IBindingSetting[], promptSteps: AzureWizardPromptStep<IBindingWizardContext>[]): void {
-    for (const setting of settings) {
-        const name: string = setting.name.toLowerCase();
-        if (setting.resourceType === ResourceType.ExistingFile) {
-            // don't prompt for this as we already ask the user for this in the wizard
-            continue;
-        } else if (name === 'name') {
-            promptSteps.push(new BindingNameStep(setting));
-        } else if (name === 'eventhubname') {
-            promptSteps.push(new EventHubNameStep(setting));
-        } else if (setting.resourceType !== undefined) {
-            promptSteps.push(new LocalAppSettingListStep(setting));
-        } else {
-            switch (setting.valueType) {
-                case ValueType.boolean:
-                    promptSteps.push(new BooleanPromptStep(setting));
-                    break;
-                case ValueType.enum:
-                    promptSteps.push(new EnumPromptStep(setting));
-                    break;
-                default:
-                    // Default to 'string' type for any valueType that isn't supported
-                    promptSteps.push(new StringPromptStep(setting));
-                    break;
-            }
-        }
-    }
+export function addBindingSettingSteps(
+	settings: IBindingSetting[],
+	promptSteps: AzureWizardPromptStep<IBindingWizardContext>[]
+): void {
+	for (const setting of settings) {
+		const name: string = setting.name.toLowerCase();
+		if (setting.resourceType === ResourceType.ExistingFile) {
+			// don't prompt for this as we already ask the user for this in the wizard
+			continue;
+		} else if (name === "name") {
+			promptSteps.push(new BindingNameStep(setting));
+		} else if (name === "eventhubname") {
+			promptSteps.push(new EventHubNameStep(setting));
+		} else if (setting.resourceType !== undefined) {
+			promptSteps.push(new LocalAppSettingListStep(setting));
+		} else {
+			switch (setting.valueType) {
+				case ValueType.boolean:
+					promptSteps.push(new BooleanPromptStep(setting));
+					break;
+				case ValueType.enum:
+					promptSteps.push(new EnumPromptStep(setting));
+					break;
+				default:
+					// Default to 'string' type for any valueType that isn't supported
+					promptSteps.push(new StringPromptStep(setting));
+					break;
+			}
+		}
+	}
 }

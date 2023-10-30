@@ -6,33 +6,36 @@
 import { FuncVersion } from "../../FuncVersion";
 
 export function getDotnetVerifiedTemplateIds(version: string): RegExp[] {
-    let verifiedTemplateIds: string[] = [
-        'EventHubTrigger',
-        'HttpTrigger',
-        'HttpTriggerWithOpenAPI',
-        'BlobTrigger',
-        'QueueTrigger',
-        'TimerTrigger',
-        'ServiceBusTopicTrigger',
-        'ServiceBusQueueTrigger',
-        'CosmosDBTrigger',
-        'EventGridTrigger'
-    ];
+	let verifiedTemplateIds: string[] = [
+		"EventHubTrigger",
+		"HttpTrigger",
+		"HttpTriggerWithOpenAPI",
+		"BlobTrigger",
+		"QueueTrigger",
+		"TimerTrigger",
+		"ServiceBusTopicTrigger",
+		"ServiceBusQueueTrigger",
+		"CosmosDBTrigger",
+		"EventGridTrigger",
+	];
 
-    if (version === FuncVersion.v1) {
-        verifiedTemplateIds = verifiedTemplateIds.concat([
-            'GenericWebHook',
-            'GitHubWebHook',
-            'HttpTriggerWithParameters'
-        ]);
-    } else {
-        verifiedTemplateIds = verifiedTemplateIds.concat([
-            'DurableFunctionsOrchestration',
-            'IotHubTrigger'
-        ]);
-    }
+	if (version === FuncVersion.v1) {
+		verifiedTemplateIds = verifiedTemplateIds.concat([
+			"GenericWebHook",
+			"GitHubWebHook",
+			"HttpTriggerWithParameters",
+		]);
+	} else {
+		verifiedTemplateIds = verifiedTemplateIds.concat([
+			"DurableFunctionsOrchestration",
+			"IotHubTrigger",
+		]);
+	}
 
-    return verifiedTemplateIds.map(id => {
-        return new RegExp(`^azure\\.function\\.csharp\\.(?:isolated\\.|)${id}\\.[0-9]+\\.x$`, 'i');
-    });
+	return verifiedTemplateIds.map((id) => {
+		return new RegExp(
+			`^azure\\.function\\.csharp\\.(?:isolated\\.|)${id}\\.[0-9]+\\.x$`,
+			"i"
+		);
+	});
 }

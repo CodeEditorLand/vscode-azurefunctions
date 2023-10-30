@@ -9,12 +9,18 @@ import { showMarkdownPreviewContent } from "../../../utils/textUtils";
 import { FunctionV2WizardContext } from "../IFunctionWizardContext";
 import { ActionSchemaStepBase } from "./ActionSchemaStepBase";
 
-export class ShowMarkdownPreviewExecuteStep<T extends FunctionV2WizardContext> extends ActionSchemaStepBase<T> {
-    public async executeAction(context: T): Promise<void> {
-        assertTemplateIsV2(context.functionTemplate);
+export class ShowMarkdownPreviewExecuteStep<
+	T extends FunctionV2WizardContext,
+> extends ActionSchemaStepBase<T> {
+	public async executeAction(context: T): Promise<void> {
+		assertTemplateIsV2(context.functionTemplate);
 
-        const filename = nonNullProp(this.action, 'filePath');
-        const content = context.functionTemplate.files[filename] ?? '';
-        await showMarkdownPreviewContent(content, filename, /* openToSide: */ true);
-    }
+		const filename = nonNullProp(this.action, "filePath");
+		const content = context.functionTemplate.files[filename] ?? "";
+		await showMarkdownPreviewContent(
+			content,
+			filename,
+			/* openToSide: */ true
+		);
+	}
 }

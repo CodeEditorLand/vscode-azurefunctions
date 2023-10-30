@@ -13,20 +13,22 @@ import { ExistingFileStep } from "./ExistingFileStep";
 import { NewFileStep } from "./NewFileStep";
 import { StringInputStep } from "./StringInputStep";
 
-export function promptStepFactory<T extends FunctionV2WizardContext>(input: ParsedInput): AzureWizardPromptStep<T> {
-    switch (input.value) {
-        case 'enum':
-            return new EnumInputStep(input);
-        case 'boolean':
-            return new BooleanInputStep(input);
-        default:
-            switch (input.resource) {
-                case ResourceType.ExistingFile:
-                    return new ExistingFileStep(input);
-                case ResourceType.NewFile:
-                    return new NewFileStep(input);
-                default:
-                    return new StringInputStep(input);
-            }
-    }
+export function promptStepFactory<T extends FunctionV2WizardContext>(
+	input: ParsedInput
+): AzureWizardPromptStep<T> {
+	switch (input.value) {
+		case "enum":
+			return new EnumInputStep(input);
+		case "boolean":
+			return new BooleanInputStep(input);
+		default:
+			switch (input.resource) {
+				case ResourceType.ExistingFile:
+					return new ExistingFileStep(input);
+				case ResourceType.NewFile:
+					return new NewFileStep(input);
+				default:
+					return new StringInputStep(input);
+			}
+	}
 }

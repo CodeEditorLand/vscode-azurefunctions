@@ -11,24 +11,29 @@ import { TemplateSchemaVersion } from "../../templates/TemplateProviderBase";
 import { cliFeedUtils } from "../../utils/cliFeedUtils";
 
 export interface IProjectWizardContext extends IActionContext {
-    projectPath: string;
-    workspacePath: string;
-    workspaceFolder: WorkspaceFolder | undefined;
+	projectPath: string;
+	workspacePath: string;
+	workspaceFolder: WorkspaceFolder | undefined;
 
-    language?: ProjectLanguage;
-    languageModel?: number;
-    languageFilter?: RegExp;
+	language?: ProjectLanguage;
+	languageModel?: number;
+	languageFilter?: RegExp;
 
-    version: FuncVersion;
-    templateSchemaVersion?: TemplateSchemaVersion;
-    projectTemplateKey: string | undefined;
-    workerRuntime?: cliFeedUtils.IWorkerRuntime;
-    openBehavior?: OpenBehavior;
+	version: FuncVersion;
+	templateSchemaVersion?: TemplateSchemaVersion;
+	projectTemplateKey: string | undefined;
+	workerRuntime?: cliFeedUtils.IWorkerRuntime;
+	openBehavior?: OpenBehavior;
 
-    generateFromOpenAPI?: boolean;
-    openApiSpecificationFile?: Uri[];
+	generateFromOpenAPI?: boolean;
+	openApiSpecificationFile?: Uri[];
 
-    targetFramework?: string | string[];
+	targetFramework?: string | string[];
 }
 
-export type OpenBehavior = 'AddToWorkspace' | 'OpenInNewWindow' | 'OpenInCurrentWindow' | 'AlreadyOpen' | 'DontOpen';
+export type OpenBehavior =
+	| "AddToWorkspace"
+	| "OpenInNewWindow"
+	| "OpenInCurrentWindow"
+	| "AlreadyOpen"
+	| "DontOpen";

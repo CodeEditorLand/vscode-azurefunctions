@@ -10,10 +10,12 @@ import { BindingDirectionStep } from "./BindingDirectionStep";
 import { BindingListStep } from "./BindingListStep";
 import { IBindingWizardContext } from "./IBindingWizardContext";
 
-export function createBindingWizard(wizardContext: IBindingWizardContext): AzureWizard<IBindingWizardContext> {
-    return new AzureWizard(wizardContext, {
-        promptSteps: [new BindingDirectionStep(), new BindingListStep()],
-        executeSteps: [new BindingCreateStep()],
-        title: localize('addBinding', 'Add new binding')
-    });
+export function createBindingWizard(
+	wizardContext: IBindingWizardContext
+): AzureWizard<IBindingWizardContext> {
+	return new AzureWizard(wizardContext, {
+		promptSteps: [new BindingDirectionStep(), new BindingListStep()],
+		executeSteps: [new BindingCreateStep()],
+		title: localize("addBinding", "Add new binding"),
+	});
 }

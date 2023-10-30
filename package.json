@@ -38,7 +38,7 @@
     "lint": "eslint --ext .ts .",
     "lint-fix": "eslint --ext .ts . --fix",
     "package": "vsce package --githubBranch main",
-    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts",
+    "prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
     "pretest": "npm run webpack-prod && gulp preTest",
     "test": "node ./out/test/runTest.js",
     "vscode:prepublish": "npm run webpack-prod",

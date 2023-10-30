@@ -3,86 +3,121 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtFsExtra } from '@microsoft/vscode-azext-utils';
-import * as path from 'path';
-import { Progress } from 'vscode';
-import { functionSubpathSetting, packageJsonFileName } from '../../../constants';
-import { ext } from '../../../extensionVariables';
-import { localize } from '../../../localize';
-import { cpUtils } from '../../../utils/cpUtils';
-import { confirmOverwriteFile } from '../../../utils/fs';
-import { isNodeV4Plus } from '../../../utils/programmingModelUtils';
-import { getWorkspaceSetting } from '../../../vsCodeConfig/settings';
-import { IProjectWizardContext } from '../IProjectWizardContext';
-import { ScriptProjectCreateStep } from './ScriptProjectCreateStep';
+import { AzExtFsExtra } from "@microsoft/vscode-azext-utils";
+import * as path from "path";
+import { Progress } from "vscode";
+import {
+	functionSubpathSetting,
+	packageJsonFileName,
+} from "../../../constants";
+import { ext } from "../../../extensionVariables";
+import { localize } from "../../../localize";
+import { cpUtils } from "../../../utils/cpUtils";
+import { confirmOverwriteFile } from "../../../utils/fs";
+import { isNodeV4Plus } from "../../../utils/programmingModelUtils";
+import { getWorkspaceSetting } from "../../../vsCodeConfig/settings";
+import { IProjectWizardContext } from "../IProjectWizardContext";
+import { ScriptProjectCreateStep } from "./ScriptProjectCreateStep";
 
-export const azureFunctionsDependency: string = '@azure/functions';
-export const azureFunctionsDependencyVersion: string = '^4.0.0';
+export const azureFunctionsDependency: string = "@azure/functions";
+export const azureFunctionsDependencyVersion: string = "^4.0.0";
 
 export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
-    protected gitignore: string = nodeGitignore;
+	protected gitignore: string = nodeGitignore;
 
-    constructor() {
-        super();
-        this.funcignore.push('*.js.map', '*.ts', 'tsconfig.json');
-    }
+	constructor() {
+		super();
+		this.funcignore.push("*.js.map", "*.ts", "tsconfig.json");
+	}
 
-    public async executeCore(context: IProjectWizardContext, progress: Progress<{ message?: string | undefined; increment?: number | undefined }>): Promise<void> {
-        await super.executeCore(context, progress);
+	public async executeCore(
+		context: IProjectWizardContext,
+		progress: Progress<{
+			message?: string | undefined;
+			increment?: number | undefined;
+		}>
+	): Promise<void> {
+		await super.executeCore(context, progress);
 
-        const packagePath: string = path.join(context.projectPath, packageJsonFileName);
-        if (await confirmOverwriteFile(context, packagePath)) {
-            await AzExtFsExtra.writeJSON(packagePath, this.getPackageJson(context));
-        }
-        await this._installDependencies(context.projectPath);
-    }
+		const packagePath: string = path.join(
+			context.projectPath,
+			packageJsonFileName
+		);
+		if (await confirmOverwriteFile(context, packagePath)) {
+			await AzExtFsExtra.writeJSON(
+				packagePath,
+				this.getPackageJson(context)
+			);
+		}
+		await this._installDependencies(context.projectPath);
+	}
 
-    private async _installDependencies(projectPath: string): Promise<void> {
-        try {
-            await cpUtils.executeCommand(ext.outputChannel, projectPath, 'npm', 'install');
-        } catch {
-            ext.outputChannel.appendLog(localize('npmInstallFailure', 'WARNING: Failed to install packages in your workspace. Run "npm install" manually instead.'));
-        }
-    }
+	private async _installDependencies(projectPath: string): Promise<void> {
+		try {
+			await cpUtils.executeCommand(
+				ext.outputChannel,
+				projectPath,
+				"npm",
+				"install"
+			);
+		} catch {
+			ext.outputChannel.appendLog(
+				localize(
+					"npmInstallFailure",
+					'WARNING: Failed to install packages in your workspace. Run "npm install" manually instead.'
+				)
+			);
+		}
+	}
 
-    protected getPackageJson(context: IProjectWizardContext): { [key: string]: unknown } {
-        const packageJson: { [key: string]: unknown } = {
-            name: convertToValidPackageName(path.basename(context.projectPath)),
-            version: '1.0.0',
-            description: '',
-            scripts: this.getPackageJsonScripts(context),
-            dependencies: this.getPackageJsonDeps(context),
-            devDependencies: this.getPackageJsonDevDeps(context)
-        };
+	protected getPackageJson(context: IProjectWizardContext): {
+		[key: string]: unknown;
+	} {
+		const packageJson: { [key: string]: unknown } = {
+			name: convertToValidPackageName(path.basename(context.projectPath)),
+			version: "1.0.0",
+			description: "",
+			scripts: this.getPackageJsonScripts(context),
+			dependencies: this.getPackageJsonDeps(context),
+			devDependencies: this.getPackageJsonDevDeps(context),
+		};
 
-        if (isNodeV4Plus(context)) {
-            // default functionSubpath value is a string
-            const functionSubpath: string = getWorkspaceSetting(functionSubpathSetting) as string;
-            packageJson.main = path.posix.join(functionSubpath, '*.js');
-        }
+		if (isNodeV4Plus(context)) {
+			// default functionSubpath value is a string
+			const functionSubpath: string = getWorkspaceSetting(
+				functionSubpathSetting
+			) as string;
+			packageJson.main = path.posix.join(functionSubpath, "*.js");
+		}
 
-        return packageJson;
-    }
+		return packageJson;
+	}
 
-    protected getPackageJsonScripts(_context: IProjectWizardContext): { [key: string]: string } {
-        return {
-            start: 'func start',
-            test: 'echo \"No tests yet...\"'
-        }
-    }
+	protected getPackageJsonScripts(_context: IProjectWizardContext): {
+		[key: string]: string;
+	} {
+		return {
+			start: "func start",
+			test: 'echo "No tests yet..."',
+		};
+	}
 
-    protected getPackageJsonDeps(context: IProjectWizardContext): { [key: string]: string } {
-        const deps: { [key: string]: string } = {};
-        if (isNodeV4Plus(context)) {
-            deps[azureFunctionsDependency] = azureFunctionsDependencyVersion;
-        }
+	protected getPackageJsonDeps(context: IProjectWizardContext): {
+		[key: string]: string;
+	} {
+		const deps: { [key: string]: string } = {};
+		if (isNodeV4Plus(context)) {
+			deps[azureFunctionsDependency] = azureFunctionsDependencyVersion;
+		}
 
-        return deps;
-    }
+		return deps;
+	}
 
-    protected getPackageJsonDevDeps(_context: IProjectWizardContext): { [key: string]: string } {
-        return {};
-    }
+	protected getPackageJsonDevDeps(_context: IProjectWizardContext): {
+		[key: string]: string;
+	} {
+		return {};
+	}
 }
 
 /**
@@ -90,14 +125,17 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
  * We really just want to avoid the red squiggly when users open up a package.json. Since an invalid name shouldn't block users, this is not meant to be an exhaustive validation
  */
 export function convertToValidPackageName(name: string): string {
-    // convert to lowercase
-    return name.toLowerCase()
-        // remove leading/trailing whitespace
-        .trim()
-        // Replace any disallowed characters with a hyphen
-        .replace(/[^a-z0-9-\._~]/g, '-')
-        // Replace the first character with a hyphen if it's a period or underscore
-        .replace(/^(\.|_)/, '-');
+	// convert to lowercase
+	return (
+		name
+			.toLowerCase()
+			// remove leading/trailing whitespace
+			.trim()
+			// Replace any disallowed characters with a hyphen
+			.replace(/[^a-z0-9-\._~]/g, "-")
+			// Replace the first character with a hyphen if it's a period or underscore
+			.replace(/^(\.|_)/, "-")
+	);
 }
 
 // https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore

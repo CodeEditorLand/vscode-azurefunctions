@@ -10,14 +10,22 @@ import { IBindingWizardContext } from "../IBindingWizardContext";
 import { BindingSettingStepBase } from "./BindingSettingStepBase";
 
 export class BooleanPromptStep extends BindingSettingStepBase {
-    public async promptCore(context: IBindingWizardContext): Promise<BindingSettingValue> {
-        let picks: IAzureQuickPickItem<boolean>[] = [true, false].map(v => { return { label: String(v), data: v }; });
+	public async promptCore(
+		context: IBindingWizardContext
+	): Promise<BindingSettingValue> {
+		let picks: IAzureQuickPickItem<boolean>[] = [true, false].map((v) => {
+			return { label: String(v), data: v };
+		});
 
-        // Make sure the correct default value is at the top of the list
-        if (!envUtils.isEnvironmentVariableSet(this._setting.defaultValue)) {
-            picks = picks.reverse();
-        }
+		// Make sure the correct default value is at the top of the list
+		if (!envUtils.isEnvironmentVariableSet(this._setting.defaultValue)) {
+			picks = picks.reverse();
+		}
 
-        return (await context.ui.showQuickPick(picks, { placeHolder: this._setting.description || this._setting.label })).data;
-    }
+		return (
+			await context.ui.showQuickPick(picks, {
+				placeHolder: this._setting.description || this._setting.label,
+			})
+		).data;
+	}
 }

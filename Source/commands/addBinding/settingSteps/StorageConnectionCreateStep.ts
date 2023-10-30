@@ -3,17 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IStorageAccountWizardContext } from '@microsoft/vscode-azext-azureutils';
-import { getStorageConnectionString } from '../../appSettings/connectionSettings/getLocalConnectionSetting';
-import { IBindingWizardContext } from '../IBindingWizardContext';
-import { AzureConnectionCreateStepBase, IConnection } from './AzureConnectionCreateStepBase';
+import { IStorageAccountWizardContext } from "@microsoft/vscode-azext-azureutils";
+import { getStorageConnectionString } from "../../appSettings/connectionSettings/getLocalConnectionSetting";
+import { IBindingWizardContext } from "../IBindingWizardContext";
+import {
+	AzureConnectionCreateStepBase,
+	IConnection,
+} from "./AzureConnectionCreateStepBase";
 
-export class StorageConnectionCreateStep extends AzureConnectionCreateStepBase<IStorageAccountWizardContext & IBindingWizardContext> {
-    public async getConnection(context: IStorageAccountWizardContext): Promise<IConnection> {
-        return await getStorageConnectionString(context);
-    }
+export class StorageConnectionCreateStep extends AzureConnectionCreateStepBase<
+	IStorageAccountWizardContext & IBindingWizardContext
+> {
+	public async getConnection(
+		context: IStorageAccountWizardContext
+	): Promise<IConnection> {
+		return await getStorageConnectionString(context);
+	}
 
-    public shouldExecute(context: IStorageAccountWizardContext): boolean {
-        return !!context.storageAccount;
-    }
+	public shouldExecute(context: IStorageAccountWizardContext): boolean {
+		return !!context.storageAccount;
+	}
 }

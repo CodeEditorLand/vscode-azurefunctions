@@ -3,29 +3,36 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { nonNullProp } from '@microsoft/vscode-azext-utils';
-import { ConnectionKey, ConnectionKeyValues, ConnectionType } from '../../../../constants';
-import { SetConnectionSettingStepBase } from '../SetConnectionSettingStepBase';
-import { getSqlDatabaseConnectionString } from '../getLocalConnectionSetting';
-import { ISqlDatabaseConnectionWizardContext } from './ISqlDatabaseConnectionWizardContext';
+import { nonNullProp } from "@microsoft/vscode-azext-utils";
+import {
+	ConnectionKey,
+	ConnectionKeyValues,
+	ConnectionType,
+} from "../../../../constants";
+import { SetConnectionSettingStepBase } from "../SetConnectionSettingStepBase";
+import { getSqlDatabaseConnectionString } from "../getLocalConnectionSetting";
+import { ISqlDatabaseConnectionWizardContext } from "./ISqlDatabaseConnectionWizardContext";
 
-export class SqlDatabaseConnectionExecuteStep<T extends ISqlDatabaseConnectionWizardContext> extends SetConnectionSettingStepBase<T> {
-    public priority: number = 250;
-    public debugDeploySetting: ConnectionKeyValues = ConnectionKey.SQL;
+export class SqlDatabaseConnectionExecuteStep<
+	T extends ISqlDatabaseConnectionWizardContext,
+> extends SetConnectionSettingStepBase<T> {
+	public priority: number = 250;
+	public debugDeploySetting: ConnectionKeyValues = ConnectionKey.SQL;
 
-    public async execute(context: T): Promise<void> {
-        let value: string;
+	public async execute(context: T): Promise<void> {
+		let value: string;
 
-        if (context.sqlDbConnectionType === ConnectionType.Azure) {
-            value = (await getSqlDatabaseConnectionString(context)).connectionString;
-        } else {
-            value = nonNullProp(context, 'customSqlConnection');
-        }
+		if (context.sqlDbConnectionType === ConnectionType.Azure) {
+			value = (await getSqlDatabaseConnectionString(context))
+				.connectionString;
+		} else {
+			value = nonNullProp(context, "customSqlConnection");
+		}
 
-        await this.setConnectionSetting(context, value);
-    }
+		await this.setConnectionSetting(context, value);
+	}
 
-    public shouldExecute(context: T): boolean {
-        return !!context.sqlDbConnectionType;
-    }
+	public shouldExecute(context: T): boolean {
+		return !!context.sqlDbConnectionType;
+	}
 }

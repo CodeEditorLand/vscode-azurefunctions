@@ -8,9 +8,11 @@ import { ISubscriptionContext } from "@microsoft/vscode-azext-utils";
 import { StorageConnectionTypeValues } from "../../../../constants";
 import { ISetConnectionSettingContext } from "../ISetConnectionSettingContext";
 
-export interface IAzureWebJobsStorageWizardContext extends ISetConnectionSettingContext, Partial<ISubscriptionContext> {
-    storageAccount?: StorageAccount;
-    newStorageAccountName?: string;
+export interface IAzureWebJobsStorageWizardContext
+	extends ISetConnectionSettingContext,
+		Partial<ISubscriptionContext> {
+	storageAccount?: StorageAccount;
+	newStorageAccountName?: string;
 
-    azureWebJobsStorageType?: StorageConnectionTypeValues;
+	azureWebJobsStorageType?: StorageConnectionTypeValues;
 }

@@ -3,13 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ProjectLanguage } from '../../../constants';
-import { IFunctionWizardContext } from '../IFunctionWizardContext';
+import { ProjectLanguage } from "../../../constants";
+import { IFunctionWizardContext } from "../IFunctionWizardContext";
 
 export interface IDotnetFunctionWizardContext extends IFunctionWizardContext {
-    namespace?: string;
+	namespace?: string;
 }
 
-export function getFileExtension(context: IDotnetFunctionWizardContext): string {
-    return context.language === ProjectLanguage.FSharp ? '.fs' : '.cs';
+export function getFileExtension(
+	context: IDotnetFunctionWizardContext
+): string {
+	return context.language === ProjectLanguage.FSharp ? ".fs" : ".cs";
 }

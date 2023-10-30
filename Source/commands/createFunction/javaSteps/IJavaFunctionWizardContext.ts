@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IFunctionTemplate } from '../../../templates/IFunctionTemplate';
-import { IFunctionWizardContext } from '../IFunctionWizardContext';
+import { IFunctionTemplate } from "../../../templates/IFunctionTemplate";
+import { IFunctionWizardContext } from "../IFunctionWizardContext";
 
 export interface IJavaFunctionWizardContext extends IFunctionWizardContext {
-    functionTemplate?: IJavaFunctionTemplate;
+	functionTemplate?: IJavaFunctionTemplate;
 }
 
 export interface IJavaFunctionTemplate extends IFunctionTemplate {
-    templateFiles: { [filename: string]: string };
+	templateFiles: { [filename: string]: string };
 }

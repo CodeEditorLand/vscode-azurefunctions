@@ -11,26 +11,34 @@ import { FunctionTemplateBase } from "../../templates/IFunctionTemplate";
 import { ParsedJob } from "../../templates/script/parseScriptTemplatesV2";
 import { IProjectWizardContext } from "../createNewProject/IProjectWizardContext";
 
-export interface IFunctionWizardContext extends Partial<ISubscriptionContext>, IProjectWizardContext {
-    functionTemplate?: FunctionTemplateBase;
-    functionName?: string;
+export interface IFunctionWizardContext
+	extends Partial<ISubscriptionContext>,
+		IProjectWizardContext {
+	functionTemplate?: FunctionTemplateBase;
+	functionName?: string;
 
-    // Durable Functions
-    hasDurableStorage?: boolean;
-    newDurableStorageType?: DurableBackendValues;
+	// Durable Functions
+	hasDurableStorage?: boolean;
+	newDurableStorageType?: DurableBackendValues;
 }
 
 export interface FunctionV2WizardContext extends IFunctionWizardContext {
-    job?: ParsedJob;
-    newFilePath?: string;
+	job?: ParsedJob;
+	newFilePath?: string;
 }
 
-
-export function setBindingSetting(context: IFunctionWizardContext, setting: IBindingSetting, value: BindingSettingValue): void {
-    context[setting.name.toLowerCase()] = value;
+export function setBindingSetting(
+	context: IFunctionWizardContext,
+	setting: IBindingSetting,
+	value: BindingSettingValue
+): void {
+	context[setting.name.toLowerCase()] = value;
 }
 
-export function getBindingSetting(context: IFunctionWizardContext, setting: IBindingSetting): BindingSettingValue {
-    const value = <BindingSettingValue>context[setting.name.toLowerCase()];
-    return value === undefined && setting.required ? '' : value;
+export function getBindingSetting(
+	context: IFunctionWizardContext,
+	setting: IBindingSetting
+): BindingSettingValue {
+	const value = <BindingSettingValue>context[setting.name.toLowerCase()];
+	return value === undefined && setting.required ? "" : value;
 }

@@ -5,14 +5,14 @@
 
 import { DebugConfiguration } from "vscode";
 import { powershellDebugConfig } from "../../../debug/PowerShellDebugProvider";
-import { ScriptInitVSCodeStep } from './ScriptInitVSCodeStep';
+import { ScriptInitVSCodeStep } from "./ScriptInitVSCodeStep";
 
 export class PowerShellInitVSCodeStep extends ScriptInitVSCodeStep {
-    protected getDebugConfiguration(): DebugConfiguration {
-        return powershellDebugConfig;
-    }
+	protected getDebugConfiguration(): DebugConfiguration {
+		return powershellDebugConfig;
+	}
 
-    protected getRecommendedExtensions(): string[] {
-        return ['ms-vscode.PowerShell'];
-    }
+	protected getRecommendedExtensions(): string[] {
+		return ["ms-vscode.PowerShell"];
+	}
 }

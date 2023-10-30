@@ -3,7 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizardExecuteStep, AzureWizardPromptStep } from "@microsoft/vscode-azext-utils";
+import {
+	AzureWizardExecuteStep,
+	AzureWizardPromptStep,
+} from "@microsoft/vscode-azext-utils";
 import { JavaBuildTool } from "../../../constants";
 import { IProjectWizardContext } from "../../createNewProject/IProjectWizardContext";
 import { IJavaProjectWizardContext } from "../../createNewProject/javaSteps/IJavaProjectWizardContext";
@@ -12,19 +15,20 @@ import { isGradleProject, isMavenProject } from "../detectProjectLanguage";
 import { JavaInitVSCodeStep } from "../InitVSCodeStep/JavaInitVSCodeStep";
 
 export async function addJavaInitVSCodeSteps(
-    context: IJavaProjectWizardContext,
-    promptSteps: AzureWizardPromptStep<IProjectWizardContext>[],
-    executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[]): Promise<void> {
-    if (!context.buildTool) {
-        const isMaven: boolean = await isMavenProject(context.projectPath);
-        const isGradle: boolean = await isGradleProject(context.projectPath);
-        if (isMaven === isGradle) {
-            promptSteps.push(new JavaBuildToolStep());
-        } else if (isMaven) {
-            context.buildTool = JavaBuildTool.maven;
-        } else if (isGradle) {
-            context.buildTool = JavaBuildTool.gradle;
-        }
-    }
-    executeSteps.push(new JavaInitVSCodeStep());
+	context: IJavaProjectWizardContext,
+	promptSteps: AzureWizardPromptStep<IProjectWizardContext>[],
+	executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[]
+): Promise<void> {
+	if (!context.buildTool) {
+		const isMaven: boolean = await isMavenProject(context.projectPath);
+		const isGradle: boolean = await isGradleProject(context.projectPath);
+		if (isMaven === isGradle) {
+			promptSteps.push(new JavaBuildToolStep());
+		} else if (isMaven) {
+			context.buildTool = JavaBuildTool.maven;
+		} else if (isGradle) {
+			context.buildTool = JavaBuildTool.gradle;
+		}
+	}
+	executeSteps.push(new JavaInitVSCodeStep());
 }

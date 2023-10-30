@@ -3,35 +3,48 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { SiteConfig } from '@azure/arm-appservice';
-import * as appservice from '@microsoft/vscode-azext-azureappservice';
-import { IActionContext } from '@microsoft/vscode-azext-utils';
-import * as vscode from 'vscode';
-import { functionFilter } from '../../constants';
-import { ext } from '../../extensionVariables';
-import { SlotTreeItem } from '../../tree/SlotTreeItem';
-import { getRemoteDebugLanguage } from './getRemoteDebugLanguage';
+import { SiteConfig } from "@azure/arm-appservice";
+import * as appservice from "@microsoft/vscode-azext-azureappservice";
+import { IActionContext } from "@microsoft/vscode-azext-utils";
+import * as vscode from "vscode";
+import { functionFilter } from "../../constants";
+import { ext } from "../../extensionVariables";
+import { SlotTreeItem } from "../../tree/SlotTreeItem";
+import { getRemoteDebugLanguage } from "./getRemoteDebugLanguage";
 
-export async function startRemoteDebug(context: IActionContext, node?: SlotTreeItem): Promise<void> {
-    if (!node) {
-        node = await ext.rgApi.pickAppResource<SlotTreeItem>(context, {
-            filter: functionFilter
-        });
-    }
+export async function startRemoteDebug(
+	context: IActionContext,
+	node?: SlotTreeItem
+): Promise<void> {
+	if (!node) {
+		node = await ext.rgApi.pickAppResource<SlotTreeItem>(context, {
+			filter: functionFilter,
+		});
+	}
 
-    const siteClient = await node.site.createClient(context);
-    const siteConfig: SiteConfig = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, cancellable: true }, async (progress, token) => {
-        appservice.reportMessage('Fetching site configuration...', progress, token);
-        return await siteClient.getSiteConfig();
-    });
+	const siteClient = await node.site.createClient(context);
+	const siteConfig: SiteConfig = await vscode.window.withProgress(
+		{ location: vscode.ProgressLocation.Notification, cancellable: true },
+		async (progress, token) => {
+			appservice.reportMessage(
+				"Fetching site configuration...",
+				progress,
+				token
+			);
+			return await siteClient.getSiteConfig();
+		}
+	);
 
-    const appServicePlan = await siteClient.getAppServicePlan();
-    const language: appservice.RemoteDebugLanguage = getRemoteDebugLanguage(siteConfig, appServicePlan?.sku?.family);
+	const appServicePlan = await siteClient.getAppServicePlan();
+	const language: appservice.RemoteDebugLanguage = getRemoteDebugLanguage(
+		siteConfig,
+		appServicePlan?.sku?.family
+	);
 
-    await appservice.startRemoteDebug(context, {
-        site: node.site,
-        siteConfig,
-        language,
-        credentials: node.site.subscription.credentials
-    });
+	await appservice.startRemoteDebug(context, {
+		site: node.site,
+		siteConfig,
+		language,
+		credentials: node.site.subscription.credentials,
+	});
 }

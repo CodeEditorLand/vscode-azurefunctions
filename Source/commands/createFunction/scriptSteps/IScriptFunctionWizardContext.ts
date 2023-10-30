@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IScriptFunctionTemplate } from '../../../templates/script/parseScriptTemplates';
-import { IFunctionWizardContext } from '../IFunctionWizardContext';
+import { IScriptFunctionTemplate } from "../../../templates/script/parseScriptTemplates";
+import { IFunctionWizardContext } from "../IFunctionWizardContext";
 
 export interface IScriptFunctionWizardContext extends IFunctionWizardContext {
-    functionTemplate?: IScriptFunctionTemplate;
+	functionTemplate?: IScriptFunctionTemplate;
 }

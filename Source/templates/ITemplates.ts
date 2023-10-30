@@ -7,6 +7,6 @@ import { IBindingTemplate } from "./IBindingTemplate";
 import { FunctionTemplateBase } from "./IFunctionTemplate";
 
 export interface ITemplates {
-    functionTemplates: FunctionTemplateBase[];
-    bindingTemplates: IBindingTemplate[];
+	functionTemplates: FunctionTemplateBase[];
+	bindingTemplates: IBindingTemplate[];
 }
