@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { type Site, type WebSiteManagementClient } from '@azure/arm-appservice';
-import { AppInsightsCreateStep, AppInsightsListStep, AppKind, AppServicePlanCreateStep, CustomLocationListStep, LogAnalyticsCreateStep, SiteNameStep, WebsiteOS, type IAppServiceWizardContext } from '@microsoft/vscode-azext-azureappservice';
+import { AppInsightsCreateStep, AppInsightsListStep, AppKind, AppServicePlanCreateStep, AppServicePlanListStep, CustomLocationListStep, LogAnalyticsCreateStep, SiteNameStep, WebsiteOS, type IAppServiceWizardContext } from '@microsoft/vscode-azext-azureappservice';
 import { LocationListStep, ResourceGroupCreateStep, ResourceGroupListStep, StorageAccountCreateStep, StorageAccountKind, StorageAccountListStep, StorageAccountPerformance, StorageAccountReplication, SubscriptionTreeItemBase, uiUtils, type INewStorageAccountDefaults } from '@microsoft/vscode-azext-azureutils';
 import { AzureWizard, parseError, type AzExtTreeItem, type AzureWizardExecuteStep, type AzureWizardPromptStep, type IActionContext, type ICreateChildImplContext } from '@microsoft/vscode-azext-utils';
 import { type WorkspaceFolder } from 'vscode';
@@ -108,8 +108,6 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         const promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[] = [];
         const executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[] = [];
 
-        promptSteps.push(new SiteNameStep("functionApp"));
-
         const storageAccountCreateOptions: INewStorageAccountDefaults = {
             kind: StorageAccountKind.Storage,
             performance: StorageAccountPerformance.Standard,
@@ -117,6 +115,8 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         };
 
         await detectDockerfile(context);
+
+        promptSteps.push(new SiteNameStep(context.dockerfilePath ? "containerizedFunctionApp" : "functionApp"));
 
         if (context.dockerfilePath) {
             const containerizedfunctionAppWizard = await createContainerizedFunctionAppWizard();
@@ -142,7 +142,6 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         } else {
             promptSteps.push(new ResourceGroupListStep());
             CustomLocationListStep.addStep(wizardContext, promptSteps);
-            promptSteps.push(new FunctionAppHostingPlanStep());
             promptSteps.push(new StorageAccountListStep(
                 storageAccountCreateOptions,
                 {
@@ -236,7 +235,15 @@ async function createFunctionAppWizard(wizardContext: IFunctionAppWizardContext)
     const promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[] = [];
     const executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[] = [];
 
+    if (wizardContext.advancedCreation) {
+        promptSteps.push(new FunctionAppHostingPlanStep());
+    }
+
     promptSteps.push(new FunctionAppStackStep());
+
+    if (wizardContext.advancedCreation) {
+        promptSteps.push(new AppServicePlanListStep())
+    }
 
     if (wizardContext.version === FuncVersion.v1) { // v1 doesn't support linux
         wizardContext.newSiteOS = WebsiteOS.windows;
