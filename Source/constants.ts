@@ -190,7 +190,7 @@ export const functionFilter = {
 
 export const sqlBindingTemplateRegex: RegExp = /Sql.*Binding/i;
 
-/** @link https://github.com/Azure/azure-functions-templates/tree/dev/Docs/Actions */
+
 export enum ActionType {
     AppendToFile = "AppendToFile",
     // never actually have seen this step, but it's in the schema
