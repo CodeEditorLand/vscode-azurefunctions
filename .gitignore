@@ -54,7 +54,6 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 
 # Output
 out
@@ -71,4 +70,3 @@ stats.json
 resources/backupTemplates/dotnet/**/cache/
 
 # macOS related extra files
-.DS_Store
