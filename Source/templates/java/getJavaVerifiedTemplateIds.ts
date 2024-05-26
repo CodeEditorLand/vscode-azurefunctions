@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 export function getJavaVerifiedTemplateIds(): string[] {
-    return [
-        'BlobTrigger-Java',
-        'HttpTrigger-Java',
-        'QueueTrigger-Java',
-        'TimerTrigger-Java'
-    ];
+	return [
+		"BlobTrigger-Java",
+		"HttpTrigger-Java",
+		"QueueTrigger-Java",
+		"TimerTrigger-Java",
+	];
 }

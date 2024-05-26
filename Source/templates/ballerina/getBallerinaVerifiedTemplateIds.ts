@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 export function getBallerinaVerifiedTemplateIds(): string[] {
-    return [
-        'HttpTrigger-Ballerina',
-        'BlobTrigger-Ballerina',
-        'CosmosDBTrigger-Ballerina',
-        'QueueTrigger-Ballerina',
-        'TimerTrigger-Ballerina'
-    ];
+	return [
+		"HttpTrigger-Ballerina",
+		"BlobTrigger-Ballerina",
+		"CosmosDBTrigger-Ballerina",
+		"QueueTrigger-Ballerina",
+		"TimerTrigger-Ballerina",
+	];
 }

@@ -3,95 +3,138 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtFsExtra, AzureWizardExecuteStep, callWithTelemetryAndErrorHandling, nonNullValue, type IActionContext } from '@microsoft/vscode-azext-utils';
-import * as path from 'path';
-import { Uri, window, workspace, type Progress } from 'vscode';
-import { hostFileName } from '../../constants';
-import { ext } from '../../extensionVariables';
-import { type IHostJsonV2 } from '../../funcConfig/host';
-import { localize } from '../../localize';
-import { type FunctionTemplateBase } from '../../templates/IFunctionTemplate';
-import { verifyTemplateIsV1 } from '../../utils/templateVersionUtils';
-import { verifyExtensionBundle } from '../../utils/verifyExtensionBundle';
-import { getContainingWorkspace } from '../../utils/workspace';
-import { type IFunctionWizardContext } from './IFunctionWizardContext';
+import * as path from "path";
+import {
+	AzExtFsExtra,
+	AzureWizardExecuteStep,
+	type IActionContext,
+	callWithTelemetryAndErrorHandling,
+	nonNullValue,
+} from "@microsoft/vscode-azext-utils";
+import { type Progress, Uri, window, workspace } from "vscode";
+import { hostFileName } from "../../constants";
+import { ext } from "../../extensionVariables";
+import type { IHostJsonV2 } from "../../funcConfig/host";
+import { localize } from "../../localize";
+import type { FunctionTemplateBase } from "../../templates/IFunctionTemplate";
+import { verifyTemplateIsV1 } from "../../utils/templateVersionUtils";
+import { verifyExtensionBundle } from "../../utils/verifyExtensionBundle";
+import { getContainingWorkspace } from "../../utils/workspace";
+import type { IFunctionWizardContext } from "./IFunctionWizardContext";
 
 interface ICachedFunction {
-    projectPath: string;
-    newFilePath: string;
-    isHttpTrigger: boolean;
+	projectPath: string;
+	newFilePath: string;
+	isHttpTrigger: boolean;
 }
 
-const cacheKey: string = 'azFuncPostFunctionCreate';
+const cacheKey: string = "azFuncPostFunctionCreate";
 
 export async function runPostFunctionCreateStepsFromCache(): Promise<void> {
-    const cachedFunc: ICachedFunction | undefined = ext.context.globalState.get(cacheKey);
-    if (cachedFunc) {
-        try {
-            runPostFunctionCreateSteps(cachedFunc);
-        } finally {
-            await ext.context.globalState.update(cacheKey, undefined);
-        }
-    }
+	const cachedFunc: ICachedFunction | undefined =
+		ext.context.globalState.get(cacheKey);
+	if (cachedFunc) {
+		try {
+			runPostFunctionCreateSteps(cachedFunc);
+		} finally {
+			await ext.context.globalState.update(cacheKey, undefined);
+		}
+	}
 }
 
-export abstract class FunctionCreateStepBase<T extends IFunctionWizardContext> extends AzureWizardExecuteStep<T> {
-    public priority: number = 220;
+export abstract class FunctionCreateStepBase<
+	T extends IFunctionWizardContext,
+> extends AzureWizardExecuteStep<T> {
+	public priority = 220;
 
-    /**
-     * Returns the full path to the new function file
-     */
-    public abstract executeCore(context: T): Promise<string>;
+	/**
+	 * Returns the full path to the new function file
+	 */
+	public abstract executeCore(context: T): Promise<string>;
 
-    public async execute(context: T, progress: Progress<{ message?: string | undefined; increment?: number | undefined }>): Promise<void> {
-        const template: FunctionTemplateBase = nonNullValue(context.functionTemplate);
-        context.telemetry.properties.projectLanguage = context.language;
-        context.telemetry.properties.projectRuntime = context.version;
-        context.telemetry.properties.templateId = template.id;
+	public async execute(
+		context: T,
+		progress: Progress<{
+			message?: string | undefined;
+			increment?: number | undefined;
+		}>,
+	): Promise<void> {
+		const template: FunctionTemplateBase = nonNullValue(
+			context.functionTemplate,
+		);
+		context.telemetry.properties.projectLanguage = context.language;
+		context.telemetry.properties.projectRuntime = context.version;
+		context.telemetry.properties.templateId = template.id;
 
-        progress.report({ message: localize('creatingFunction', 'Creating new {0}...', template.name) });
+		progress.report({
+			message: localize(
+				"creatingFunction",
+				"Creating new {0}...",
+				template.name,
+			),
+		});
 
-        const newFilePath: string = await this.executeCore(context);
-        await verifyExtensionBundle(context, template);
+		const newFilePath: string = await this.executeCore(context);
+		await verifyExtensionBundle(context, template);
 
-        const cachedFunc: ICachedFunction = { projectPath: context.projectPath, newFilePath, isHttpTrigger: template.isHttpTrigger };
-        const hostFilePath: string = path.join(context.projectPath, hostFileName);
-        if (await AzExtFsExtra.pathExists(hostFilePath)) {
-            if (verifyTemplateIsV1(context.functionTemplate) && context.functionTemplate?.isDynamicConcurrent) {
-                const hostJson = await AzExtFsExtra.readJSON<IHostJsonV2>(hostFilePath);
-                hostJson.concurrency = {
-                    dynamicConcurrencyEnabled: true,
-                    snapshotPersistenceEnabled: true
-                }
-                await AzExtFsExtra.writeJSON(hostFilePath, hostJson);
-            }
-        }
+		const cachedFunc: ICachedFunction = {
+			projectPath: context.projectPath,
+			newFilePath,
+			isHttpTrigger: template.isHttpTrigger,
+		};
+		const hostFilePath: string = path.join(
+			context.projectPath,
+			hostFileName,
+		);
+		if (await AzExtFsExtra.pathExists(hostFilePath)) {
+			if (
+				verifyTemplateIsV1(context.functionTemplate) &&
+				context.functionTemplate?.isDynamicConcurrent
+			) {
+				const hostJson =
+					await AzExtFsExtra.readJSON<IHostJsonV2>(hostFilePath);
+				hostJson.concurrency = {
+					dynamicConcurrencyEnabled: true,
+					snapshotPersistenceEnabled: true,
+				};
+				await AzExtFsExtra.writeJSON(hostFilePath, hostJson);
+			}
+		}
 
-        if (context.openBehavior) {
-            // OpenFolderStep sometimes restarts the extension host, so we will cache this to run on the next extension activation
-            await ext.context.globalState.update(cacheKey, cachedFunc);
-            // Delete cached information if the extension host was not restarted after 5 seconds
-            setTimeout(() => { void ext.context.globalState.update(cacheKey, undefined); }, 5 * 1000);
-        }
+		if (context.openBehavior) {
+			// OpenFolderStep sometimes restarts the extension host, so we will cache this to run on the next extension activation
+			await ext.context.globalState.update(cacheKey, cachedFunc);
+			// Delete cached information if the extension host was not restarted after 5 seconds
+			setTimeout(() => {
+				void ext.context.globalState.update(cacheKey, undefined);
+			}, 5 * 1000);
+		}
 
-        runPostFunctionCreateSteps(cachedFunc);
-    }
+		runPostFunctionCreateSteps(cachedFunc);
+	}
 
-    public shouldExecute(context: T): boolean {
-        return !!context.functionTemplate;
-    }
+	public shouldExecute(context: T): boolean {
+		return !!context.functionTemplate;
+	}
 }
 
 function runPostFunctionCreateSteps(func: ICachedFunction): void {
-    // Don't wait
-    void callWithTelemetryAndErrorHandling('postFunctionCreate', async (context: IActionContext) => {
-        context.telemetry.suppressIfSuccessful = true;
+	// Don't wait
+	void callWithTelemetryAndErrorHandling(
+		"postFunctionCreate",
+		async (context: IActionContext) => {
+			context.telemetry.suppressIfSuccessful = true;
 
-        // If function creation created a new file, open it in an editor...
-        if (func.newFilePath && getContainingWorkspace(func.projectPath)) {
-            if (await AzExtFsExtra.pathExists(func.newFilePath)) {
-                await window.showTextDocument(await workspace.openTextDocument(Uri.file(func.newFilePath)));
-            }
-        }
-    });
+			// If function creation created a new file, open it in an editor...
+			if (func.newFilePath && getContainingWorkspace(func.projectPath)) {
+				if (await AzExtFsExtra.pathExists(func.newFilePath)) {
+					await window.showTextDocument(
+						await workspace.openTextDocument(
+							Uri.file(func.newFilePath),
+						),
+					);
+				}
+			}
+		},
+	);
 }

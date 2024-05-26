@@ -3,20 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IAzureQuickPickItem } from "@microsoft/vscode-azext-utils";
+import type { IAzureQuickPickItem } from "@microsoft/vscode-azext-utils";
 import { envUtils } from "../../../utils/envUtils";
-import { type FunctionV2WizardContext } from "../IFunctionWizardContext";
+import type { FunctionV2WizardContext } from "../IFunctionWizardContext";
 import { QuickPickInputStep } from "./QuickPickInputStep";
 
-export class BooleanInputStep<T extends FunctionV2WizardContext> extends QuickPickInputStep<T> {
-    protected async getPicks(_context: T): Promise<IAzureQuickPickItem<boolean>[]> {
-        let picks: IAzureQuickPickItem<boolean>[] = [true, false].map(v => { return { label: String(v), data: v }; });
+export class BooleanInputStep<
+	T extends FunctionV2WizardContext,
+> extends QuickPickInputStep<T> {
+	protected async getPicks(
+		_context: T,
+	): Promise<IAzureQuickPickItem<boolean>[]> {
+		let picks: IAzureQuickPickItem<boolean>[] = [true, false].map((v) => {
+			return { label: String(v), data: v };
+		});
 
-        // Make sure the correct default value is at the top of the list
-        if (!envUtils.isEnvironmentVariableSet(this.input.defaultValue)) {
-            picks = picks.reverse();
-        }
+		// Make sure the correct default value is at the top of the list
+		if (!envUtils.isEnvironmentVariableSet(this.input.defaultValue)) {
+			picks = picks.reverse();
+		}
 
-        return picks;
-    }
+		return picks;
+	}
 }

@@ -3,159 +3,265 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { callWithTelemetryAndErrorHandling, type IActionContext } from '@microsoft/vscode-azext-utils';
-import * as process from 'process';
-import { ShellExecution, Task, TaskScope, workspace, type CancellationToken, type ShellExecutionOptions, type TaskDefinition, type TaskProvider, type WorkspaceFolder } from 'vscode';
-import { tryGetFunctionProjectRoot } from '../commands/createNewProject/verifyIsProject';
-import { ProjectLanguage, buildNativeDeps, extInstallCommand, func, hostStartCommand, packCommand, projectLanguageSetting } from '../constants';
-import { getFuncCliPath } from '../funcCoreTools/getFuncCliPath';
-import { venvUtils } from '../utils/venvUtils';
-import { getFuncWatchProblemMatcher, getWorkspaceSetting } from '../vsCodeConfig/settings';
-import { getTasks } from '../vsCodeConfig/tasks';
-import { type BallerinaDebugProvider } from './BallerinaDebugProvider';
-import { type FuncDebugProviderBase } from './FuncDebugProviderBase';
-import { type JavaDebugProvider } from './JavaDebugProvider';
-import { type NodeDebugProvider } from './NodeDebugProvider';
-import { type PowerShellDebugProvider } from './PowerShellDebugProvider';
-import { type PythonDebugProvider } from './PythonDebugProvider';
+import {
+	type IActionContext,
+	callWithTelemetryAndErrorHandling,
+} from "@microsoft/vscode-azext-utils";
+import * as process from "process";
+import {
+	type CancellationToken,
+	ShellExecution,
+	type ShellExecutionOptions,
+	Task,
+	type TaskDefinition,
+	type TaskProvider,
+	TaskScope,
+	type WorkspaceFolder,
+	workspace,
+} from "vscode";
+import { tryGetFunctionProjectRoot } from "../commands/createNewProject/verifyIsProject";
+import {
+	ProjectLanguage,
+	buildNativeDeps,
+	extInstallCommand,
+	func,
+	hostStartCommand,
+	packCommand,
+	projectLanguageSetting,
+} from "../constants";
+import { getFuncCliPath } from "../funcCoreTools/getFuncCliPath";
+import { venvUtils } from "../utils/venvUtils";
+import {
+	getFuncWatchProblemMatcher,
+	getWorkspaceSetting,
+} from "../vsCodeConfig/settings";
+import { getTasks } from "../vsCodeConfig/tasks";
+import type { BallerinaDebugProvider } from "./BallerinaDebugProvider";
+import type { FuncDebugProviderBase } from "./FuncDebugProviderBase";
+import type { JavaDebugProvider } from "./JavaDebugProvider";
+import type { NodeDebugProvider } from "./NodeDebugProvider";
+import type { PowerShellDebugProvider } from "./PowerShellDebugProvider";
+import type { PythonDebugProvider } from "./PythonDebugProvider";
 
 export class FuncTaskProvider implements TaskProvider {
-    private readonly _nodeDebugProvider: NodeDebugProvider;
-    private readonly _pythonDebugProvider: PythonDebugProvider;
-    private readonly _javaDebugProvider: JavaDebugProvider;
-    private readonly _ballerinaDebugProvider: BallerinaDebugProvider;
-    private readonly _powershellDebugProvider: PowerShellDebugProvider;
+	private readonly _nodeDebugProvider: NodeDebugProvider;
+	private readonly _pythonDebugProvider: PythonDebugProvider;
+	private readonly _javaDebugProvider: JavaDebugProvider;
+	private readonly _ballerinaDebugProvider: BallerinaDebugProvider;
+	private readonly _powershellDebugProvider: PowerShellDebugProvider;
 
-    constructor(nodeDebugProvider: NodeDebugProvider, pythonDebugProvider: PythonDebugProvider, javaDebugProvider: JavaDebugProvider, ballerinaDebugProvider: BallerinaDebugProvider, powershellDebugProvider: PowerShellDebugProvider) {
-        this._nodeDebugProvider = nodeDebugProvider;
-        this._pythonDebugProvider = pythonDebugProvider;
-        this._javaDebugProvider = javaDebugProvider;
-        this._ballerinaDebugProvider = ballerinaDebugProvider;
-        this._powershellDebugProvider = powershellDebugProvider;
-    }
+	constructor(
+		nodeDebugProvider: NodeDebugProvider,
+		pythonDebugProvider: PythonDebugProvider,
+		javaDebugProvider: JavaDebugProvider,
+		ballerinaDebugProvider: BallerinaDebugProvider,
+		powershellDebugProvider: PowerShellDebugProvider,
+	) {
+		this._nodeDebugProvider = nodeDebugProvider;
+		this._pythonDebugProvider = pythonDebugProvider;
+		this._javaDebugProvider = javaDebugProvider;
+		this._ballerinaDebugProvider = ballerinaDebugProvider;
+		this._powershellDebugProvider = powershellDebugProvider;
+	}
 
-    public async provideTasks(_token?: CancellationToken | undefined): Promise<Task[]> {
-        const result: Task[] = [];
+	public async provideTasks(
+		_token?: CancellationToken | undefined,
+	): Promise<Task[]> {
+		const result: Task[] = [];
 
-        await callWithTelemetryAndErrorHandling('provideTasks', async (context: IActionContext) => {
-            context.telemetry.properties.isActivationEvent = 'true';
-            context.errorHandling.suppressDisplay = true;
-            context.telemetry.suppressIfSuccessful = true;
+		await callWithTelemetryAndErrorHandling(
+			"provideTasks",
+			async (context: IActionContext) => {
+				context.telemetry.properties.isActivationEvent = "true";
+				context.errorHandling.suppressDisplay = true;
+				context.telemetry.suppressIfSuccessful = true;
 
-            if (workspace.workspaceFolders) {
-                let lastError: unknown;
-                for (const folder of workspace.workspaceFolders) {
-                    try {
-                        const projectRoot: string | undefined = await tryGetFunctionProjectRoot(context, folder);
-                        if (projectRoot) {
-                            const language: string | undefined = getWorkspaceSetting(projectLanguageSetting, folder.uri.fsPath);
+				if (workspace.workspaceFolders) {
+					let lastError: unknown;
+					for (const folder of workspace.workspaceFolders) {
+						try {
+							const projectRoot: string | undefined =
+								await tryGetFunctionProjectRoot(
+									context,
+									folder,
+								);
+							if (projectRoot) {
+								const language: string | undefined =
+									getWorkspaceSetting(
+										projectLanguageSetting,
+										folder.uri.fsPath,
+									);
 
-                            const commands: string[] = [extInstallCommand];
+								const commands: string[] = [extInstallCommand];
 
-                            // Don't add "host start" task if the folder already has that task configured. Instead, defer to `resolveTask`, which will handle any customizations the user has made
-                            if (!hasHostStartTask(folder)) {
-                                commands.push(hostStartCommand);
-                            }
+								// Don't add "host start" task if the folder already has that task configured. Instead, defer to `resolveTask`, which will handle any customizations the user has made
+								if (!hasHostStartTask(folder)) {
+									commands.push(hostStartCommand);
+								}
 
-                            if (language === ProjectLanguage.Python) {
-                                commands.push(packCommand);
-                                commands.push(`${packCommand} ${buildNativeDeps}`);
-                            }
+								if (language === ProjectLanguage.Python) {
+									commands.push(packCommand);
+									commands.push(
+										`${packCommand} ${buildNativeDeps}`,
+									);
+								}
 
-                            for (const command of commands) {
-                                result.push(await this.createTask(context, command, folder, projectRoot, language));
-                            }
-                        }
-                    } catch (err) {
-                        // ignore and try next folder
-                        lastError = err;
-                    }
-                }
+								for (const command of commands) {
+									result.push(
+										await this.createTask(
+											context,
+											command,
+											folder,
+											projectRoot,
+											language,
+										),
+									);
+								}
+							}
+						} catch (err) {
+							// ignore and try next folder
+							lastError = err;
+						}
+					}
 
-                if (!(lastError === null || lastError === undefined)) {
-                    // throw the last error just for the sake of telemetry
-                    // (This won't block providing tasks since it's inside callWithTelemetryAndErrorHandling)
-                    throw lastError;
-                }
-            }
-        });
+					if (!(lastError === null || lastError === undefined)) {
+						// throw the last error just for the sake of telemetry
+						// (This won't block providing tasks since it's inside callWithTelemetryAndErrorHandling)
+						throw lastError;
+					}
+				}
+			},
+		);
 
-        return result;
-    }
+		return result;
+	}
 
-    public async resolveTask(task: Task, _token?: CancellationToken | undefined): Promise<Task | undefined> {
-        return await callWithTelemetryAndErrorHandling('resolveTask', async (context: IActionContext) => {
-            context.telemetry.properties.isActivationEvent = 'true';
-            context.errorHandling.suppressDisplay = true;
-            context.telemetry.suppressIfSuccessful = true;
+	public async resolveTask(
+		task: Task,
+		_token?: CancellationToken | undefined,
+	): Promise<Task | undefined> {
+		return await callWithTelemetryAndErrorHandling(
+			"resolveTask",
+			async (context: IActionContext) => {
+				context.telemetry.properties.isActivationEvent = "true";
+				context.errorHandling.suppressDisplay = true;
+				context.telemetry.suppressIfSuccessful = true;
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const command: string | undefined = task.definition.command;
-            if (command && task.scope !== undefined && task.scope !== TaskScope.Global && task.scope !== TaskScope.Workspace) {
-                const folder: WorkspaceFolder = task.scope;
-                const language: string | undefined = getWorkspaceSetting(projectLanguageSetting, folder.uri.fsPath);
-                return this.createTask(context, command, folder, undefined, language, task.definition);
-            }
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				const command: string | undefined = task.definition.command;
+				if (
+					command &&
+					task.scope !== undefined &&
+					task.scope !== TaskScope.Global &&
+					task.scope !== TaskScope.Workspace
+				) {
+					const folder: WorkspaceFolder = task.scope;
+					const language: string | undefined = getWorkspaceSetting(
+						projectLanguageSetting,
+						folder.uri.fsPath,
+					);
+					return this.createTask(
+						context,
+						command,
+						folder,
+						undefined,
+						language,
+						task.definition,
+					);
+				}
 
-            return undefined;
-        });
-    }
+				return undefined;
+			},
+		);
+	}
 
-    private async createTask(context: IActionContext, command: string, folder: WorkspaceFolder, projectRoot: string | undefined, language: string | undefined, definition?: TaskDefinition): Promise<Task> {
-        const funcCliPath = await getFuncCliPath(context, folder);
-        let commandLine: string = `${funcCliPath} ${command}`;
-        if (language === ProjectLanguage.Python) {
-            commandLine = venvUtils.convertToVenvCommand(commandLine, folder.uri.fsPath);
-        }
+	private async createTask(
+		context: IActionContext,
+		command: string,
+		folder: WorkspaceFolder,
+		projectRoot: string | undefined,
+		language: string | undefined,
+		definition?: TaskDefinition,
+	): Promise<Task> {
+		const funcCliPath = await getFuncCliPath(context, folder);
+		let commandLine = `${funcCliPath} ${command}`;
+		if (language === ProjectLanguage.Python) {
+			commandLine = venvUtils.convertToVenvCommand(
+				commandLine,
+				folder.uri.fsPath,
+			);
+		}
 
-        let problemMatcher: string | undefined;
-        let options: ShellExecutionOptions | undefined;
-        if (/^\s*(host )?start/i.test(command)) {
-            problemMatcher = getFuncWatchProblemMatcher(language);
-            options = await this.getHostStartOptions(folder, language);
-        }
+		let problemMatcher: string | undefined;
+		let options: ShellExecutionOptions | undefined;
+		if (/^\s*(host )?start/i.test(command)) {
+			problemMatcher = getFuncWatchProblemMatcher(language);
+			options = await this.getHostStartOptions(folder, language);
+		}
 
-        options = options || {};
-        if (projectRoot) {
-            options.cwd = projectRoot;
-        }
+		options = options || {};
+		if (projectRoot) {
+			options.cwd = projectRoot;
+		}
 
-        definition = definition || { type: func, command };
-        return new Task(definition, folder, command, func, new ShellExecution(commandLine, options), problemMatcher);
-    }
+		definition = definition || { type: func, command };
+		return new Task(
+			definition,
+			folder,
+			command,
+			func,
+			new ShellExecution(commandLine, options),
+			problemMatcher,
+		);
+	}
 
-    private async getHostStartOptions(folder: WorkspaceFolder, language: string | undefined): Promise<ShellExecutionOptions | undefined> {
-        let debugProvider: FuncDebugProviderBase;
-        switch (language) {
-            case ProjectLanguage.Python:
-                debugProvider = this._pythonDebugProvider;
-                break;
-            case ProjectLanguage.JavaScript:
-            case ProjectLanguage.TypeScript:
-                debugProvider = this._nodeDebugProvider;
-                break;
-            case ProjectLanguage.Java:
-                debugProvider = this._javaDebugProvider;
-                break;
-            case ProjectLanguage.Ballerina:
-                debugProvider = this._ballerinaDebugProvider
-                break;
-            case ProjectLanguage.PowerShell:
-                debugProvider = this._powershellDebugProvider;
-                break;
-            default:
-                return undefined;
-        }
+	private async getHostStartOptions(
+		folder: WorkspaceFolder,
+		language: string | undefined,
+	): Promise<ShellExecutionOptions | undefined> {
+		let debugProvider: FuncDebugProviderBase;
+		switch (language) {
+			case ProjectLanguage.Python:
+				debugProvider = this._pythonDebugProvider;
+				break;
+			case ProjectLanguage.JavaScript:
+			case ProjectLanguage.TypeScript:
+				debugProvider = this._nodeDebugProvider;
+				break;
+			case ProjectLanguage.Java:
+				debugProvider = this._javaDebugProvider;
+				break;
+			case ProjectLanguage.Ballerina:
+				debugProvider = this._ballerinaDebugProvider;
+				break;
+			case ProjectLanguage.PowerShell:
+				debugProvider = this._powershellDebugProvider;
+				break;
+			default:
+				return undefined;
+		}
 
-        // Defer to process.env (aka return undefined) if the workerArg variable is already defined
-        return process.env[debugProvider.workerArgKey] ? undefined : { env: { [debugProvider.workerArgKey]: await debugProvider.getWorkerArgValue(folder) } };
-    }
+		// Defer to process.env (aka return undefined) if the workerArg variable is already defined
+		return process.env[debugProvider.workerArgKey]
+			? undefined
+			: {
+					env: {
+						[debugProvider.workerArgKey]:
+							await debugProvider.getWorkerArgValue(folder),
+					},
+				};
+	}
 }
 
 function hasHostStartTask(folder: WorkspaceFolder): boolean {
-    try {
-        return getTasks(folder).some(t => t.type === func && t.command && /^\s*(host )?start/i.test(t.command));
-    } catch {
-        return false;
-    }
+	try {
+		return getTasks(folder).some(
+			(t) =>
+				t.type === func &&
+				t.command &&
+				/^\s*(host )?start/i.test(t.command),
+		);
+	} catch {
+		return false;
+	}
 }

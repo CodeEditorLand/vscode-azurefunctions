@@ -3,41 +3,54 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtParentTreeItem, type TreeItemIconPath } from '@microsoft/vscode-azext-utils';
-import { ThemeIcon } from 'vscode';
-import { localize } from '../localize';
-import { type IProjectTreeItem } from './IProjectTreeItem';
-import { getProjectContextValue, ProjectAccess, ProjectResource } from './projectContextValues';
+import {
+	AzExtParentTreeItem,
+	type TreeItemIconPath,
+} from "@microsoft/vscode-azext-utils";
+import { ThemeIcon } from "vscode";
+import { localize } from "../localize";
+import type { IProjectTreeItem } from "./IProjectTreeItem";
+import {
+	ProjectAccess,
+	ProjectResource,
+	getProjectContextValue,
+} from "./projectContextValues";
 
 export abstract class FunctionsTreeItemBase extends AzExtParentTreeItem {
-    public readonly label: string = localize('Functions', 'Functions');
-    public readonly childTypeLabel: string = localize('Function', 'Function');
-    public parent: AzExtParentTreeItem & IProjectTreeItem;
-    public suppressMaskLabel: boolean = true;
+	public readonly label: string = localize("Functions", "Functions");
+	public readonly childTypeLabel: string = localize("Function", "Function");
+	public parent: AzExtParentTreeItem & IProjectTreeItem;
+	public suppressMaskLabel = true;
 
-    public abstract isReadOnly: boolean;
+	public abstract isReadOnly: boolean;
 
-    public constructor(parent: AzExtParentTreeItem & IProjectTreeItem) {
-        super(parent);
-    }
+	public constructor(parent: AzExtParentTreeItem & IProjectTreeItem) {
+		super(parent);
+	}
 
-    public get contextValue(): string {
-        return getProjectContextValue(this.parent.source, this.access, ProjectResource.Functions);
-    }
+	public get contextValue(): string {
+		return getProjectContextValue(
+			this.parent.source,
+			this.access,
+			ProjectResource.Functions,
+		);
+	}
 
-    public get description(): string {
-        return this.isReadOnly ? localize('readOnly', 'Read-only') : '';
-    }
+	public get description(): string {
+		return this.isReadOnly ? localize("readOnly", "Read-only") : "";
+	}
 
-    public get access(): ProjectAccess {
-        return this.isReadOnly ? ProjectAccess.ReadOnly : ProjectAccess.ReadWrite;
-    }
+	public get access(): ProjectAccess {
+		return this.isReadOnly
+			? ProjectAccess.ReadOnly
+			: ProjectAccess.ReadWrite;
+	}
 
-    public get id(): string {
-        return 'functions';
-    }
+	public get id(): string {
+		return "functions";
+	}
 
-    public get iconPath(): TreeItemIconPath {
-        return new ThemeIcon('list-unordered');
-    }
+	public get iconPath(): TreeItemIconPath {
+		return new ThemeIcon("list-unordered");
+	}
 }

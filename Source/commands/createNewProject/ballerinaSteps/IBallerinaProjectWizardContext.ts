@@ -3,18 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from 'path';
-import { type BallerinaBackend } from '../../../constants';
-import { type IProjectWizardContext } from "../IProjectWizardContext";
+import * as path from "path";
+import type { BallerinaBackend } from "../../../constants";
+import type { IProjectWizardContext } from "../IProjectWizardContext";
 
 export interface IBallerinaProjectWizardContext extends IProjectWizardContext {
-    balBackend?: BallerinaBackend;
+	balBackend?: BallerinaBackend;
 }
 
 export function getBallerinaPackagePath(projectPath: string): string {
-    return path.join(projectPath);
+	return path.join(projectPath);
 }
 
-export function getBallerinaFunctionFilePath(projectPath: string, functionName: string): string {
-    return path.join(getBallerinaPackagePath(projectPath), functionName + '.bal');
+export function getBallerinaFunctionFilePath(
+	projectPath: string,
+	functionName: string,
+): string {
+	return path.join(
+		getBallerinaPackagePath(projectPath),
+		functionName + ".bal",
+	);
 }

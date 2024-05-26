@@ -3,28 +3,47 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { DeploymentsTreeItem, editScmType } from "@microsoft/vscode-azext-azureappservice";
-import { type GenericTreeItem, type IActionContext } from "@microsoft/vscode-azext-utils";
+import {
+	DeploymentsTreeItem,
+	editScmType,
+} from "@microsoft/vscode-azext-azureappservice";
+import type {
+	GenericTreeItem,
+	IActionContext,
+} from "@microsoft/vscode-azext-utils";
 import { ScmType, functionFilter } from "../../constants";
 import { ext } from "../../extensionVariables";
 import { isSlotTreeItem } from "../../tree/SlotTreeItem";
 
-export async function connectToGitHub(context: IActionContext, target?: GenericTreeItem): Promise<void> {
-    let deployments: DeploymentsTreeItem;
+export async function connectToGitHub(
+	context: IActionContext,
+	target?: GenericTreeItem,
+): Promise<void> {
+	let deployments: DeploymentsTreeItem;
 
-    if (!target) {
-        deployments = await ext.rgApi.pickAppResource<DeploymentsTreeItem>(context, {
-            filter: functionFilter,
-            expectedChildContextValue: new RegExp(DeploymentsTreeItem.contextValueUnconnected)
-        });
-    } else {
-        deployments = <DeploymentsTreeItem>target.parent;
-    }
+	if (target) {
+		deployments = <DeploymentsTreeItem>target.parent;
+	} else {
+		deployments = await ext.rgApi.pickAppResource<DeploymentsTreeItem>(
+			context,
+			{
+				filter: functionFilter,
+				expectedChildContextValue: new RegExp(
+					DeploymentsTreeItem.contextValueUnconnected,
+				),
+			},
+		);
+	}
 
-    if (deployments.parent && isSlotTreeItem(deployments.parent)) {
-        await editScmType(context, deployments.site, deployments.subscription, ScmType.GitHub);
-        await deployments.refresh(context);
-    } else {
-        throw Error('Internal error: Action not supported.');
-    }
+	if (deployments.parent && isSlotTreeItem(deployments.parent)) {
+		await editScmType(
+			context,
+			deployments.site,
+			deployments.subscription,
+			ScmType.GitHub,
+		);
+		await deployments.refresh(context);
+	} else {
+		throw Error("Internal error: Action not supported.");
+	}
 }
