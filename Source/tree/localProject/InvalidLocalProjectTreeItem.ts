@@ -3,36 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type {
-	AzExtParentTreeItem,
-	AzExtTreeItem,
-} from "@microsoft/vscode-azext-utils";
-import type { WorkspaceFolder } from "vscode";
-import { LocalProjectTreeItemBase } from "./LocalProjectTreeItemBase";
+import { type AzExtParentTreeItem, type AzExtTreeItem } from '@microsoft/vscode-azext-utils';
+import { type WorkspaceFolder } from 'vscode';
+import { LocalProjectTreeItemBase } from './LocalProjectTreeItemBase';
 
 export class InvalidLocalProjectTreeItem extends LocalProjectTreeItemBase {
-	public contextValue = "invalidAzFuncLocalProject";
+    public contextValue: string = 'invalidAzFuncLocalProject';
 
-	private readonly _projectError: unknown | undefined;
+    private readonly _projectError: unknown | undefined;
 
-	public constructor(
-		parent: AzExtParentTreeItem,
-		projectPath: string,
-		projectError: unknown,
-		folder: WorkspaceFolder,
-	) {
-		super(parent, projectPath, folder);
-		this._projectError = projectError;
-	}
+    public constructor(parent: AzExtParentTreeItem, projectPath: string, projectError: unknown, folder: WorkspaceFolder) {
+        super(parent, projectPath, folder);
+        this._projectError = projectError;
+    }
 
-	public hasMoreChildrenImpl(): boolean {
-		return false;
-	}
+    public hasMoreChildrenImpl(): boolean {
+        return false;
+    }
 
-	// eslint-disable-next-line @typescript-eslint/require-await
-	public async loadMoreChildrenImpl(
-		_clearCache: boolean,
-	): Promise<AzExtTreeItem[]> {
-		throw this._projectError;
-	}
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public async loadMoreChildrenImpl(_clearCache: boolean): Promise<AzExtTreeItem[]> {
+        throw this._projectError;
+    }
 }

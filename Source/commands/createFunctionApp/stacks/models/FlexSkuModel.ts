@@ -4,24 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface Sku {
-	skuCode: string;
-	instanceMemoryMB: InstanceMemoryMB[];
-	maximumInstanceCount: MaximumInstanceCount;
-	functionAppConfigProperties: {
-		runtime: {
-			name: string;
-			version: string;
-		};
-	};
+    skuCode: string;
+    instanceMemoryMB: InstanceMemoryMB[];
+    maximumInstanceCount: MaximumInstanceCount,
+    functionAppConfigProperties: {
+        runtime: {
+            name: string,
+            version: string
+        }
+    }
 }
 
 interface InstanceMemoryMB {
-	size: number;
-	isDefault: boolean;
+    size: number;
+    isDefault: boolean;
 }
 
 interface MaximumInstanceCount {
-	lowestMaximumInstanceCount: number;
-	highestMaximumInstanceCount: number;
-	defaultValue: number;
+    lowestMaximumInstanceCount: number;
+    highestMaximumInstanceCount: number;
+    defaultValue: number;
 }

@@ -3,34 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type { IAzureQuickPickItem } from "@microsoft/vscode-azext-utils";
+import { type IAzureQuickPickItem } from "@microsoft/vscode-azext-utils";
 import { localize } from "../../../localize";
-import type { FunctionV2WizardContext } from "../IFunctionWizardContext";
+import { type FunctionV2WizardContext } from "../IFunctionWizardContext";
 import { PromptSchemaStepBase } from "./PromptSchemaStepBase";
 
-export abstract class QuickPickInputStep<
-	T extends FunctionV2WizardContext,
-> extends PromptSchemaStepBase<T> {
-	protected async promptAction(context: T): Promise<unknown | undefined> {
-		const picks: IAzureQuickPickItem<unknown | undefined>[] =
-			await this.getPicks(context);
+export abstract class QuickPickInputStep<T extends FunctionV2WizardContext> extends PromptSchemaStepBase<T> {
+    protected async promptAction(context: T): Promise<unknown | undefined> {
+        const picks: IAzureQuickPickItem<unknown | undefined>[] = await this.getPicks(context);
 
-		if (!this.input.required) {
-			picks.push({
-				label: localize("skipForNow", "$(clock) Skip for now"),
-				data: undefined,
-				suppressPersistence: true,
-			});
-		}
+        if (!this.input.required) {
+            picks.push({
+                label: localize('skipForNow', '$(clock) Skip for now'),
+                data: undefined,
+                suppressPersistence: true
+            });
+        }
 
-		return (
-			await context.ui.showQuickPick(picks, {
-				placeHolder: this.input.help,
-			})
-		).data;
-	}
+        return (await context.ui.showQuickPick(picks, { placeHolder: this.input.help })).data;
+    }
 
-	protected abstract getPicks(
-		context: T,
-	): Promise<IAzureQuickPickItem<unknown>[]>;
+    protected abstract getPicks(context: T): Promise<IAzureQuickPickItem<unknown>[]>;
 }

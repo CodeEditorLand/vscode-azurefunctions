@@ -3,31 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as path from "path";
-import type { IActionContext } from "@microsoft/vscode-azext-utils";
-import type { Uri } from "vscode";
-import { ext } from "../../../extensionVariables";
-import { localize } from "../../../localize";
-import { cpUtils } from "../../../utils/cpUtils";
-import { getLocalSettingsFile } from "./getLocalSettingsFile";
+import { type IActionContext } from '@microsoft/vscode-azext-utils';
+import * as path from 'path';
+import { type Uri } from "vscode";
+import { ext } from '../../../extensionVariables';
+import { localize } from '../../../localize';
+import { cpUtils } from '../../../utils/cpUtils';
+import { getLocalSettingsFile } from './getLocalSettingsFile';
 
-export async function decryptLocalSettings(
-	context: IActionContext,
-	uri?: Uri,
-): Promise<void> {
-	const message: string = localize(
-		"selectLocalSettings",
-		"Select the settings file to decrypt.",
-	);
-	const localSettingsPath: string = uri
-		? uri.fsPath
-		: await getLocalSettingsFile(context, message);
-	ext.outputChannel.show(true);
-	await cpUtils.executeCommand(
-		ext.outputChannel,
-		path.dirname(localSettingsPath),
-		"func",
-		"settings",
-		"decrypt",
-	);
+export async function decryptLocalSettings(context: IActionContext, uri?: Uri): Promise<void> {
+    const message: string = localize('selectLocalSettings', 'Select the settings file to decrypt.');
+    const localSettingsPath: string = uri ? uri.fsPath : await getLocalSettingsFile(context, message);
+    ext.outputChannel.show(true);
+    await cpUtils.executeCommand(ext.outputChannel, path.dirname(localSettingsPath), 'func', 'settings', 'decrypt');
 }

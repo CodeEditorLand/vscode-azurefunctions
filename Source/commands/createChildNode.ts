@@ -3,27 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type {
-	AzExtParentTreeItem,
-	IActionContext,
-} from "@microsoft/vscode-azext-utils";
-import { functionFilter } from "../constants";
-import { ext } from "../extensionVariables";
+import { type AzExtParentTreeItem, type IActionContext } from '@microsoft/vscode-azext-utils';
+import { functionFilter } from '../constants';
+import { ext } from '../extensionVariables';
 
-export async function createChildNode(
-	context: IActionContext,
-	expectedContextValue: string | RegExp,
-	node?: AzExtParentTreeItem,
-): Promise<void> {
-	if (!node) {
-		node = await ext.rgApi.pickAppResource<AzExtParentTreeItem>(
-			{ ...context, suppressCreatePick: true },
-			{
-				filter: functionFilter,
-				expectedChildContextValue: expectedContextValue,
-			},
-		);
-	}
+export async function createChildNode(context: IActionContext, expectedContextValue: string | RegExp, node?: AzExtParentTreeItem): Promise<void> {
+    if (!node) {
+        node = await ext.rgApi.pickAppResource<AzExtParentTreeItem>({ ...context, suppressCreatePick: true }, {
+            filter: functionFilter,
+            expectedChildContextValue: expectedContextValue
+        });
+    }
 
-	await node.createChild(context);
+    await node.createChild(context);
 }

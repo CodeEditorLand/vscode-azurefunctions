@@ -3,23 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as appservice from "@microsoft/vscode-azext-azureappservice";
-import type { ParsedSite } from "@microsoft/vscode-azext-azureappservice";
-import type { IActionContext } from "@microsoft/vscode-azext-utils";
-import { type SlotTreeItem, isSlotTreeItem } from "../../tree/SlotTreeItem";
-import type { RemoteFunctionTreeItem } from "../../tree/remoteProject/RemoteFunctionTreeItem";
-import { pickFunctionApp } from "../../utils/pickFunctionApp";
+import * as appservice from '@microsoft/vscode-azext-azureappservice';
+import { type ParsedSite } from '@microsoft/vscode-azext-azureappservice';
+import { type IActionContext } from '@microsoft/vscode-azext-utils';
+import { type RemoteFunctionTreeItem } from '../../tree/remoteProject/RemoteFunctionTreeItem';
+import { isSlotTreeItem, type SlotTreeItem } from '../../tree/SlotTreeItem';
+import { pickFunctionApp } from '../../utils/pickFunctionApp';
 
-export async function stopStreamingLogs(
-	context: IActionContext,
-	node?: SlotTreeItem | RemoteFunctionTreeItem,
-): Promise<void> {
-	if (!node) {
-		node = await pickFunctionApp({ ...context, suppressCreatePick: true });
-	}
+export async function stopStreamingLogs(context: IActionContext, node?: SlotTreeItem | RemoteFunctionTreeItem): Promise<void> {
+    if (!node) {
+        node = await pickFunctionApp({ ...context, suppressCreatePick: true });
+    }
 
-	const site: ParsedSite = isSlotTreeItem(node)
-		? node.site
-		: node.parent.parent.site;
-	await appservice.stopStreamingLogs(site, node.logStreamPath);
+    const site: ParsedSite = isSlotTreeItem(node) ? node.site : node.parent.parent.site;
+    await appservice.stopStreamingLogs(site, node.logStreamPath);
 }

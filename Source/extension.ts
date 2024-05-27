@@ -1,206 +1,120 @@
-import { registerAppServiceExtensionVariables } from "@microsoft/vscode-azext-azureappservice";
-import {
-	type AzureAccountTreeItemBase,
-	registerAzureUtilsExtensionVariables,
-} from "@microsoft/vscode-azext-azureutils";
-import {
-	type IActionContext,
-	type apiUtils,
-	callWithTelemetryAndErrorHandling,
-	createApiProvider,
-	createAzExtOutputChannel,
-	createExperimentationService,
-	registerErrorHandler,
-	registerEvent,
-	registerReportIssueCommand,
-	registerUIExtensionVariables,
-} from "@microsoft/vscode-azext-utils";
-import { AzExtResourceType } from "@microsoft/vscode-azureresources-api";
-import * as vscode from "vscode";
-import { FunctionAppResolver } from "./FunctionAppResolver";
-import { FunctionsLocalResourceProvider } from "./LocalResourceProvider";
-import { createFunctionFromApi } from "./commands/api/createFunctionFromApi";
-import { downloadAppSettingsFromApi } from "./commands/api/downloadAppSettingsFromApi";
-import { revealTreeItem } from "./commands/api/revealTreeItem";
-import { uploadAppSettingsFromApi } from "./commands/api/uploadAppSettingsFromApi";
-import { runPostFunctionCreateStepsFromCache } from "./commands/createFunction/FunctionCreateStepBase";
-import { registerCommands } from "./commands/registerCommands";
-import { func } from "./constants";
-import { BallerinaDebugProvider } from "./debug/BallerinaDebugProvider";
-import { FuncTaskProvider } from "./debug/FuncTaskProvider";
-import { JavaDebugProvider } from "./debug/JavaDebugProvider";
-import { NodeDebugProvider } from "./debug/NodeDebugProvider";
-import { PowerShellDebugProvider } from "./debug/PowerShellDebugProvider";
-import { PythonDebugProvider } from "./debug/PythonDebugProvider";
-import { handleUri } from "./downloadAzureProject/handleUri";
-import { ext } from "./extensionVariables";
-import { registerFuncHostTaskEvents } from "./funcCoreTools/funcHostTask";
-import { validateFuncCoreToolsIsLatest } from "./funcCoreTools/validateFuncCoreToolsIsLatest";
-import { getResourceGroupsApi } from "./getExtensionApi";
-import { CentralTemplateProvider } from "./templates/CentralTemplateProvider";
-import { registerContentProvider } from "./utils/textUtils";
-import { verifyVSCodeConfigOnActivate } from "./vsCodeConfig/verifyVSCodeConfigOnActivate";
-import type { AzureFunctionsExtensionApi } from "./vscode-azurefunctions.api";
-import { listLocalFunctions } from "./workspace/listLocalFunctions";
-import { listLocalProjects } from "./workspace/listLocalProjects";
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
-export async function activateInternal(
-	context: vscode.ExtensionContext,
-	perfStats: { loadStartTime: number; loadEndTime: number },
-	ignoreBundle?: boolean,
-): Promise<apiUtils.AzureExtensionApiProvider> {
-	ext.context = context;
-	ext.ignoreBundle = ignoreBundle;
-	ext.outputChannel = createAzExtOutputChannel("Azure Functions", ext.prefix);
-	context.subscriptions.push(ext.outputChannel);
+'use strict';
 
-	registerUIExtensionVariables(ext);
-	registerAzureUtilsExtensionVariables(ext);
-	registerAppServiceExtensionVariables(ext);
+import { registerAppServiceExtensionVariables } from '@microsoft/vscode-azext-azureappservice';
+import { registerAzureUtilsExtensionVariables, type AzureAccountTreeItemBase } from '@microsoft/vscode-azext-azureutils';
+import { callWithTelemetryAndErrorHandling, createApiProvider, createAzExtOutputChannel, createExperimentationService, registerErrorHandler, registerEvent, registerReportIssueCommand, registerUIExtensionVariables, type IActionContext, type apiUtils } from '@microsoft/vscode-azext-utils';
+import { AzExtResourceType } from '@microsoft/vscode-azureresources-api';
+import * as vscode from 'vscode';
+import { FunctionAppResolver } from './FunctionAppResolver';
+import { FunctionsLocalResourceProvider } from './LocalResourceProvider';
+import { createFunctionFromApi } from './commands/api/createFunctionFromApi';
+import { downloadAppSettingsFromApi } from './commands/api/downloadAppSettingsFromApi';
+import { revealTreeItem } from './commands/api/revealTreeItem';
+import { uploadAppSettingsFromApi } from './commands/api/uploadAppSettingsFromApi';
+import { runPostFunctionCreateStepsFromCache } from './commands/createFunction/FunctionCreateStepBase';
+import { registerCommands } from './commands/registerCommands';
+import { func } from './constants';
+import { BallerinaDebugProvider } from './debug/BallerinaDebugProvider';
+import { FuncTaskProvider } from './debug/FuncTaskProvider';
+import { JavaDebugProvider } from './debug/JavaDebugProvider';
+import { NodeDebugProvider } from './debug/NodeDebugProvider';
+import { PowerShellDebugProvider } from './debug/PowerShellDebugProvider';
+import { PythonDebugProvider } from './debug/PythonDebugProvider';
+import { handleUri } from './downloadAzureProject/handleUri';
+import { ext } from './extensionVariables';
+import { registerFuncHostTaskEvents } from './funcCoreTools/funcHostTask';
+import { validateFuncCoreToolsIsLatest } from './funcCoreTools/validateFuncCoreToolsIsLatest';
+import { getResourceGroupsApi } from './getExtensionApi';
+import { CentralTemplateProvider } from './templates/CentralTemplateProvider';
+import { registerContentProvider } from './utils/textUtils';
+import { verifyVSCodeConfigOnActivate } from './vsCodeConfig/verifyVSCodeConfigOnActivate';
+import { type AzureFunctionsExtensionApi } from './vscode-azurefunctions.api';
+import { listLocalFunctions } from './workspace/listLocalFunctions';
+import { listLocalProjects } from './workspace/listLocalProjects';
 
-	await callWithTelemetryAndErrorHandling(
-		"azureFunctions.activate",
-		async (activateContext: IActionContext) => {
-			activateContext.telemetry.properties.isActivationEvent = "true";
-			activateContext.telemetry.measurements.mainFileLoad =
-				(perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
+export async function activateInternal(context: vscode.ExtensionContext, perfStats: { loadStartTime: number; loadEndTime: number }, ignoreBundle?: boolean): Promise<apiUtils.AzureExtensionApiProvider> {
+    ext.context = context;
+    ext.ignoreBundle = ignoreBundle;
+    ext.outputChannel = createAzExtOutputChannel('Azure Functions', ext.prefix);
+    context.subscriptions.push(ext.outputChannel);
 
-			void runPostFunctionCreateStepsFromCache();
+    registerUIExtensionVariables(ext);
+    registerAzureUtilsExtensionVariables(ext);
+    registerAppServiceExtensionVariables(ext);
 
-			void validateFuncCoreToolsIsLatest();
+    await callWithTelemetryAndErrorHandling('azureFunctions.activate', async (activateContext: IActionContext) => {
+        activateContext.telemetry.properties.isActivationEvent = 'true';
+        activateContext.telemetry.measurements.mainFileLoad = (perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
 
-			const validateEventId: string =
-				"azureFunctions.validateFunctionProjects";
-			void callWithTelemetryAndErrorHandling(
-				validateEventId,
-				async (actionContext: IActionContext) => {
-					await verifyVSCodeConfigOnActivate(
-						actionContext,
-						vscode.workspace.workspaceFolders,
-					);
-				},
-			);
-			registerEvent(
-				validateEventId,
-				vscode.workspace.onDidChangeWorkspaceFolders,
-				async (
-					actionContext: IActionContext,
-					event: vscode.WorkspaceFoldersChangeEvent,
-				) => {
-					await verifyVSCodeConfigOnActivate(
-						actionContext,
-						event.added,
-					);
-				},
-			);
+        void runPostFunctionCreateStepsFromCache();
 
-			const templateProvider = new CentralTemplateProvider();
-			ext.templateProvider.registerExtensionVariable(templateProvider);
-			context.subscriptions.push(templateProvider);
+        void validateFuncCoreToolsIsLatest();
 
-			// Suppress "Report an Issue" button for all errors in favor of the command
-			registerErrorHandler(
-				(c) => (c.errorHandling.suppressReportIssue = true),
-			);
-			registerReportIssueCommand("azureFunctions.reportIssue");
+        const validateEventId: string = 'azureFunctions.validateFunctionProjects';
+        void callWithTelemetryAndErrorHandling(validateEventId, async (actionContext: IActionContext) => {
+            await verifyVSCodeConfigOnActivate(actionContext, vscode.workspace.workspaceFolders);
+        });
+        registerEvent(validateEventId, vscode.workspace.onDidChangeWorkspaceFolders, async (actionContext: IActionContext, event: vscode.WorkspaceFoldersChangeEvent) => {
+            await verifyVSCodeConfigOnActivate(actionContext, event.added);
+        });
 
-			registerCommands();
+        const templateProvider = new CentralTemplateProvider();
+        ext.templateProvider.registerExtensionVariable(templateProvider);
+        context.subscriptions.push(templateProvider);
 
-			registerFuncHostTaskEvents();
+        // Suppress "Report an Issue" button for all errors in favor of the command
+        registerErrorHandler(c => c.errorHandling.suppressReportIssue = true);
+        registerReportIssueCommand('azureFunctions.reportIssue');
 
-			const nodeDebugProvider: NodeDebugProvider =
-				new NodeDebugProvider();
-			const pythonDebugProvider: PythonDebugProvider =
-				new PythonDebugProvider();
-			const javaDebugProvider: JavaDebugProvider =
-				new JavaDebugProvider();
-			const ballerinaDebugProvider: BallerinaDebugProvider =
-				new BallerinaDebugProvider();
-			const powershellDebugProvider: PowerShellDebugProvider =
-				new PowerShellDebugProvider();
+        registerCommands();
 
-			// These don't actually overwrite "node", "python", etc. - they just add to it
-			context.subscriptions.push(
-				vscode.debug.registerDebugConfigurationProvider(
-					"node",
-					nodeDebugProvider,
-				),
-			);
-			context.subscriptions.push(
-				vscode.debug.registerDebugConfigurationProvider(
-					"python",
-					pythonDebugProvider,
-				),
-			);
-			context.subscriptions.push(
-				vscode.debug.registerDebugConfigurationProvider(
-					"java",
-					javaDebugProvider,
-				),
-			);
-			context.subscriptions.push(
-				vscode.debug.registerDebugConfigurationProvider(
-					"ballerina",
-					ballerinaDebugProvider,
-				),
-			);
-			context.subscriptions.push(
-				vscode.debug.registerDebugConfigurationProvider(
-					"PowerShell",
-					powershellDebugProvider,
-				),
-			);
-			context.subscriptions.push(
-				vscode.workspace.registerTaskProvider(
-					func,
-					new FuncTaskProvider(
-						nodeDebugProvider,
-						pythonDebugProvider,
-						javaDebugProvider,
-						ballerinaDebugProvider,
-						powershellDebugProvider,
-					),
-				),
-			);
+        registerFuncHostTaskEvents();
 
-			context.subscriptions.push(
-				vscode.window.registerUriHandler({
-					handleUri,
-				}),
-			);
+        const nodeDebugProvider: NodeDebugProvider = new NodeDebugProvider();
+        const pythonDebugProvider: PythonDebugProvider = new PythonDebugProvider();
+        const javaDebugProvider: JavaDebugProvider = new JavaDebugProvider();
+        const ballerinaDebugProvider: BallerinaDebugProvider = new BallerinaDebugProvider();
+        const powershellDebugProvider: PowerShellDebugProvider = new PowerShellDebugProvider();
 
-			registerContentProvider();
+        // These don't actually overwrite "node", "python", etc. - they just add to it
+        context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('node', nodeDebugProvider));
+        context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('python', pythonDebugProvider));
+        context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('java', javaDebugProvider));
+        context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('ballerina', ballerinaDebugProvider));
+        context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('PowerShell', powershellDebugProvider));
+        context.subscriptions.push(vscode.workspace.registerTaskProvider(func, new FuncTaskProvider(nodeDebugProvider, pythonDebugProvider, javaDebugProvider, ballerinaDebugProvider, powershellDebugProvider)));
 
-			ext.experimentationService =
-				await createExperimentationService(context);
-			ext.rgApi = await getResourceGroupsApi();
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			ext.azureAccountTreeItem = ext.rgApi.appResourceTree
-				._rootTreeItem as AzureAccountTreeItemBase;
-			ext.rgApi.registerApplicationResourceResolver(
-				AzExtResourceType.FunctionApp,
-				new FunctionAppResolver(),
-			);
-			ext.rgApi.registerWorkspaceResourceProvider(
-				"func",
-				new FunctionsLocalResourceProvider(),
-			);
-		},
-	);
+        context.subscriptions.push(vscode.window.registerUriHandler({
+            handleUri
+        }));
 
-	return createApiProvider([
-		<AzureFunctionsExtensionApi>{
-			revealTreeItem,
-			createFunction: createFunctionFromApi,
-			downloadAppSettings: downloadAppSettingsFromApi,
-			uploadAppSettings: uploadAppSettingsFromApi,
-			listLocalProjects: listLocalProjects,
-			listLocalFunctions: listLocalFunctions,
-			apiVersion: "1.9.0",
-		},
-	]);
+        registerContentProvider();
+
+        ext.experimentationService = await createExperimentationService(context);
+        ext.rgApi = await getResourceGroupsApi();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        ext.azureAccountTreeItem = ext.rgApi.appResourceTree._rootTreeItem as AzureAccountTreeItemBase;
+        ext.rgApi.registerApplicationResourceResolver(AzExtResourceType.FunctionApp, new FunctionAppResolver());
+        ext.rgApi.registerWorkspaceResourceProvider('func', new FunctionsLocalResourceProvider());
+    });
+
+    return createApiProvider([<AzureFunctionsExtensionApi>{
+        revealTreeItem,
+        createFunction: createFunctionFromApi,
+        downloadAppSettings: downloadAppSettingsFromApi,
+        uploadAppSettings: uploadAppSettingsFromApi,
+        listLocalProjects: listLocalProjects,
+        listLocalFunctions: listLocalFunctions,
+        apiVersion: '1.9.0'
+    }]);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function deactivateInternal(): void {}
+export function deactivateInternal(): void {
+}

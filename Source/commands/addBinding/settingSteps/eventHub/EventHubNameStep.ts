@@ -3,16 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type { IBindingWizardContext } from "../../IBindingWizardContext";
-import { StringPromptStep } from "../StringPromptStep";
-import type { IEventHubWizardContext } from "./IEventHubWizardContext";
+import { type IBindingWizardContext } from '../../IBindingWizardContext';
+import { StringPromptStep } from '../StringPromptStep';
+import { type IEventHubWizardContext } from './IEventHubWizardContext';
 
 export class EventHubNameStep extends StringPromptStep {
-	public shouldPrompt(
-		context: IEventHubWizardContext & IBindingWizardContext,
-	): boolean {
-		// If the user decides to create a new app setting, `EventHubListStep` will take care of prompting
-		// Otherwise, prompt to manually enter the name of the event hub using this step
-		return !context.eventHubsNamespace && !context.eventhubname;
-	}
+    public shouldPrompt(context: IEventHubWizardContext & IBindingWizardContext): boolean {
+        // If the user decides to create a new app setting, `EventHubListStep` will take care of prompting
+        // Otherwise, prompt to manually enter the name of the event hub using this step
+        return !context.eventHubsNamespace && !context.eventhubname;
+    }
 }

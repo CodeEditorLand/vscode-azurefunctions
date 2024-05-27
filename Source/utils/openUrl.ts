@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.md in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as open from "open";
+import * as open from 'open';
 
 export async function openUrl(url: string): Promise<void> {
-	// Using this functionality is blocked by https://github.com/Microsoft/vscode/issues/85930
-	// Specifically, opening the Live Metrics Stream for Linux Function Apps doesn't work in this extension.
-	// await vscode.env.openExternal(vscode.Uri.parse(url));
+    // Using this functionality is blocked by https://github.com/Microsoft/vscode/issues/85930
+    // Specifically, opening the Live Metrics Stream for Linux Function Apps doesn't work in this extension.
+    // await vscode.env.openExternal(vscode.Uri.parse(url));
 
-	await open(url);
+    await open(url);
 }
