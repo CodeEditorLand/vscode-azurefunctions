@@ -21,16 +21,10 @@ export const azureFunctionsDependencyVersion: string = '^4.0.0';
 
 export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
     protected gitignore: string = nodeGitignore;
-    protected functionSubpath: string;
-    protected shouldAddIndexFile: boolean;
 
     constructor() {
         super();
         this.funcignore.push('*.js.map', '*.ts', 'tsconfig.json');
-        // default functionSubpath value is a string
-        this.functionSubpath = getWorkspaceSetting(functionSubpathSetting) as string;
-        // index file only supported when using default folder structure
-        this.shouldAddIndexFile = this.functionSubpath === 'src/functions';
     }
 
     public async executeCore(context: IProjectWizardContext, progress: Progress<{ message?: string | undefined; increment?: number | undefined }>): Promise<void> {
@@ -41,10 +35,6 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
             await AzExtFsExtra.writeJSON(packagePath, this.getPackageJson(context));
         }
         await this._installDependencies(context.projectPath);
-
-        if (isNodeV4Plus(context) && this.shouldAddIndexFile) {
-            await this.addIndexFile(context);
-        }
     }
 
     private async _installDependencies(projectPath: string): Promise<void> {
@@ -66,11 +56,9 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
         };
 
         if (isNodeV4Plus(context)) {
-            if (this.shouldAddIndexFile) {
-                packageJson.main = 'src/{index.js,functions/*.js}';
-            } else {
-                packageJson.main = path.posix.join(this.functionSubpath, '*.js');
-            }
+            // default functionSubpath value is a string
+            const functionSubpath: string = getWorkspaceSetting(functionSubpathSetting) as string;
+            packageJson.main = path.posix.join(functionSubpath, '*.js');
         }
 
         return packageJson;
@@ -94,18 +82,6 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 
     protected getPackageJsonDevDeps(_context: IProjectWizardContext): { [key: string]: string } {
         return {};
-    }
-
-    protected async addIndexFile(context: IProjectWizardContext): Promise<void> {
-        const indexPath: string = path.join(context.projectPath, 'src', 'index.js');
-        if (await confirmOverwriteFile(context, indexPath)) {
-            await AzExtFsExtra.writeFile(indexPath, `const { app } = require('@azure/functions');
-
-app.setup({
-    enableHttpStream: true,
-});
-`);
-        }
     }
 }
 

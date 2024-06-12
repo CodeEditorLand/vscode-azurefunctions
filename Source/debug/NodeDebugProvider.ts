@@ -14,7 +14,6 @@ export const nodeDebugConfig: DebugConfiguration = {
     name: localize('attachNode', 'Attach to Node Functions'),
     type: 'node',
     request: 'attach',
-    restart: true,
     port: defaultNodeDebugPort,
     preLaunchTask: hostStartTaskName
 };
