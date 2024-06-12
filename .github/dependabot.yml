@@ -18,3 +18,9 @@ updates:
       schedule:
           interval: "daily"
       versioning-strategy: increase
+
+    - package-ecosystem: "nuget"
+      directory: "/tools/JsonCli/src"
+      schedule:
+          interval: "daily"
+      versioning-strategy: increase
