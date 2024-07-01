@@ -1137,7 +1137,7 @@
 		"escape-string-regexp": "5.0.0",
 		"extract-zip": "2.0.1",
 		"fs-extra": "11.2.0",
-		"globby": "14.0.1",
+		"globby": "14.0.2",
 		"jsonc-parser": "3.3.1",
 		"open": "10.1.0",
 		"p-retry": "6.2.0",
