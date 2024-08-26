@@ -1154,7 +1154,7 @@
 		"@types/node": "22.5.0",
 		"@types/ps-tree": "1.1.6",
 		"@types/semver": "7.5.8",
-		"@types/websocket": "16.0.26-alpha",
+		"@types/websocket": "1.0.10",
 		"@types/xml2js": "0.4.14",
 		"@types/xregexp": "4.4.0",
 		"request": "2.88.2",
