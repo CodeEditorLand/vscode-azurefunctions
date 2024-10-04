@@ -3,16 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { nonNullValueAndProp, type IActionContext } from '@microsoft/vscode-azext-utils';
-import { type SlotTreeItem } from '../tree/SlotTreeItem';
-import { type ContainerTreeItem } from '../tree/containerizedFunctionApp/ContainerTreeItem';
-import { openUrl } from '../utils/openUrl';
-import { pickAppResource } from '../utils/pickAppResource';
+import {
+	nonNullValueAndProp,
+	type IActionContext,
+} from "@microsoft/vscode-azext-utils";
 
-export async function browseWebsite(context: IActionContext, node?: SlotTreeItem | ContainerTreeItem): Promise<void> {
-    if (!node) {
-        node = await pickAppResource(context);
-    }
+import { type ContainerTreeItem } from "../tree/containerizedFunctionApp/ContainerTreeItem";
+import { type SlotTreeItem } from "../tree/SlotTreeItem";
+import { openUrl } from "../utils/openUrl";
+import { pickAppResource } from "../utils/pickAppResource";
 
-    await openUrl(nonNullValueAndProp(node.site, 'defaultHostUrl'));
+export async function browseWebsite(
+	context: IActionContext,
+	node?: SlotTreeItem | ContainerTreeItem,
+): Promise<void> {
+	if (!node) {
+		node = await pickAppResource(context);
+	}
+
+	await openUrl(nonNullValueAndProp(node.site, "defaultHostUrl"));
 }

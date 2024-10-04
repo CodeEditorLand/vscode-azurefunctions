@@ -3,15 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IScriptFunctionWizardContext } from './IScriptFunctionWizardContext';
+import { type IScriptFunctionWizardContext } from "./IScriptFunctionWizardContext";
 
 export enum FunctionLocation {
-    MainScript,
-    SelectedScript,
-    Document
+	MainScript,
+	SelectedScript,
+	Document,
 }
 
-export interface IPythonFunctionWizardContext extends IScriptFunctionWizardContext {
-    functionLocation?: FunctionLocation;
-    functionScript?: string;
+export interface IPythonFunctionWizardContext
+	extends IScriptFunctionWizardContext {
+	functionLocation?: FunctionLocation;
+	functionScript?: string;
 }

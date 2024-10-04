@@ -3,29 +3,52 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IActionContext } from '@microsoft/vscode-azext-utils';
-import * as semver from 'semver';
-import { getMajorVersion, type FuncVersion } from '../FuncVersion';
-import { localize } from '../localize';
-import { requestUtils } from '../utils/requestUtils';
+import { type IActionContext } from "@microsoft/vscode-azext-utils";
+import * as semver from "semver";
 
-const npmRegistryUri: string = 'https://aka.ms/AA2qmnu';
+import { getMajorVersion, type FuncVersion } from "../FuncVersion";
+import { localize } from "../localize";
+import { requestUtils } from "../utils/requestUtils";
 
-export interface INpmDistTag { tag: string; value: string; }
+const npmRegistryUri: string = "https://aka.ms/AA2qmnu";
 
-interface IPackageMetadata {
-    versions: { [version: string]: {} };
+export interface INpmDistTag {
+	tag: string;
+	value: string;
 }
 
-export async function getNpmDistTag(context: IActionContext, version: FuncVersion): Promise<INpmDistTag> {
-    const response = await requestUtils.sendRequestWithExtTimeout(context, { method: 'GET', url: npmRegistryUri });
-    const packageMetadata: IPackageMetadata = <IPackageMetadata>response.parsedBody;
-    const majorVersion: string = getMajorVersion(version);
+interface IPackageMetadata {
+	versions: { [version: string]: {} };
+}
 
-    const validVersions: string[] = Object.keys(packageMetadata.versions).filter((v: string) => !!semver.valid(v));
-    const maxVersion: string | null = semver.maxSatisfying(validVersions, majorVersion);
-    if (!maxVersion) {
-        throw new Error(localize('noDistTag', 'Failed to retrieve NPM tag for version "{0}".', version));
-    }
-    return { tag: majorVersion, value: maxVersion };
+export async function getNpmDistTag(
+	context: IActionContext,
+	version: FuncVersion,
+): Promise<INpmDistTag> {
+	const response = await requestUtils.sendRequestWithExtTimeout(context, {
+		method: "GET",
+		url: npmRegistryUri,
+	});
+	const packageMetadata: IPackageMetadata = <IPackageMetadata>(
+		response.parsedBody
+	);
+	const majorVersion: string = getMajorVersion(version);
+
+	const validVersions: string[] = Object.keys(
+		packageMetadata.versions,
+	).filter((v: string) => !!semver.valid(v));
+	const maxVersion: string | null = semver.maxSatisfying(
+		validVersions,
+		majorVersion,
+	);
+	if (!maxVersion) {
+		throw new Error(
+			localize(
+				"noDistTag",
+				'Failed to retrieve NPM tag for version "{0}".',
+				version,
+			),
+		);
+	}
+	return { tag: majorVersion, value: maxVersion };
 }

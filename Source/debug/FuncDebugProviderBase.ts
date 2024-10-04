@@ -3,70 +3,111 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { callWithTelemetryAndErrorHandling, type IActionContext } from '@microsoft/vscode-azext-utils';
-import { type CancellationToken, type DebugConfiguration, type DebugConfigurationProvider, type WorkspaceFolder } from 'vscode';
-import { isFunctionProject } from '../commands/createNewProject/verifyIsProject';
-import { hostStartTaskNameRegExp } from '../constants';
-import { preDebugValidate, type IPreDebugValidateResult } from './validatePreDebug';
+import {
+	callWithTelemetryAndErrorHandling,
+	type IActionContext,
+} from "@microsoft/vscode-azext-utils";
+import {
+	type CancellationToken,
+	type DebugConfiguration,
+	type DebugConfigurationProvider,
+	type WorkspaceFolder,
+} from "vscode";
 
-export abstract class FuncDebugProviderBase implements DebugConfigurationProvider {
-    public abstract workerArgKey: string;
-    protected abstract defaultPortOrPipeName: number | string;
-    protected abstract debugConfig: DebugConfiguration;
+import { isFunctionProject } from "../commands/createNewProject/verifyIsProject";
+import { hostStartTaskNameRegExp } from "../constants";
+import {
+	preDebugValidate,
+	type IPreDebugValidateResult,
+} from "./validatePreDebug";
 
-    private readonly _debugPorts = new Map<WorkspaceFolder | undefined, number | undefined>();
+export abstract class FuncDebugProviderBase
+	implements DebugConfigurationProvider
+{
+	public abstract workerArgKey: string;
+	protected abstract defaultPortOrPipeName: number | string;
+	protected abstract debugConfig: DebugConfiguration;
 
-    public abstract getWorkerArgValue(folder: WorkspaceFolder): Promise<string>;
+	private readonly _debugPorts = new Map<
+		WorkspaceFolder | undefined,
+		number | undefined
+	>();
 
-    public async provideDebugConfigurations(folder: WorkspaceFolder | undefined, _token?: CancellationToken): Promise<DebugConfiguration[]> {
-        const configs: DebugConfiguration[] | undefined = await callWithTelemetryAndErrorHandling('provideDebugConfigurations', async (context: IActionContext) => {
-            context.telemetry.properties.isActivationEvent = 'true';
-            context.errorHandling.suppressDisplay = true;
-            context.telemetry.suppressIfSuccessful = true;
+	public abstract getWorkerArgValue(folder: WorkspaceFolder): Promise<string>;
 
-            const result: DebugConfiguration[] = [];
-            if (folder) {
-                if (await isFunctionProject(folder.uri.fsPath)) {
-                    result.push(this.debugConfig);
-                }
-            }
+	public async provideDebugConfigurations(
+		folder: WorkspaceFolder | undefined,
+		_token?: CancellationToken,
+	): Promise<DebugConfiguration[]> {
+		const configs: DebugConfiguration[] | undefined =
+			await callWithTelemetryAndErrorHandling(
+				"provideDebugConfigurations",
+				async (context: IActionContext) => {
+					context.telemetry.properties.isActivationEvent = "true";
+					context.errorHandling.suppressDisplay = true;
+					context.telemetry.suppressIfSuccessful = true;
 
-            return result;
-        });
+					const result: DebugConfiguration[] = [];
+					if (folder) {
+						if (await isFunctionProject(folder.uri.fsPath)) {
+							result.push(this.debugConfig);
+						}
+					}
 
-        return configs || [];
-    }
+					return result;
+				},
+			);
 
-    public async resolveDebugConfiguration(folder: WorkspaceFolder | undefined, debugConfiguration: DebugConfiguration, _token?: CancellationToken): Promise<DebugConfiguration | undefined> {
-        let result: DebugConfiguration | undefined = debugConfiguration;
+		return configs || [];
+	}
 
-        await callWithTelemetryAndErrorHandling('resolveDebugConfiguration', async (context: IActionContext) => {
-            context.telemetry.properties.isActivationEvent = 'true';
-            context.errorHandling.suppressDisplay = true;
-            context.telemetry.suppressIfSuccessful = true;
+	public async resolveDebugConfiguration(
+		folder: WorkspaceFolder | undefined,
+		debugConfiguration: DebugConfiguration,
+		_token?: CancellationToken,
+	): Promise<DebugConfiguration | undefined> {
+		let result: DebugConfiguration | undefined = debugConfiguration;
 
-            this._debugPorts.set(folder, this.getDebugConfigPort(debugConfiguration));
-            if (hostStartTaskNameRegExp.test(debugConfiguration.preLaunchTask as string)) {
-                context.telemetry.properties.isActivationEvent = 'false';
-                context.telemetry.suppressIfSuccessful = false;
+		await callWithTelemetryAndErrorHandling(
+			"resolveDebugConfiguration",
+			async (context: IActionContext) => {
+				context.telemetry.properties.isActivationEvent = "true";
+				context.errorHandling.suppressDisplay = true;
+				context.telemetry.suppressIfSuccessful = true;
 
-                const preDebugResult: IPreDebugValidateResult = await preDebugValidate(context, debugConfiguration);
-                if (!preDebugResult.shouldContinue) {
-                    // Stop debugging only in this case
-                    result = undefined;
-                }
-            }
-        });
+				this._debugPorts.set(
+					folder,
+					this.getDebugConfigPort(debugConfiguration),
+				);
+				if (
+					hostStartTaskNameRegExp.test(
+						debugConfiguration.preLaunchTask as string,
+					)
+				) {
+					context.telemetry.properties.isActivationEvent = "false";
+					context.telemetry.suppressIfSuccessful = false;
 
-        // Always return the debugConfiguration passed in. If we return undefined we would block debugging and we don't want that.
-        return result;
-    }
+					const preDebugResult: IPreDebugValidateResult =
+						await preDebugValidate(context, debugConfiguration);
+					if (!preDebugResult.shouldContinue) {
+						// Stop debugging only in this case
+						result = undefined;
+					}
+				}
+			},
+		);
 
-    protected getDebugConfigPort(debugConfiguration: DebugConfiguration): number | undefined {
-        return <number | undefined>debugConfiguration.port;
-    }
+		// Always return the debugConfiguration passed in. If we return undefined we would block debugging and we don't want that.
+		return result;
+	}
 
-    protected getDebugPortOrPipeName(folder: WorkspaceFolder): number | string {
-        return this._debugPorts.get(folder) || this.defaultPortOrPipeName;
-    }
+	protected getDebugConfigPort(
+		debugConfiguration: DebugConfiguration,
+	): number | undefined {
+		return <number | undefined>debugConfiguration.port;
+	}
+
+	protected getDebugPortOrPipeName(folder: WorkspaceFolder): number | string {
+		return this._debugPorts.get(folder) || this.defaultPortOrPipeName;
+	}
 }

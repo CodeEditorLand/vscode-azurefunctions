@@ -4,18 +4,33 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { AzureWizardExecuteStep } from "@microsoft/vscode-azext-utils";
+
 import { CodeAction, type ConnectionKeyValues } from "../../../constants";
-import { MismatchBehavior, setLocalAppSetting } from "../../../funcConfig/local.settings";
+import {
+	MismatchBehavior,
+	setLocalAppSetting,
+} from "../../../funcConfig/local.settings";
 import { type ISetConnectionSettingContext } from "./ISetConnectionSettingContext";
 
-export abstract class SetConnectionSettingStepBase<T extends ISetConnectionSettingContext> extends AzureWizardExecuteStep<T> {
-    public abstract readonly debugDeploySetting: ConnectionKeyValues;
+export abstract class SetConnectionSettingStepBase<
+	T extends ISetConnectionSettingContext,
+> extends AzureWizardExecuteStep<T> {
+	public abstract readonly debugDeploySetting: ConnectionKeyValues;
 
-    protected async setConnectionSetting(context: T, value: string): Promise<void> {
-        if (context.action === CodeAction.Deploy) {
-            context[this.debugDeploySetting] = value;
-        } else {
-            await setLocalAppSetting(context, context.projectPath, this.debugDeploySetting, value, MismatchBehavior.Overwrite);
-        }
-    }
+	protected async setConnectionSetting(
+		context: T,
+		value: string,
+	): Promise<void> {
+		if (context.action === CodeAction.Deploy) {
+			context[this.debugDeploySetting] = value;
+		} else {
+			await setLocalAppSetting(
+				context,
+				context.projectPath,
+				this.debugDeploySetting,
+				value,
+				MismatchBehavior.Overwrite,
+			);
+		}
+	}
 }

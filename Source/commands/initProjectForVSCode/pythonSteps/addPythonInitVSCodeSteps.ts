@@ -3,8 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtFsExtra, type AzureWizardExecuteStep, type AzureWizardPromptStep } from "@microsoft/vscode-azext-utils";
-import { venvUtils } from '../../../utils/venvUtils';
+import {
+	AzExtFsExtra,
+	type AzureWizardExecuteStep,
+	type AzureWizardPromptStep,
+} from "@microsoft/vscode-azext-utils";
+
+import { venvUtils } from "../../../utils/venvUtils";
 import { getWorkspaceSetting } from "../../../vsCodeConfig/settings";
 import { type IProjectWizardContext } from "../../createNewProject/IProjectWizardContext";
 import { type IPythonVenvWizardContext } from "../../createNewProject/pythonSteps/IPythonVenvWizardContext";
@@ -14,35 +19,45 @@ import { PythonInitVSCodeStep } from "../InitVSCodeStep/PythonInitVSCodeStep";
 import { PythonVenvListStep } from "./PythonVenvListStep";
 
 export async function addPythonInitVSCodeSteps(
-    context: IProjectWizardContext & IPythonVenvWizardContext,
-    promptSteps: AzureWizardPromptStep<IProjectWizardContext>[],
-    executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[]): Promise<void> {
+	context: IProjectWizardContext & IPythonVenvWizardContext,
+	promptSteps: AzureWizardPromptStep<IProjectWizardContext>[],
+	executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[],
+): Promise<void> {
+	const createPythonVenv: boolean = !!getWorkspaceSetting<boolean>(
+		"createPythonVenv",
+		context.workspacePath,
+	);
+	const venvs: string[] = [];
 
-    const createPythonVenv: boolean = !!getWorkspaceSetting<boolean>('createPythonVenv', context.workspacePath);
-    const venvs: string[] = [];
+	context.telemetry.properties.createPythonVenv = String(createPythonVenv);
 
-    context.telemetry.properties.createPythonVenv = String(createPythonVenv);
+	if (await AzExtFsExtra.pathExists(context.projectPath)) {
+		const fsPaths = await AzExtFsExtra.readDirectory(context.projectPath);
+		await Promise.all(
+			fsPaths.map(async (venvFile) => {
+				if (
+					await venvUtils.venvExists(
+						venvFile.name,
+						context.projectPath,
+					)
+				) {
+					venvs.push(venvFile.name);
+				}
+			}),
+		);
+	}
 
-    if (await AzExtFsExtra.pathExists(context.projectPath)) {
-        const fsPaths = await AzExtFsExtra.readDirectory(context.projectPath);
-        await Promise.all(fsPaths.map(async venvFile => {
-            if (await venvUtils.venvExists(venvFile.name, context.projectPath)) {
-                venvs.push(venvFile.name);
-            }
-        }));
-    }
+	if (venvs.length > 0) {
+		context.useExistingVenv = true;
+		if (venvs.length === 1) {
+			context.venvName = venvs[0];
+		} else {
+			promptSteps.push(new PythonVenvListStep(venvs));
+		}
+	} else if (createPythonVenv) {
+		promptSteps.push(new PythonAliasListStep());
+		executeSteps.push(new PythonVenvCreateStep());
+	}
 
-    if (venvs.length > 0) {
-        context.useExistingVenv = true;
-        if (venvs.length === 1) {
-            context.venvName = venvs[0];
-        } else {
-            promptSteps.push(new PythonVenvListStep(venvs));
-        }
-    } else if (createPythonVenv) {
-        promptSteps.push(new PythonAliasListStep());
-        executeSteps.push(new PythonVenvCreateStep());
-    }
-
-    executeSteps.push(new PythonInitVSCodeStep());
+	executeSteps.push(new PythonInitVSCodeStep());
 }

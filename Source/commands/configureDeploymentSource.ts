@@ -3,18 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { editScmType } from '@microsoft/vscode-azext-azureappservice';
-import { type IActionContext } from '@microsoft/vscode-azext-utils';
-import { type SlotTreeItem } from '../tree/SlotTreeItem';
-import { pickFunctionApp } from '../utils/pickFunctionApp';
+import { editScmType } from "@microsoft/vscode-azext-azureappservice";
+import { type IActionContext } from "@microsoft/vscode-azext-utils";
 
-export async function configureDeploymentSource(context: IActionContext, node?: SlotTreeItem): Promise<void> {
-    if (!node) {
-        node = await pickFunctionApp(context);
-    }
+import { type SlotTreeItem } from "../tree/SlotTreeItem";
+import { pickFunctionApp } from "../utils/pickFunctionApp";
 
-    const updatedScmType: string | undefined = await editScmType(context, node.site, node.subscription);
-    if (updatedScmType !== undefined) {
-        context.telemetry.properties.updatedScmType = updatedScmType;
-    }
+export async function configureDeploymentSource(
+	context: IActionContext,
+	node?: SlotTreeItem,
+): Promise<void> {
+	if (!node) {
+		node = await pickFunctionApp(context);
+	}
+
+	const updatedScmType: string | undefined = await editScmType(
+		context,
+		node.site,
+		node.subscription,
+	);
+	if (updatedScmType !== undefined) {
+		context.telemetry.properties.updatedScmType = updatedScmType;
+	}
 }

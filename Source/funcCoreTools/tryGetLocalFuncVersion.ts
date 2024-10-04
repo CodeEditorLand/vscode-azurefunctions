@@ -3,19 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IActionContext } from '@microsoft/vscode-azext-utils';
-import { tryParseFuncVersion, type FuncVersion } from '../FuncVersion';
-import { getLocalFuncCoreToolsVersion } from './getLocalFuncCoreToolsVersion';
+import { type IActionContext } from "@microsoft/vscode-azext-utils";
 
-export async function tryGetLocalFuncVersion(context: IActionContext, workspacePath: string | undefined): Promise<FuncVersion | undefined> {
-    try {
-        const version: string | null = await getLocalFuncCoreToolsVersion(context, workspacePath);
-        if (version) {
-            return tryParseFuncVersion(version);
-        }
-    } catch (err) {
-        // swallow errors and return undefined
-    }
+import { tryParseFuncVersion, type FuncVersion } from "../FuncVersion";
+import { getLocalFuncCoreToolsVersion } from "./getLocalFuncCoreToolsVersion";
 
-    return undefined;
+export async function tryGetLocalFuncVersion(
+	context: IActionContext,
+	workspacePath: string | undefined,
+): Promise<FuncVersion | undefined> {
+	try {
+		const version: string | null = await getLocalFuncCoreToolsVersion(
+			context,
+			workspacePath,
+		);
+		if (version) {
+			return tryParseFuncVersion(version);
+		}
+	} catch (err) {
+		// swallow errors and return undefined
+	}
+
+	return undefined;
 }

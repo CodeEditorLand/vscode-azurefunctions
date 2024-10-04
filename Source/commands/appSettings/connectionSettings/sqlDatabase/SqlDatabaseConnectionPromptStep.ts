@@ -3,70 +3,112 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizardPromptStep, type ISubscriptionActionContext, type IWizardOptions } from '@microsoft/vscode-azext-utils';
-import { type MessageItem } from 'vscode';
-import { ConnectionType } from '../../../../constants';
-import { ext } from '../../../../extensionVariables';
-import { localize } from '../../../../localize';
-import { SqlServerListStep } from '../../../createFunction/durableSteps/sql/SqlServerListStep';
-import { type IConnectionPromptOptions } from '../IConnectionPromptOptions';
-import { type ISqlDatabaseConnectionWizardContext } from './ISqlDatabaseConnectionWizardContext';
-import { SqlDatabaseConnectionCustomPromptStep } from './SqlDatabaseConnectionCustomPromptStep';
+import {
+	AzureWizardPromptStep,
+	type ISubscriptionActionContext,
+	type IWizardOptions,
+} from "@microsoft/vscode-azext-utils";
+import { type MessageItem } from "vscode";
 
-export class SqlDatabaseConnectionPromptStep<T extends ISqlDatabaseConnectionWizardContext> extends AzureWizardPromptStep<T> {
-    public constructor(private readonly options?: IConnectionPromptOptions) {
-        super();
-    }
+import { ConnectionType } from "../../../../constants";
+import { ext } from "../../../../extensionVariables";
+import { localize } from "../../../../localize";
+import { SqlServerListStep } from "../../../createFunction/durableSteps/sql/SqlServerListStep";
+import { type IConnectionPromptOptions } from "../IConnectionPromptOptions";
+import { type ISqlDatabaseConnectionWizardContext } from "./ISqlDatabaseConnectionWizardContext";
+import { SqlDatabaseConnectionCustomPromptStep } from "./SqlDatabaseConnectionCustomPromptStep";
 
-    public async prompt(context: T): Promise<void> {
-        const connectAzureDatabase: MessageItem = { title: localize('connectAzureSqlDatabase', 'Connect Azure SQL Database') };
-        const connectCustomDatabase: MessageItem = { title: localize('connectCustomSqlDatabase', 'Connect Custom SQL Database') };
+export class SqlDatabaseConnectionPromptStep<
+	T extends ISqlDatabaseConnectionWizardContext,
+> extends AzureWizardPromptStep<T> {
+	public constructor(private readonly options?: IConnectionPromptOptions) {
+		super();
+	}
 
-        const message: string = localize('selectSqlDatabaseConnection', 'In order to proceed, you must connect a SQL database for internal use by the Azure Functions runtime.');
+	public async prompt(context: T): Promise<void> {
+		const connectAzureDatabase: MessageItem = {
+			title: localize(
+				"connectAzureSqlDatabase",
+				"Connect Azure SQL Database",
+			),
+		};
+		const connectCustomDatabase: MessageItem = {
+			title: localize(
+				"connectCustomSqlDatabase",
+				"Connect Custom SQL Database",
+			),
+		};
 
-        const buttons: MessageItem[] = [connectAzureDatabase, connectCustomDatabase];
+		const message: string = localize(
+			"selectSqlDatabaseConnection",
+			"In order to proceed, you must connect a SQL database for internal use by the Azure Functions runtime.",
+		);
 
-        const result: MessageItem = await context.ui.showWarningMessage(message, { modal: true }, ...buttons);
-        if (result === connectAzureDatabase) {
-            context.sqlDbConnectionType = ConnectionType.Azure;
-        } else {
-            context.sqlDbConnectionType = ConnectionType.Custom;
-        }
+		const buttons: MessageItem[] = [
+			connectAzureDatabase,
+			connectCustomDatabase,
+		];
 
-        context.telemetry.properties.sqlDbConnectionType = context.sqlDbConnectionType;
-    }
+		const result: MessageItem = await context.ui.showWarningMessage(
+			message,
+			{ modal: true },
+			...buttons,
+		);
+		if (result === connectAzureDatabase) {
+			context.sqlDbConnectionType = ConnectionType.Azure;
+		} else {
+			context.sqlDbConnectionType = ConnectionType.Custom;
+		}
 
-    public async configureBeforePrompt(context: T): Promise<void> {
-        if (this.options?.preselectedConnectionType === ConnectionType.Azure || this.options?.preselectedConnectionType === ConnectionType.Custom) {
-            context.sqlDbConnectionType = this.options.preselectedConnectionType;
-        } else if (context.azureWebJobsStorageType === ConnectionType.Azure) {
-            context.sqlDbConnectionType = context.azureWebJobsStorageType;
-        }
+		context.telemetry.properties.sqlDbConnectionType =
+			context.sqlDbConnectionType;
+	}
 
-        // Even if we skip the prompting, we should still record the flow in telemetry
-        if (context.sqlDbConnectionType) {
-            context.telemetry.properties.sqlDbConnectionType = context.sqlDbConnectionType;
-        }
-    }
+	public async configureBeforePrompt(context: T): Promise<void> {
+		if (
+			this.options?.preselectedConnectionType === ConnectionType.Azure ||
+			this.options?.preselectedConnectionType === ConnectionType.Custom
+		) {
+			context.sqlDbConnectionType =
+				this.options.preselectedConnectionType;
+		} else if (context.azureWebJobsStorageType === ConnectionType.Azure) {
+			context.sqlDbConnectionType = context.azureWebJobsStorageType;
+		}
 
-    public shouldPrompt(context: T): boolean {
-        return !context.sqlDbConnectionType;
-    }
+		// Even if we skip the prompting, we should still record the flow in telemetry
+		if (context.sqlDbConnectionType) {
+			context.telemetry.properties.sqlDbConnectionType =
+				context.sqlDbConnectionType;
+		}
+	}
 
-    public async getSubWizard(context: T): Promise<IWizardOptions<T & ISubscriptionActionContext> | undefined> {
-        const promptSteps: AzureWizardPromptStep<T & ISubscriptionActionContext>[] = [];
+	public shouldPrompt(context: T): boolean {
+		return !context.sqlDbConnectionType;
+	}
 
-        if (context.sqlDbConnectionType === ConnectionType.Custom) {
-            promptSteps.push(new SqlDatabaseConnectionCustomPromptStep());
-        } else {
-            const subscriptionPromptStep: AzureWizardPromptStep<ISubscriptionActionContext> | undefined = await ext.azureAccountTreeItem.getSubscriptionPromptStep(context);
-            if (subscriptionPromptStep) {
-                promptSteps.push(subscriptionPromptStep);
-            }
+	public async getSubWizard(
+		context: T,
+	): Promise<IWizardOptions<T & ISubscriptionActionContext> | undefined> {
+		const promptSteps: AzureWizardPromptStep<
+			T & ISubscriptionActionContext
+		>[] = [];
 
-            promptSteps.push(new SqlServerListStep());
-        }
+		if (context.sqlDbConnectionType === ConnectionType.Custom) {
+			promptSteps.push(new SqlDatabaseConnectionCustomPromptStep());
+		} else {
+			const subscriptionPromptStep:
+				| AzureWizardPromptStep<ISubscriptionActionContext>
+				| undefined =
+				await ext.azureAccountTreeItem.getSubscriptionPromptStep(
+					context,
+				);
+			if (subscriptionPromptStep) {
+				promptSteps.push(subscriptionPromptStep);
+			}
 
-        return { promptSteps };
-    }
+			promptSteps.push(new SqlServerListStep());
+		}
+
+		return { promptSteps };
+	}
 }
