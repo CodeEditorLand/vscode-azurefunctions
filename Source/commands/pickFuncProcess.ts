@@ -3,129 +3,223 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { sendRequestWithTimeout, type AzExtRequestPrepareOptions } from '@microsoft/vscode-azext-azureutils';
-import { UserCancelledError, type IActionContext } from '@microsoft/vscode-azext-utils';
-import * as unixPsTree from 'ps-tree';
-import * as vscode from 'vscode';
-import { hostStartTaskName } from '../constants';
-import { preDebugValidate, type IPreDebugValidateResult } from '../debug/validatePreDebug';
-import { ext } from '../extensionVariables';
-import { getFuncPortFromTaskOrProject, isFuncHostTask, runningFuncTaskMap, stopFuncTaskIfRunning, type IRunningFuncTask } from '../funcCoreTools/funcHostTask';
-import { localize } from '../localize';
-import { delay } from '../utils/delay';
-import { requestUtils } from '../utils/requestUtils';
-import { taskUtils } from '../utils/taskUtils';
-import { ProcessDataFlag, getWindowsProcessTree, type IProcessInfo, type IWindowsProcessTree } from '../utils/windowsProcessTree';
-import { getWorkspaceSetting } from '../vsCodeConfig/settings';
+import {
+	sendRequestWithTimeout,
+	type AzExtRequestPrepareOptions,
+} from "@microsoft/vscode-azext-azureutils";
+import {
+	UserCancelledError,
+	type IActionContext,
+} from "@microsoft/vscode-azext-utils";
+import * as unixPsTree from "ps-tree";
+import * as vscode from "vscode";
+
+import { hostStartTaskName } from "../constants";
+import {
+	preDebugValidate,
+	type IPreDebugValidateResult,
+} from "../debug/validatePreDebug";
+import { ext } from "../extensionVariables";
+import {
+	getFuncPortFromTaskOrProject,
+	isFuncHostTask,
+	runningFuncTaskMap,
+	stopFuncTaskIfRunning,
+	type IRunningFuncTask,
+} from "../funcCoreTools/funcHostTask";
+import { localize } from "../localize";
+import { delay } from "../utils/delay";
+import { requestUtils } from "../utils/requestUtils";
+import { taskUtils } from "../utils/taskUtils";
+import {
+	getWindowsProcessTree,
+	ProcessDataFlag,
+	type IProcessInfo,
+	type IWindowsProcessTree,
+} from "../utils/windowsProcessTree";
+import { getWorkspaceSetting } from "../vsCodeConfig/settings";
 
 const funcTaskReadyEmitter = new vscode.EventEmitter<vscode.WorkspaceFolder>();
 export const onDotnetFuncTaskReady = funcTaskReadyEmitter.event;
 
-export async function pickFuncProcess(context: IActionContext, debugConfig: vscode.DebugConfiguration): Promise<string | undefined> {
-    const result: IPreDebugValidateResult = await preDebugValidate(context, debugConfig);
-    if (!result.shouldContinue) {
-        throw new UserCancelledError('preDebugValidate');
-    }
+export async function pickFuncProcess(
+	context: IActionContext,
+	debugConfig: vscode.DebugConfiguration,
+): Promise<string | undefined> {
+	const result: IPreDebugValidateResult = await preDebugValidate(
+		context,
+		debugConfig,
+	);
+	if (!result.shouldContinue) {
+		throw new UserCancelledError("preDebugValidate");
+	}
 
-    await waitForPrevFuncTaskToStop(result.workspace);
+	await waitForPrevFuncTaskToStop(result.workspace);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const preLaunchTaskName: string | undefined = debugConfig.preLaunchTask;
-    const tasks: vscode.Task[] = await vscode.tasks.fetchTasks();
-    const funcTask: vscode.Task | undefined = tasks.find(t => {
-        return t.scope === result.workspace && (preLaunchTaskName ? t.name === preLaunchTaskName : isFuncHostTask(t));
-    });
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	const preLaunchTaskName: string | undefined = debugConfig.preLaunchTask;
+	const tasks: vscode.Task[] = await vscode.tasks.fetchTasks();
+	const funcTask: vscode.Task | undefined = tasks.find((t) => {
+		return (
+			t.scope === result.workspace &&
+			(preLaunchTaskName
+				? t.name === preLaunchTaskName
+				: isFuncHostTask(t))
+		);
+	});
 
-    if (!funcTask) {
-        throw new Error(localize('noFuncTask', 'Failed to find "{0}" task.', preLaunchTaskName || hostStartTaskName));
-    }
+	if (!funcTask) {
+		throw new Error(
+			localize(
+				"noFuncTask",
+				'Failed to find "{0}" task.',
+				preLaunchTaskName || hostStartTaskName,
+			),
+		);
+	}
 
-    const taskInfo = await startFuncTask(context, result.workspace, funcTask);
-    return await pickChildProcess(taskInfo);
+	const taskInfo = await startFuncTask(context, result.workspace, funcTask);
+	return await pickChildProcess(taskInfo);
 }
 
-async function waitForPrevFuncTaskToStop(workspaceFolder: vscode.WorkspaceFolder): Promise<void> {
-    stopFuncTaskIfRunning(workspaceFolder);
+async function waitForPrevFuncTaskToStop(
+	workspaceFolder: vscode.WorkspaceFolder,
+): Promise<void> {
+	stopFuncTaskIfRunning(workspaceFolder);
 
-    const timeoutInSeconds: number = 30;
-    const maxTime: number = Date.now() + timeoutInSeconds * 1000;
-    while (Date.now() < maxTime) {
-        if (!runningFuncTaskMap.has(workspaceFolder)) {
-            return;
-        }
-        await delay(1000);
-    }
-    throw new Error(localize('failedToFindFuncHost', 'Failed to stop previous running Functions host within "{0}" seconds. Make sure the task has stopped before you debug again.', timeoutInSeconds));
+	const timeoutInSeconds: number = 30;
+	const maxTime: number = Date.now() + timeoutInSeconds * 1000;
+	while (Date.now() < maxTime) {
+		if (!runningFuncTaskMap.has(workspaceFolder)) {
+			return;
+		}
+		await delay(1000);
+	}
+	throw new Error(
+		localize(
+			"failedToFindFuncHost",
+			'Failed to stop previous running Functions host within "{0}" seconds. Make sure the task has stopped before you debug again.',
+			timeoutInSeconds,
+		),
+	);
 }
 
-async function startFuncTask(context: IActionContext, workspaceFolder: vscode.WorkspaceFolder, funcTask: vscode.Task): Promise<IRunningFuncTask> {
-    const settingKey: string = 'pickProcessTimeout';
-    const settingValue: number | undefined = getWorkspaceSetting<number>(settingKey);
-    const timeoutInSeconds: number = Number(settingValue);
-    if (isNaN(timeoutInSeconds)) {
-        throw new Error(localize('invalidSettingValue', 'The setting "{0}" must be a number, but instead found "{1}".', settingKey, settingValue));
-    }
-    context.telemetry.properties.timeoutInSeconds = timeoutInSeconds.toString();
+async function startFuncTask(
+	context: IActionContext,
+	workspaceFolder: vscode.WorkspaceFolder,
+	funcTask: vscode.Task,
+): Promise<IRunningFuncTask> {
+	const settingKey: string = "pickProcessTimeout";
+	const settingValue: number | undefined =
+		getWorkspaceSetting<number>(settingKey);
+	const timeoutInSeconds: number = Number(settingValue);
+	if (isNaN(timeoutInSeconds)) {
+		throw new Error(
+			localize(
+				"invalidSettingValue",
+				'The setting "{0}" must be a number, but instead found "{1}".',
+				settingKey,
+				settingValue,
+			),
+		);
+	}
+	context.telemetry.properties.timeoutInSeconds = timeoutInSeconds.toString();
 
-    let taskError: Error | undefined;
-    const errorListener: vscode.Disposable = vscode.tasks.onDidEndTaskProcess((e: vscode.TaskProcessEndEvent) => {
-        if (e.execution.task.scope === workspaceFolder && e.exitCode !== 0) {
-            context.errorHandling.suppressReportIssue = true;
-            // Throw if _any_ task fails, not just funcTask (since funcTask often depends on build/clean tasks)
-            taskError = new Error(localize('taskFailed', 'Error exists after running preLaunchTask "{0}". View task output for more information.', e.execution.task.name, e.exitCode));
-            errorListener.dispose();
-        }
-    });
+	let taskError: Error | undefined;
+	const errorListener: vscode.Disposable = vscode.tasks.onDidEndTaskProcess(
+		(e: vscode.TaskProcessEndEvent) => {
+			if (
+				e.execution.task.scope === workspaceFolder &&
+				e.exitCode !== 0
+			) {
+				context.errorHandling.suppressReportIssue = true;
+				// Throw if _any_ task fails, not just funcTask (since funcTask often depends on build/clean tasks)
+				taskError = new Error(
+					localize(
+						"taskFailed",
+						'Error exists after running preLaunchTask "{0}". View task output for more information.',
+						e.execution.task.name,
+						e.exitCode,
+					),
+				);
+				errorListener.dispose();
+			}
+		},
+	);
 
-    try {
-        // The "IfNotActive" part helps when the user starts, stops and restarts debugging quickly in succession. We want to use the already-active task to avoid two func tasks causing a port conflict error
-        // The most common case we hit this is if the "clean" or "build" task is running when we get here. It's unlikely the "func host start" task is active, since we would've stopped it in `waitForPrevFuncTaskToStop` above
-        await taskUtils.executeIfNotActive(funcTask);
+	try {
+		// The "IfNotActive" part helps when the user starts, stops and restarts debugging quickly in succession. We want to use the already-active task to avoid two func tasks causing a port conflict error
+		// The most common case we hit this is if the "clean" or "build" task is running when we get here. It's unlikely the "func host start" task is active, since we would've stopped it in `waitForPrevFuncTaskToStop` above
+		await taskUtils.executeIfNotActive(funcTask);
 
-        const intervalMs: number = 500;
-        const funcPort: string = await getFuncPortFromTaskOrProject(context, funcTask, workspaceFolder);
-        let statusRequestTimeout: number = intervalMs;
-        const maxTime: number = Date.now() + timeoutInSeconds * 1000;
-        while (Date.now() < maxTime) {
-            if (taskError !== undefined) {
-                throw taskError;
-            }
+		const intervalMs: number = 500;
+		const funcPort: string = await getFuncPortFromTaskOrProject(
+			context,
+			funcTask,
+			workspaceFolder,
+		);
+		let statusRequestTimeout: number = intervalMs;
+		const maxTime: number = Date.now() + timeoutInSeconds * 1000;
+		while (Date.now() < maxTime) {
+			if (taskError !== undefined) {
+				throw taskError;
+			}
 
-            const taskInfo: IRunningFuncTask | undefined = runningFuncTaskMap.get(workspaceFolder);
-            if (taskInfo) {
-                for (const scheme of ['http', 'https']) {
-                    const statusRequest: AzExtRequestPrepareOptions = { url: `${scheme}://localhost:${funcPort}/admin/host/status`, method: 'GET' };
-                    if (scheme === 'https') {
-                        statusRequest.rejectUnauthorized = false;
-                    }
+			const taskInfo: IRunningFuncTask | undefined =
+				runningFuncTaskMap.get(workspaceFolder);
+			if (taskInfo) {
+				for (const scheme of ["http", "https"]) {
+					const statusRequest: AzExtRequestPrepareOptions = {
+						url: `${scheme}://localhost:${funcPort}/admin/host/status`,
+						method: "GET",
+					};
+					if (scheme === "https") {
+						statusRequest.rejectUnauthorized = false;
+					}
 
-                    try {
-                        // wait for status url to indicate functions host is running
-                        const response = await sendRequestWithTimeout(context, statusRequest, statusRequestTimeout, undefined);
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                        if (response.parsedBody.state.toLowerCase() === 'running') {
-                            funcTaskReadyEmitter.fire(workspaceFolder);
-                            return taskInfo;
-                        }
-                    } catch (error) {
-                        if (requestUtils.isTimeoutError(error)) {
-                            // Timeout likely means localhost isn't ready yet, but we'll increase the timeout each time it fails just in case it's a slow computer that can't handle a request that fast
-                            statusRequestTimeout *= 2;
-                            context.telemetry.measurements.maxStatusTimeout = statusRequestTimeout;
-                        } else {
-                            // ignore
-                        }
-                    }
-                }
-            }
+					try {
+						// wait for status url to indicate functions host is running
+						const response = await sendRequestWithTimeout(
+							context,
+							statusRequest,
+							statusRequestTimeout,
+							undefined,
+						);
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+						if (
+							response.parsedBody.state.toLowerCase() ===
+							"running"
+						) {
+							funcTaskReadyEmitter.fire(workspaceFolder);
+							return taskInfo;
+						}
+					} catch (error) {
+						if (requestUtils.isTimeoutError(error)) {
+							// Timeout likely means localhost isn't ready yet, but we'll increase the timeout each time it fails just in case it's a slow computer that can't handle a request that fast
+							statusRequestTimeout *= 2;
+							context.telemetry.measurements.maxStatusTimeout =
+								statusRequestTimeout;
+						} else {
+							// ignore
+						}
+					}
+				}
+			}
 
-            await delay(intervalMs);
-        }
+			await delay(intervalMs);
+		}
 
-        throw new Error(localize('failedToFindFuncHost', 'Failed to detect running Functions host within "{0}" seconds. You may want to adjust the "{1}" setting.', timeoutInSeconds, `${ext.prefix}.${settingKey}`));
-    } finally {
-        errorListener.dispose();
-    }
+		throw new Error(
+			localize(
+				"failedToFindFuncHost",
+				'Failed to detect running Functions host within "{0}" seconds. You may want to adjust the "{1}" setting.',
+				timeoutInSeconds,
+				`${ext.prefix}.${settingKey}`,
+			),
+		);
+	} finally {
+		errorListener.dispose();
+	}
 }
 
 type OSAgnosticProcess = { command: string | undefined; pid: number | string };
@@ -138,17 +232,22 @@ type OSAgnosticProcess = { command: string | undefined; pid: number | string };
  * The only processes we should want to attach to are the "func" process itself or a "dotnet" process running a dll, so we will pick the innermost one of those
  */
 async function pickChildProcess(taskInfo: IRunningFuncTask): Promise<string> {
-    // Workaround for https://github.com/microsoft/vscode-azurefunctions/issues/2656
-    if (!isRunning(taskInfo.processId) && vscode.window.activeTerminal) {
-        const terminalPid = await vscode.window.activeTerminal.processId
-        if (terminalPid) {
-            // NOTE: Intentionally updating the object so that `runningFuncTaskMap` is affected, too
-            taskInfo.processId = terminalPid;
-        }
-    }
-    const children: OSAgnosticProcess[] = process.platform === 'win32' ? await getWindowsChildren(taskInfo.processId) : await getUnixChildren(taskInfo.processId);
-    const child: OSAgnosticProcess | undefined = children.reverse().find(c => /(dotnet|func)(\.exe|)$/i.test(c.command || ''));
-    return child ? child.pid.toString() : String(taskInfo.processId);
+	// Workaround for https://github.com/microsoft/vscode-azurefunctions/issues/2656
+	if (!isRunning(taskInfo.processId) && vscode.window.activeTerminal) {
+		const terminalPid = await vscode.window.activeTerminal.processId;
+		if (terminalPid) {
+			// NOTE: Intentionally updating the object so that `runningFuncTaskMap` is affected, too
+			taskInfo.processId = terminalPid;
+		}
+	}
+	const children: OSAgnosticProcess[] =
+		process.platform === "win32"
+			? await getWindowsChildren(taskInfo.processId)
+			: await getUnixChildren(taskInfo.processId);
+	const child: OSAgnosticProcess | undefined = children
+		.reverse()
+		.find((c) => /(dotnet|func)(\.exe|)$/i.test(c.command || ""));
+	return child ? child.pid.toString() : String(taskInfo.processId);
 }
 
 // Looks like this bug was fixed, but never merged:
@@ -156,34 +255,46 @@ async function pickChildProcess(taskInfo: IRunningFuncTask): Promise<string> {
 type ActualUnixPS = unixPsTree.PS & { COMM?: string };
 
 async function getUnixChildren(pid: number): Promise<OSAgnosticProcess[]> {
-    const processes: ActualUnixPS[] = await new Promise((resolve, reject): void => {
-        unixPsTree(pid, (error: Error | null, result: unixPsTree.PS[]) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-    return processes.map(c => { return { command: c.COMMAND || c.COMM, pid: c.PID }; });
+	const processes: ActualUnixPS[] = await new Promise(
+		(resolve, reject): void => {
+			unixPsTree(pid, (error: Error | null, result: unixPsTree.PS[]) => {
+				if (error) {
+					reject(error);
+				} else {
+					resolve(result);
+				}
+			});
+		},
+	);
+	return processes.map((c) => {
+		return { command: c.COMMAND || c.COMM, pid: c.PID };
+	});
 }
 
 async function getWindowsChildren(pid: number): Promise<OSAgnosticProcess[]> {
-    const windowsProcessTree: IWindowsProcessTree = getWindowsProcessTree();
-    const processes: (IProcessInfo[] | undefined) = await new Promise((resolve): void => {
-        windowsProcessTree.getProcessList(pid, resolve, ProcessDataFlag.None);
-    });
-    return (processes || []).map(c => { return { command: c.name, pid: c.pid }; });
+	const windowsProcessTree: IWindowsProcessTree = getWindowsProcessTree();
+	const processes: IProcessInfo[] | undefined = await new Promise(
+		(resolve): void => {
+			windowsProcessTree.getProcessList(
+				pid,
+				resolve,
+				ProcessDataFlag.None,
+			);
+		},
+	);
+	return (processes || []).map((c) => {
+		return { command: c.name, pid: c.pid };
+	});
 }
 
 function isRunning(pid: number): boolean {
-    try {
-        // https://nodejs.org/api/process.html#process_process_kill_pid_signal
-        // This method will throw an error if the target pid does not exist. As a special case, a signal of 0 can be used to test for the existence of a process.
-        // Even though the name of this function is process.kill(), it is really just a signal sender, like the kill system call.
-        process.kill(pid, 0);
-        return true;
-    } catch {
-        return false;
-    }
+	try {
+		// https://nodejs.org/api/process.html#process_process_kill_pid_signal
+		// This method will throw an error if the target pid does not exist. As a special case, a signal of 0 can be used to test for the existence of a process.
+		// Even though the name of this function is process.kill(), it is really just a signal sender, like the kill system call.
+		process.kill(pid, 0);
+		return true;
+	} catch {
+		return false;
+	}
 }

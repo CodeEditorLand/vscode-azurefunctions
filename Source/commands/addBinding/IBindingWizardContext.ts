@@ -10,12 +10,12 @@ import { type IBindingTemplate } from "../../templates/IBindingTemplate";
 import { type IFunctionWizardContext } from "../createFunction/IFunctionWizardContext";
 
 export interface IBindingWizardContext extends IFunctionWizardContext {
-    functionJsonPath: string;
-    language: ProjectLanguage;
-    version: FuncVersion;
-    bindingDirection?: string;
-    bindingTemplate?: IBindingTemplate;
-    binding?: IFunctionBinding;
-    bindingName?: string;
-    useStorageEmulator?: boolean;
+	functionJsonPath: string;
+	language: ProjectLanguage;
+	version: FuncVersion;
+	bindingDirection?: string;
+	bindingTemplate?: IBindingTemplate;
+	binding?: IFunctionBinding;
+	bindingName?: string;
+	useStorageEmulator?: boolean;
 }
