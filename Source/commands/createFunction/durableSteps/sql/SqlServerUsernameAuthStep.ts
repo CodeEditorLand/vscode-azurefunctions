@@ -3,35 +3,50 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizardPromptStep, nonNullProp } from '@microsoft/vscode-azext-utils';
-import { getInvalidLengthMessage, invalidAlphanumericWithHyphens } from '../../../../constants-nls';
-import { localize } from '../../../../localize';
-import { validateUtils } from '../../../../utils/validateUtils';
-import { type ISqlDatabaseConnectionWizardContext } from '../../../appSettings/connectionSettings/sqlDatabase/ISqlDatabaseConnectionWizardContext';
+import {
+	AzureWizardPromptStep,
+	nonNullProp,
+} from "@microsoft/vscode-azext-utils";
 
-export class SqlServerUsernameAuthStep<T extends ISqlDatabaseConnectionWizardContext> extends AzureWizardPromptStep<T> {
-    public async prompt(context: T): Promise<void> {
-        context.newSqlAdminUsername = (await context.ui.showInputBox({
-            prompt: localize('sqlServerUsernamePrompt', 'Provide an admin username for the SQL server.'),
-            validateInput: (value: string | undefined) => this.validateInput(value)
-        })).trim();
+import {
+	getInvalidLengthMessage,
+	invalidAlphanumericWithHyphens,
+} from "../../../../constants-nls";
+import { localize } from "../../../../localize";
+import { validateUtils } from "../../../../utils/validateUtils";
+import { type ISqlDatabaseConnectionWizardContext } from "../../../appSettings/connectionSettings/sqlDatabase/ISqlDatabaseConnectionWizardContext";
 
-        context.valuesToMask.push(nonNullProp(context, 'newSqlAdminUsername'));
-    }
+export class SqlServerUsernameAuthStep<
+	T extends ISqlDatabaseConnectionWizardContext,
+> extends AzureWizardPromptStep<T> {
+	public async prompt(context: T): Promise<void> {
+		context.newSqlAdminUsername = (
+			await context.ui.showInputBox({
+				prompt: localize(
+					"sqlServerUsernamePrompt",
+					"Provide an admin username for the SQL server.",
+				),
+				validateInput: (value: string | undefined) =>
+					this.validateInput(value),
+			})
+		).trim();
 
-    public shouldPrompt(context: T): boolean {
-        return !context.newSqlAdminUsername;
-    }
+		context.valuesToMask.push(nonNullProp(context, "newSqlAdminUsername"));
+	}
 
-    private validateInput(name: string | undefined): string | undefined {
-        name = name ? name.trim() : '';
+	public shouldPrompt(context: T): boolean {
+		return !context.newSqlAdminUsername;
+	}
 
-        if (!validateUtils.isValidLength(name)) {
-            return getInvalidLengthMessage();
-        }
-        if (!validateUtils.isAlphanumericWithHypens(name)) {
-            return invalidAlphanumericWithHyphens;
-        }
-        return undefined;
-    }
+	private validateInput(name: string | undefined): string | undefined {
+		name = name ? name.trim() : "";
+
+		if (!validateUtils.isValidLength(name)) {
+			return getInvalidLengthMessage();
+		}
+		if (!validateUtils.isAlphanumericWithHypens(name)) {
+			return invalidAlphanumericWithHyphens;
+		}
+		return undefined;
+	}
 }

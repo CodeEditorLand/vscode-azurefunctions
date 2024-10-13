@@ -3,39 +3,46 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IActionContext } from '@microsoft/vscode-azext-utils';
-import * as vscode from 'vscode';
-import { EventGridExecuteFunctionEntryPoint } from '../../../constants';
-import { ext } from '../../../extensionVariables';
-import { localize } from '../../../localize';
-import { executeFunctionWithInput } from '../executeFunction';
+import { type IActionContext } from "@microsoft/vscode-azext-utils";
+import * as vscode from "vscode";
 
-export async function sendEventGridRequest(context: IActionContext, entryPoint: string) {
-    context.telemetry.properties.eventGridExecuteEntryPoint =
-        entryPoint === EventGridExecuteFunctionEntryPoint.CodeLens
-            ? EventGridExecuteFunctionEntryPoint.CodeLens
-            : EventGridExecuteFunctionEntryPoint.TitleBarButton;
+import { EventGridExecuteFunctionEntryPoint } from "../../../constants";
+import { ext } from "../../../extensionVariables";
+import { localize } from "../../../localize";
+import { executeFunctionWithInput } from "../executeFunction";
 
-    const activeEditor = vscode.window.activeTextEditor;
-    if (!activeEditor) {
-        const errorMsg = localize('noActiveTextEditor', 'No active text editor found.');
-        throw new Error(errorMsg);
-    }
-    const document = activeEditor.document;
-    await document.save();
-    const requestContent: string = document.getText();
+export async function sendEventGridRequest(
+	context: IActionContext,
+	entryPoint: string,
+) {
+	context.telemetry.properties.eventGridExecuteEntryPoint =
+		entryPoint === EventGridExecuteFunctionEntryPoint.CodeLens
+			? EventGridExecuteFunctionEntryPoint.CodeLens
+			: EventGridExecuteFunctionEntryPoint.TitleBarButton;
 
-    const node = ext.fileToFunctionNodeMap.get(document.fileName);
+	const activeEditor = vscode.window.activeTextEditor;
+	if (!activeEditor) {
+		const errorMsg = localize(
+			"noActiveTextEditor",
+			"No active text editor found.",
+		);
+		throw new Error(errorMsg);
+	}
+	const document = activeEditor.document;
+	await document.save();
+	const requestContent: string = document.getText();
 
-    if (!node) {
-        const errorMsg = localize(
-            'noFunctionBeingExecuted',
-            'No function is currently being executed. ' +
-            'This command is intended to be run while an EventGrid function is being executed. ' +
-            'Please make sure to execute your EventGrid function.',
-        );
-        throw new Error(errorMsg);
-    }
+	const node = ext.fileToFunctionNodeMap.get(document.fileName);
 
-    await executeFunctionWithInput(context, requestContent, node);
+	if (!node) {
+		const errorMsg = localize(
+			"noFunctionBeingExecuted",
+			"No function is currently being executed. " +
+				"This command is intended to be run while an EventGrid function is being executed. " +
+				"Please make sure to execute your EventGrid function.",
+		);
+		throw new Error(errorMsg);
+	}
+
+	await executeFunctionWithInput(context, requestContent, node);
 }

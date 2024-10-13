@@ -3,50 +3,77 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type SqlManagementClient } from '@azure/arm-sql';
-import { AzureWizardPromptStep, type ISubscriptionContext } from '@microsoft/vscode-azext-utils';
-import { getInvalidLengthMessage, invalidLowerCaseAlphanumericWithHyphens } from '../../../../constants-nls';
-import { localize } from '../../../../localize';
-import { createSqlClient } from '../../../../utils/azureClients';
-import { validateUtils } from '../../../../utils/validateUtils';
-import { type ISqlDatabaseConnectionWizardContext } from '../../../appSettings/connectionSettings/sqlDatabase/ISqlDatabaseConnectionWizardContext';
+import { type SqlManagementClient } from "@azure/arm-sql";
+import {
+	AzureWizardPromptStep,
+	type ISubscriptionContext,
+} from "@microsoft/vscode-azext-utils";
 
-export class SqlServerNameStep<T extends ISqlDatabaseConnectionWizardContext> extends AzureWizardPromptStep<T> {
-    private client: SqlManagementClient;
+import {
+	getInvalidLengthMessage,
+	invalidLowerCaseAlphanumericWithHyphens,
+} from "../../../../constants-nls";
+import { localize } from "../../../../localize";
+import { createSqlClient } from "../../../../utils/azureClients";
+import { validateUtils } from "../../../../utils/validateUtils";
+import { type ISqlDatabaseConnectionWizardContext } from "../../../appSettings/connectionSettings/sqlDatabase/ISqlDatabaseConnectionWizardContext";
 
-    public async prompt(context: T): Promise<void> {
-        this.client = await createSqlClient(<T & ISubscriptionContext>context);
+export class SqlServerNameStep<
+	T extends ISqlDatabaseConnectionWizardContext,
+> extends AzureWizardPromptStep<T> {
+	private client: SqlManagementClient;
 
-        context.newSqlServerName = (await context.ui.showInputBox({
-            prompt: localize('sqlServerNamePrompt', 'Provide a SQL server name.'),
-            validateInput: (value: string | undefined) => this.validateInput(value),
-            asyncValidationTask: (value: string) => this.isNameAvailable(value)
-        })).trim();
-    }
+	public async prompt(context: T): Promise<void> {
+		this.client = await createSqlClient(<T & ISubscriptionContext>context);
 
-    public shouldPrompt(context: T): boolean {
-        return !context.newSqlServerName;
-    }
+		context.newSqlServerName = (
+			await context.ui.showInputBox({
+				prompt: localize(
+					"sqlServerNamePrompt",
+					"Provide a SQL server name.",
+				),
+				validateInput: (value: string | undefined) =>
+					this.validateInput(value),
+				asyncValidationTask: (value: string) =>
+					this.isNameAvailable(value),
+			})
+		).trim();
+	}
 
-    private async validateInput(name: string | undefined): Promise<string | undefined> {
-        name = name ? name.trim() : '';
+	public shouldPrompt(context: T): boolean {
+		return !context.newSqlServerName;
+	}
 
-        if (!validateUtils.isValidLength(name, 1, 63)) {
-            return getInvalidLengthMessage(1, 63);
-        }
-        if (!validateUtils.isLowerCaseAlphanumericWithHypens(name)) {
-            return invalidLowerCaseAlphanumericWithHyphens;
-        }
-        return undefined;
-    }
+	private async validateInput(
+		name: string | undefined,
+	): Promise<string | undefined> {
+		name = name ? name.trim() : "";
 
-    private async isNameAvailable(name: string): Promise<string | undefined> {
-        name = name.trim();
+		if (!validateUtils.isValidLength(name, 1, 63)) {
+			return getInvalidLengthMessage(1, 63);
+		}
+		if (!validateUtils.isLowerCaseAlphanumericWithHypens(name)) {
+			return invalidLowerCaseAlphanumericWithHyphens;
+		}
+		return undefined;
+	}
 
-        const isAvailable = (await this.client.servers.checkNameAvailability({ name, type: "Microsoft.Sql/servers" })).available;
-        if (!isAvailable) {
-            return localize('sqlServerExists', 'A SQL server with the name "{0}" already exists.', name);
-        }
-        return undefined;
-    }
+	private async isNameAvailable(name: string): Promise<string | undefined> {
+		name = name.trim();
+
+		const isAvailable = (
+			await this.client.servers.checkNameAvailability({
+				name,
+				type: "Microsoft.Sql/servers",
+			})
+		).available;
+		if (!isAvailable) {
+			return localize(
+				"sqlServerExists",
+				'A SQL server with the name "{0}" already exists.',
+				name,
+			);
+		}
+		return undefined;
+	}
 }

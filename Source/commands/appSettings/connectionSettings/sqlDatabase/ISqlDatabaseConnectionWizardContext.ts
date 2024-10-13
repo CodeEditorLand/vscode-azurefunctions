@@ -3,26 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type ResourceGroup } from '@azure/arm-resources';
-import { type Database, type Server } from '@azure/arm-sql';
+import { type ResourceGroup } from "@azure/arm-resources";
+import { type Database, type Server } from "@azure/arm-sql";
 import { type ISubscriptionContext } from "@microsoft/vscode-azext-utils";
-import { type SqlDbConnectionTypeValues, type StorageConnectionTypeValues } from "../../../../constants";
-import { type ISetConnectionSettingContext } from '../ISetConnectionSettingContext';
 
-export interface ISqlDatabaseConnectionWizardContext extends ISetConnectionSettingContext, Partial<ISubscriptionContext> {
-    resourceGroup?: ResourceGroup;
+import {
+	type SqlDbConnectionTypeValues,
+	type StorageConnectionTypeValues,
+} from "../../../../constants";
+import { type ISetConnectionSettingContext } from "../ISetConnectionSettingContext";
 
-    // Connection Types
-    azureWebJobsStorageType?: StorageConnectionTypeValues;
-    sqlDbConnectionType?: SqlDbConnectionTypeValues;
+export interface ISqlDatabaseConnectionWizardContext
+	extends ISetConnectionSettingContext,
+		Partial<ISubscriptionContext> {
+	resourceGroup?: ResourceGroup;
 
-    // SQL
-    newSqlServerName?: string;
-    newSqlDatabaseName?: string;
-    newSqlAdminUsername?: string;
-    newSqlAdminPassword?: string;
-    sqlServer?: Server;
-    sqlDatabase?: Database;
+	// Connection Types
+	azureWebJobsStorageType?: StorageConnectionTypeValues;
+	sqlDbConnectionType?: SqlDbConnectionTypeValues;
 
-    customSqlConnection?: string;
+	// SQL
+	newSqlServerName?: string;
+	newSqlDatabaseName?: string;
+	newSqlAdminUsername?: string;
+	newSqlAdminPassword?: string;
+	sqlServer?: Server;
+	sqlDatabase?: Database;
+
+	customSqlConnection?: string;
 }

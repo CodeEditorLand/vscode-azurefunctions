@@ -3,34 +3,55 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type ISubscriptionContext } from '@microsoft/vscode-azext-utils';
-import { ConnectionKey, ConnectionType, localEventHubsEmulatorConnectionRegExp, localEventHubsEmulatorConnectionStringDefault, type ConnectionKeyValues } from '../../../../constants';
-import { getLocalSettingsConnectionString } from '../../../../funcConfig/local.settings';
-import { SetConnectionSettingStepBase } from '../SetConnectionSettingStepBase';
-import { getEventHubsConnectionString } from '../getLocalConnectionSetting';
-import { type IEventHubsConnectionWizardContext } from './IEventHubsConnectionWizardContext';
+import { type ISubscriptionContext } from "@microsoft/vscode-azext-utils";
 
-export class EventHubsConnectionExecuteStep<T extends IEventHubsConnectionWizardContext> extends SetConnectionSettingStepBase<T> {
-    public priority: number = 240;
-    public debugDeploySetting: ConnectionKeyValues = ConnectionKey.EventHubs;
+import {
+	ConnectionKey,
+	ConnectionType,
+	localEventHubsEmulatorConnectionRegExp,
+	localEventHubsEmulatorConnectionStringDefault,
+	type ConnectionKeyValues,
+} from "../../../../constants";
+import { getLocalSettingsConnectionString } from "../../../../funcConfig/local.settings";
+import { getEventHubsConnectionString } from "../getLocalConnectionSetting";
+import { SetConnectionSettingStepBase } from "../SetConnectionSettingStepBase";
+import { type IEventHubsConnectionWizardContext } from "./IEventHubsConnectionWizardContext";
 
-    public async execute(context: T): Promise<void> {
-        let value: string;
+export class EventHubsConnectionExecuteStep<
+	T extends IEventHubsConnectionWizardContext,
+> extends SetConnectionSettingStepBase<T> {
+	public priority: number = 240;
+	public debugDeploySetting: ConnectionKeyValues = ConnectionKey.EventHubs;
 
-        if (context.eventHubsConnectionType === ConnectionType.Emulator) {
-            const currentConnection: string | undefined = await getLocalSettingsConnectionString(context, ConnectionKey.EventHubs, context.projectPath);
-            if (currentConnection && localEventHubsEmulatorConnectionRegExp.test(currentConnection)) {
-                return;
-            }
-            value = localEventHubsEmulatorConnectionStringDefault;
-        } else {
-            value = (await getEventHubsConnectionString(<T & ISubscriptionContext>context)).connectionString;
-        }
+	public async execute(context: T): Promise<void> {
+		let value: string;
 
-        await this.setConnectionSetting(context, value);
-    }
+		if (context.eventHubsConnectionType === ConnectionType.Emulator) {
+			const currentConnection: string | undefined =
+				await getLocalSettingsConnectionString(
+					context,
+					ConnectionKey.EventHubs,
+					context.projectPath,
+				);
+			if (
+				currentConnection &&
+				localEventHubsEmulatorConnectionRegExp.test(currentConnection)
+			) {
+				return;
+			}
+			value = localEventHubsEmulatorConnectionStringDefault;
+		} else {
+			value = (
+				await getEventHubsConnectionString(
+					<T & ISubscriptionContext>context,
+				)
+			).connectionString;
+		}
 
-    public shouldExecute(context: T): boolean {
-        return !!context.eventHubsConnectionType;
-    }
+		await this.setConnectionSetting(context, value);
+	}
+
+	public shouldExecute(context: T): boolean {
+		return !!context.eventHubsConnectionType;
+	}
 }

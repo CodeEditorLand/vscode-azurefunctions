@@ -40,21 +40,17 @@ export async function promptForResource<T extends IBaseResourceWithName>(
 				resources,
 			)
 				? []
-				: <IAzureQuickPickItem<T>[]>(
-						resources
-							.map((r: T) =>
-								r.name
-									? {
-											data: r,
-											label: r.name,
-											description: r._description,
-										}
-									: undefined,
-							)
-							.filter(
-								(p: IAzureQuickPickItem<T> | undefined) => p,
-							)
-					);
+				: <IAzureQuickPickItem<T>[]>resources
+						.map((r: T) =>
+							r.name
+								? {
+										data: r,
+										label: r.name,
+										description: r._description,
+									}
+								: undefined,
+						)
+						.filter((p: IAzureQuickPickItem<T> | undefined) => p);
 			picks.push({
 				label: picks.length
 					? localize("skipForNow", "$(clock) Skip for now")

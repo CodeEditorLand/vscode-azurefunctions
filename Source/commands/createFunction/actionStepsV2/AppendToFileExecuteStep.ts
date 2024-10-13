@@ -4,14 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { AzExtFsExtra, nonNullProp } from "@microsoft/vscode-azext-utils";
+
 import { type FunctionV2WizardContext } from "../IFunctionWizardContext";
 import { WriteToFileExecuteStep } from "./WriteToFileExecuteStep";
 
-export class AppendToFileExecuteStep<T extends FunctionV2WizardContext> extends WriteToFileExecuteStep<T> {
-    protected async writeToFile(context: T, filePath: string): Promise<void> {
-        const sourceKey = nonNullProp(this.action, 'source');
-        const source = context[sourceKey] as string;
+export class AppendToFileExecuteStep<
+	T extends FunctionV2WizardContext,
+> extends WriteToFileExecuteStep<T> {
+	protected async writeToFile(context: T, filePath: string): Promise<void> {
+		const sourceKey = nonNullProp(this.action, "source");
+		const source = context[sourceKey] as string;
 
-        await AzExtFsExtra.appendFile(filePath, source);
-    }
+		await AzExtFsExtra.appendFile(filePath, source);
+	}
 }

@@ -3,29 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IStorageAccountWizardContext } from '@microsoft/vscode-azext-azureutils';
-import { ConnectionKey, ConnectionType, localStorageEmulatorConnectionString, type ConnectionKeyValues } from '../../../../constants';
-import { SetConnectionSettingStepBase } from '../SetConnectionSettingStepBase';
-import { getStorageConnectionString } from '../getLocalConnectionSetting';
-import { type IAzureWebJobsStorageWizardContext } from './IAzureWebJobsStorageWizardContext';
+import { type IStorageAccountWizardContext } from "@microsoft/vscode-azext-azureutils";
 
-export class AzureWebJobsStorageExecuteStep<T extends IAzureWebJobsStorageWizardContext> extends SetConnectionSettingStepBase<T> {
-    public priority: number = 230;
-    public debugDeploySetting: ConnectionKeyValues = ConnectionKey.Storage;
+import {
+	ConnectionKey,
+	ConnectionType,
+	localStorageEmulatorConnectionString,
+	type ConnectionKeyValues,
+} from "../../../../constants";
+import { getStorageConnectionString } from "../getLocalConnectionSetting";
+import { SetConnectionSettingStepBase } from "../SetConnectionSettingStepBase";
+import { type IAzureWebJobsStorageWizardContext } from "./IAzureWebJobsStorageWizardContext";
 
-    public async execute(context: T): Promise<void> {
-        let value: string;
+export class AzureWebJobsStorageExecuteStep<
+	T extends IAzureWebJobsStorageWizardContext,
+> extends SetConnectionSettingStepBase<T> {
+	public priority: number = 230;
+	public debugDeploySetting: ConnectionKeyValues = ConnectionKey.Storage;
 
-        if (context.azureWebJobsStorageType === ConnectionType.Emulator) {
-            value = localStorageEmulatorConnectionString;
-        } else {
-            value = (await getStorageConnectionString(<IStorageAccountWizardContext>context)).connectionString;
-        }
+	public async execute(context: T): Promise<void> {
+		let value: string;
 
-        await this.setConnectionSetting(context, value);
-    }
+		if (context.azureWebJobsStorageType === ConnectionType.Emulator) {
+			value = localStorageEmulatorConnectionString;
+		} else {
+			value = (
+				await getStorageConnectionString(
+					<IStorageAccountWizardContext>context,
+				)
+			).connectionString;
+		}
 
-    public shouldExecute(context: T): boolean {
-        return !!context.azureWebJobsStorageType;
-    }
+		await this.setConnectionSetting(context, value);
+	}
+
+	public shouldExecute(context: T): boolean {
+		return !!context.azureWebJobsStorageType;
+	}
 }

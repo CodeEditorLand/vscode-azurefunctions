@@ -3,44 +3,65 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizardPromptStep, nonNullProp } from '@microsoft/vscode-azext-utils';
-import { getInvalidLengthMessage } from '../../../../constants-nls';
-import { localize } from '../../../../localize';
-import { validateUtils } from '../../../../utils/validateUtils';
-import { type ISqlDatabaseConnectionWizardContext } from '../../../appSettings/connectionSettings/sqlDatabase/ISqlDatabaseConnectionWizardContext';
+import {
+	AzureWizardPromptStep,
+	nonNullProp,
+} from "@microsoft/vscode-azext-utils";
 
-export class SqlServerPasswordAuthStep<T extends ISqlDatabaseConnectionWizardContext> extends AzureWizardPromptStep<T> {
-    public constructor() {
-        super();
-    }
+import { getInvalidLengthMessage } from "../../../../constants-nls";
+import { localize } from "../../../../localize";
+import { validateUtils } from "../../../../utils/validateUtils";
+import { type ISqlDatabaseConnectionWizardContext } from "../../../appSettings/connectionSettings/sqlDatabase/ISqlDatabaseConnectionWizardContext";
 
-    public async prompt(context: T): Promise<void> {
-        context.newSqlAdminPassword = (await context.ui.showInputBox({
-            prompt: localize('sqlServerPasswordPrompt', 'Provide an admin password for the SQL server.'),
-            password: true,
-            validateInput: (value: string | undefined) => this.validateInput(context, value)
-        })).trim();
+export class SqlServerPasswordAuthStep<
+	T extends ISqlDatabaseConnectionWizardContext,
+> extends AzureWizardPromptStep<T> {
+	public constructor() {
+		super();
+	}
 
-        context.valuesToMask.push(nonNullProp(context, 'newSqlAdminPassword'));
-    }
+	public async prompt(context: T): Promise<void> {
+		context.newSqlAdminPassword = (
+			await context.ui.showInputBox({
+				prompt: localize(
+					"sqlServerPasswordPrompt",
+					"Provide an admin password for the SQL server.",
+				),
+				password: true,
+				validateInput: (value: string | undefined) =>
+					this.validateInput(context, value),
+			})
+		).trim();
 
-    public shouldPrompt(context: T): boolean {
-        return !context.newSqlAdminPassword;
-    }
+		context.valuesToMask.push(nonNullProp(context, "newSqlAdminPassword"));
+	}
 
-    private validateInput(context: T, password: string | undefined): string | undefined {
-        const login: string = nonNullProp(context, 'newSqlAdminUsername');
-        password = password ? password.trim() : '';
+	public shouldPrompt(context: T): boolean {
+		return !context.newSqlAdminPassword;
+	}
 
-        if (!validateUtils.isValidLength(password, 8, 128)) {
-            return getInvalidLengthMessage(8, 128);
-        }
-        if (!validateUtils.meetsBasePasswordStrength(password)) {
-            return localize('invalidPasswordStrength', 'Your password must contain three of the following - uppercase, lowercase, numbers, and symbols.');
-        }
-        if (validateUtils.passwordOverlapsLogin(password, login)) {
-            return localize('passwordOverlapsLogin', 'Your password cannot share 3 or more consecutive characters with your login.');
-        }
-        return undefined;
-    }
+	private validateInput(
+		context: T,
+		password: string | undefined,
+	): string | undefined {
+		const login: string = nonNullProp(context, "newSqlAdminUsername");
+		password = password ? password.trim() : "";
+
+		if (!validateUtils.isValidLength(password, 8, 128)) {
+			return getInvalidLengthMessage(8, 128);
+		}
+		if (!validateUtils.meetsBasePasswordStrength(password)) {
+			return localize(
+				"invalidPasswordStrength",
+				"Your password must contain three of the following - uppercase, lowercase, numbers, and symbols.",
+			);
+		}
+		if (validateUtils.passwordOverlapsLogin(password, login)) {
+			return localize(
+				"passwordOverlapsLogin",
+				"Your password cannot share 3 or more consecutive characters with your login.",
+			);
+		}
+		return undefined;
+	}
 }
