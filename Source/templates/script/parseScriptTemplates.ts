@@ -30,6 +30,7 @@ import { TemplateSchemaVersion } from "../TemplateProviderBase";
  */
 export interface IRawTemplate {
 	id?: string;
+
 	function?: {};
 	metadata?: {
 		defaultFunctionName: string;
@@ -51,6 +52,7 @@ interface IRawSetting {
 	value: ValueType;
 	label: string;
 	help?: string;
+
 	defaultValue?: string;
 	required?: boolean;
 	resource?: ResourceType;
@@ -66,9 +68,11 @@ interface IRawSetting {
 
 interface IRawBinding {
 	type?: string;
+
 	documentation: string;
 	displayName: string;
 	direction: string;
+
 	settings?: IRawSetting[];
 }
 
@@ -130,14 +134,17 @@ export function getResourceValue(
 	dontThrow: boolean | undefined,
 ): string | undefined {
 	const matches: RegExpMatchArray | null = data.match(/\$(.*)/);
+
 	if (matches === null) {
 		return data;
 	} else {
 		const key: string = matches[1];
+
 		const result: string | undefined =
 			resources.lang && resources.lang[key]
 				? resources.lang[key]
 				: resources.en[key];
+
 		if (result === undefined) {
 			if (dontThrow) {
 				return undefined;
@@ -157,7 +164,9 @@ function parseScriptSetting(
 	variables: IVariables,
 ): IBindingSetting {
 	const rawSetting: IRawSetting = <IRawSetting>data;
+
 	const enums: IEnumValue[] = [];
+
 	if (rawSetting.enum) {
 		for (const ev of rawSetting.enum) {
 			enums.push({
@@ -174,6 +183,7 @@ function parseScriptSetting(
 				rawSetting.help,
 				true,
 			);
+
 			return resourceValue
 				? replaceHtmlLinkWithMarkdown(resourceValue)
 				: undefined;
@@ -215,6 +225,7 @@ function replaceHtmlLinkWithMarkdown(text: string): string {
 	const match: RegExpMatchArray | null = text.match(
 		/<a[^>]*href=['"]([^'"]*)['"][^>]*>([^<]*)<\/a>/i,
 	);
+
 	if (match) {
 		return text.replace(match[0], `[${match[2]}](${match[1]})`);
 	} else {
@@ -227,6 +238,7 @@ export function parseScriptBindings(
 	resources: IResources,
 ): IBindingTemplate[] {
 	const result: IBindingTemplate[] = [];
+
 	if (config.bindings) {
 		for (const rawBinding of config.bindings) {
 			try {
@@ -278,40 +290,51 @@ export function parseScriptTemplate(
 	switch (language) {
 		case ProjectLanguage.CSharp:
 			language = ProjectLanguage.CSharpScript;
+
 			break;
+
 		case ProjectLanguage.FSharp:
 			language = ProjectLanguage.FSharpScript;
+
 			break;
 		// The schema of Java templates is the same as script languages, so put it here.
 		case ProjectLanguage.Java:
 			language = ProjectLanguage.Java;
+
 			break;
+
 		default:
 	}
 
 	const userPromptedSettings: IBindingSetting[] = [];
+
 	if (rawTemplate.metadata.userPrompt) {
 		for (const settingName of rawTemplate.metadata.userPrompt) {
 			if (functionJson.triggerBinding) {
 				const triggerBinding: IFunctionBinding =
 					functionJson.triggerBinding;
+
 				const bindingTemplate: IBindingTemplate | undefined =
 					bindingTemplates.find(
 						(b) =>
 							b.type.toLowerCase() ===
 							triggerBinding.type?.toLowerCase(),
 					);
+
 				if (bindingTemplate) {
 					const setting: IBindingSetting | undefined =
 						bindingTemplate.settings.find(
 							(bs: IBindingSetting) => bs.name === settingName,
 						);
+
 					if (setting) {
 						const functionSpecificDefaultValue =
 							triggerBinding[setting.name];
+
 						if (functionSpecificDefaultValue) {
 							// overwrite common default value with the function-specific default value
 							setting.defaultValue = functionSpecificDefaultValue;
+
 							setting.assignTo = setting.name;
 						}
 						userPromptedSettings.push(setting);
@@ -326,11 +349,13 @@ export function parseScriptTemplate(
 							b.type.toLowerCase() ===
 							rawTemplate.metadata?.triggerType?.toLowerCase(),
 					);
+
 				if (bindingTemplate) {
 					const setting: IBindingSetting | undefined =
 						bindingTemplate.settings.find(
 							(bs: IBindingSetting) => bs.name === settingName,
 						);
+
 					if (setting) {
 						userPromptedSettings.push(setting);
 					}
@@ -365,6 +390,7 @@ export function parseScriptTemplate(
 
 export interface IScriptFunctionTemplate extends IFunctionTemplate {
 	templateFiles: { [filename: string]: string };
+
 	functionJson: ParsedFunctionJson;
 }
 
@@ -383,6 +409,7 @@ export function parseScriptTemplates(
 	);
 
 	const functionTemplates: IFunctionTemplate[] = [];
+
 	for (const rawTemplate of rawTemplates) {
 		try {
 			const parsed: IScriptFunctionTemplate | undefined =
@@ -391,6 +418,7 @@ export function parseScriptTemplates(
 					<IResources>rawResources,
 					bindingTemplates,
 				);
+
 			if (parsed) {
 				functionTemplates.push(parsed);
 			}

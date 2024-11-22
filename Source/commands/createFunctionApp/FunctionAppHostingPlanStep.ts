@@ -35,6 +35,7 @@ export class FunctionAppHostingPlanStep extends AzureWizardPromptStep<IFunctionA
 			"selectHostingPlan",
 			"Select a hosting plan.",
 		);
+
 		const picks: IAzureQuickPickItem<[boolean, RegExp | undefined]>[] = [
 			{
 				label: localize("consumption", "Consumption"),
@@ -56,6 +57,7 @@ export class FunctionAppHostingPlanStep extends AzureWizardPromptStep<IFunctionA
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;
 		await setLocationsTask(context);
+
 		if (context.useConsumptionPlan) {
 			setConsumptionPlanProperties(context);
 		} else if (
@@ -121,11 +123,14 @@ async function getFlexLocations(
 	};
 
 	const client = await createGenericClient(context, context);
+
 	const result = (await client.sendRequest(
 		createPipelineRequest(options),
 	)) as AzExtPipelineResponse;
+
 	const locations = (result.parsedBody as { value: Location[] }).value.map(
 		(loc) => loc.name,
 	) as string[];
+
 	return locations;
 }

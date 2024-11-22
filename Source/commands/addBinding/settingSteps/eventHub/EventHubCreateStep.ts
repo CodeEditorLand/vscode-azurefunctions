@@ -25,6 +25,7 @@ export class EventHubCreateStep extends AzureWizardExecuteStep<IEventHubWizardCo
 			context.eventHubsNamespace,
 			"name",
 		);
+
 		const resourceGroupName: string = nonNullValueAndProp(
 			context.resourceGroup,
 			"name",

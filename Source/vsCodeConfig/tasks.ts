@@ -11,6 +11,7 @@ import {
 } from "vscode";
 
 const tasksKey: string = "tasks";
+
 const versionKey: string = "version";
 export const tasksVersion: string = "2.0.0";
 

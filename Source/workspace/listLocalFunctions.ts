@@ -36,6 +36,7 @@ export async function listLocalFunctions(project: LocalProjectInternal): Promise
     return (await callWithTelemetryAndErrorHandling('listLocalFunctions', async (context) => {
         context.errorHandling.rethrow = true;
         context.errorHandling.suppressDisplay = true;
+
         const isFunctionalProgrammingModel = isPythonV2Plus(project.options.language, project.options.languageModel) || isNodeV4Plus(project.options);
 
         if (project.options.isIsolated || isFunctionalProgrammingModel) {
@@ -47,9 +48,11 @@ export async function listLocalFunctions(project: LocalProjectInternal): Promise
             }
 
             const functions: string[] = await getFunctionFolders(context, project.options.effectiveProjectPath);
+
             for (const func of functions) {
                 try {
                     const functionJsonPath: string = path.join(project.options.effectiveProjectPath, func, functionJsonFileName);
+
                     const config: ParsedFunctionJson = new ParsedFunctionJson(await AzExtFsExtra.readJSON(functionJsonPath));
                     result.functions.push(new LocalFunction(project, func, config));
                 } catch (error: unknown) {
@@ -78,10 +81,15 @@ function getHostStartTimeoutMS(): number {
 async function getFunctionsForHostedProject(context: IActionContext, project: LocalProjectInternal): Promise<ILocalFunction[]> {
     if (runningFuncTaskMap.has(project.options.folder, project.options.effectiveProjectPath)) {
         const hostRequest = await project.getHostRequest(context);
+
         const timeout = getHostStartTimeoutMS();
+
         const startTime = Date.now();
+
         let functions: AzExtPipelineResponse | undefined = undefined;
+
         let retry = true;
+
         while (retry) {
             retry = false;
 
@@ -94,8 +102,10 @@ async function getFunctionsForHostedProject(context: IActionContext, project: Lo
             } catch (error) {
                 // The functions host will not run immediately after starting debugging and will return ECONNREFUSED instead, so we want to retry for a period of time
                 const errorType = parseError(error).errorType;
+
                 if (errorType === 'ECONNREFUSED') {
                     const currentTime = Date.now();
+
                     if (currentTime - startTime < timeout) {
                         retry = true;
                     } else {
@@ -110,6 +120,7 @@ async function getFunctionsForHostedProject(context: IActionContext, project: Lo
         if (functions !== undefined) {
             return (<FunctionEnvelope[]>functions.parsedBody).map(func => {
                 func = requestUtils.convertToAzureSdkObject(func);
+
                 return new LocalFunction(project, nonNullProp(func, 'name'), new ParsedFunctionJson(func.config), func);
             });
         }

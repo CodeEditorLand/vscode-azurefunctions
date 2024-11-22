@@ -44,11 +44,14 @@ export class PysteinTemplateProvider extends ScriptBundleTemplateProvider {
 	): Promise<ITemplates> {
 		const release: bundleFeedUtils.ITemplatesReleaseV2 =
 			await bundleFeedUtils.getReleaseV2(latestTemplateVersion);
+
 		const language = this.getResourcesLanguage();
+
 		const resourcesUrl: string = release.resources.replace(
 			"{locale}",
 			language,
 		);
+
 		const urls: string[] = [
 			release.userPrompts ?? release.bindings,
 			resourcesUrl,
@@ -117,11 +120,13 @@ export class PysteinTemplateProvider extends ScriptBundleTemplateProvider {
 			"templates-v2",
 			"templates.json",
 		);
+
 		const bindings: string = path.join(
 			rootPath,
 			"bindings-v2",
 			"userPrompts.json",
 		);
+
 		const resources: string = path.join(
 			rootPath,
 			"resources-v2",

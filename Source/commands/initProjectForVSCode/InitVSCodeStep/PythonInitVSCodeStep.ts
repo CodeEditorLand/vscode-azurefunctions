@@ -38,6 +38,7 @@ export class PythonInitVSCodeStep extends ScriptInitVSCodeStep {
 		this.settings.push({ key: "scmDoBuildDuringDeployment", value: true });
 
 		this._venvName = context.venvName;
+
 		if (this._venvName) {
 			this.settings.push({
 				key: pythonVenvSetting,
@@ -47,6 +48,7 @@ export class PythonInitVSCodeStep extends ScriptInitVSCodeStep {
 		}
 
 		const gitignoreLines: string[] = [".python_packages", "__pycache__"];
+
 		if (this._venvName) {
 			gitignoreLines.push(this._venvName);
 		}
@@ -60,11 +62,13 @@ export class PythonInitVSCodeStep extends ScriptInitVSCodeStep {
 	protected getTasks(language: ProjectLanguage): TaskDefinition[] {
 		const pipInstallLabel: string =
 			convertToFunctionsTaskLabel("pip install");
+
 		const dependsOn: string | undefined = this.useFuncExtensionsInstall
 			? extInstallTaskName
 			: this._venvName
 				? pipInstallLabel
 				: undefined;
+
 		const tasks: TaskDefinition[] = [
 			{
 				type: func,
@@ -126,8 +130,10 @@ export async function ensureGitIgnoreContents(
 ): Promise<void> {
 	// .gitignore is created by `func init`
 	const gitignorePath: string = path.join(projectPath, gitignoreFileName);
+
 	if (await AzExtFsExtra.pathExists(gitignorePath)) {
 		let writeFile: boolean = false;
+
 		let gitignoreContents: string = (
 			await AzExtFsExtra.readFile(gitignorePath)
 		).toString();
@@ -152,11 +158,14 @@ async function ensureVenvInFuncIgnore(
 	venvName: string,
 ): Promise<void> {
 	const funcIgnorePath: string = path.join(projectPath, ".funcignore");
+
 	let funcIgnoreContents: string | undefined;
+
 	if (await AzExtFsExtra.pathExists(funcIgnorePath)) {
 		funcIgnoreContents = (
 			await AzExtFsExtra.readFile(funcIgnorePath)
 		).toString();
+
 		if (funcIgnoreContents && !funcIgnoreContents.includes(venvName)) {
 			funcIgnoreContents = funcIgnoreContents.concat(
 				`${os.EOL}${venvName}`,

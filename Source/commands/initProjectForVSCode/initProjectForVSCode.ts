@@ -37,7 +37,9 @@ export async function initProjectForVSCode(
 	language?: ProjectLanguage,
 ): Promise<void> {
 	let workspaceFolder: WorkspaceFolder | undefined;
+
 	let workspacePath: string;
+
 	if (fsPath === undefined) {
 		if (
 			!workspace.workspaceFolders ||
@@ -52,6 +54,7 @@ export async function initProjectForVSCode(
 			workspaceFolder = await window.showWorkspaceFolderPick({
 				placeHolder,
 			});
+
 			if (!workspaceFolder) {
 				throw new UserCancelledError("selectFunctionAppFolderNew");
 			} else {
@@ -67,6 +70,7 @@ export async function initProjectForVSCode(
 		context,
 		workspaceFolder || workspacePath,
 	);
+
 	if (!projectPath) {
 		return;
 	}
@@ -75,13 +79,16 @@ export async function initProjectForVSCode(
 		language ||
 		getGlobalSetting(projectLanguageSetting) ||
 		(await detectProjectLanguage(context, projectPath));
+
 	const languageModel: number | undefined =
 		getGlobalSetting(projectLanguageModelSetting) ||
 		(await detectProjectLanguageModel(language, projectPath));
+
 	const version: FuncVersion =
 		getGlobalSetting(funcVersionSetting) ||
 		(await tryGetLocalFuncVersion(context, workspacePath)) ||
 		latestGAVersion;
+
 	const projectTemplateKey: string | undefined = getGlobalSetting(
 		projectTemplateKeySetting,
 	);
@@ -95,6 +102,7 @@ export async function initProjectForVSCode(
 		workspaceFolder,
 		projectTemplateKey,
 	});
+
 	const wizard: AzureWizard<IProjectWizardContext> = new AzureWizard(
 		wizardContext,
 		{ promptSteps: [new InitVSCodeLanguageStep()] },

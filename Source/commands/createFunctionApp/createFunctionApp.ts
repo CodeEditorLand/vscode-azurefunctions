@@ -36,12 +36,15 @@ export async function createFunctionApp(
 	const newResourceGroupName = Array.isArray(nodesOrNewResourceGroupName)
 		? undefined
 		: nodesOrNewResourceGroupName;
+
 	let node: AzExtParentTreeItem | undefined;
+
 	if (typeof subscription === "string") {
 		node = await ext.rgApi.tree.findTreeItem(
 			`/subscriptions/${subscription}`,
 			context,
 		);
+
 		if (!node) {
 			throw new Error(
 				localize(

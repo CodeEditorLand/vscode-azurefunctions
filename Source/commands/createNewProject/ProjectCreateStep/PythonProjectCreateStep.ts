@@ -16,6 +16,7 @@ import { ScriptProjectCreateStep } from "./ScriptProjectCreateStep";
 
 // Starting after this version, the func cli does not require a virtual environment and comes pre-packaged with the below dependencies
 const oldFuncVersion: string = "2.4.419";
+
 const oldRequirements: string = `azure-functions==1.0.0b3
 azure-functions-worker==1.0.0b4
 grpcio==1.14.2
@@ -47,8 +48,10 @@ export class PythonProjectCreateStep extends ScriptProjectCreateStep {
 			context.projectPath,
 			requirementsFileName,
 		);
+
 		if (await confirmOverwriteFile(context, requirementsPath)) {
 			let isOldFuncCli: boolean;
+
 			try {
 				const currentVersion: string | null =
 					await getLocalFuncCoreToolsVersion(

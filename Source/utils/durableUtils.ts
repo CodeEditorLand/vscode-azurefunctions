@@ -39,15 +39,21 @@ import { findFiles } from "./workspace";
 export namespace durableUtils {
 	export const dotnetInProcDfSqlPackage: string =
 		"Microsoft.DurableTask.SqlServer.AzureFunctions";
+
 	export const dotnetIsolatedDfSqlPackage: string =
 		"Microsoft.Azure.Functions.Worker.Extensions.DurableTask.SqlServer";
+
 	export const dotnetInProcDfNetheritePackage: string =
 		"Microsoft.Azure.DurableTask.Netherite.AzureFunctions";
+
 	export const dotnetIsolatedDfNetheritePackage: string =
 		"Microsoft.Azure.Functions.Worker.Extensions.DurableTask.Netherite";
+
 	export const dotnetInProcDfBasePackage: string =
 		"Microsoft.Azure.WebJobs.Extensions.DurableTask";
+
 	export const nodeDfPackage: string = "durable-functions";
+
 	export const pythonDfPackage: string = "azure-functions-durable";
 
 	export function requiresDurableStorageSetup(
@@ -77,6 +83,7 @@ export namespace durableUtils {
 		}
 
 		const durableEntity = /DurableFunctionsEntity/i;
+
 		const durableOrchestrator: RegExp = /DurableFunctionsOrchestrat/i; // Sometimes ends with 'or' or 'ion'
 
 		return (
@@ -93,24 +100,29 @@ export namespace durableUtils {
 			language,
 			projectPath,
 		);
+
 		if (!hasDurableStorage) {
 			return undefined;
 		}
 
 		const hostJsonPath = path.join(projectPath, hostFileName);
+
 		if (!(await AzExtFsExtra.pathExists(hostJsonPath))) {
 			return undefined;
 		}
 
 		const hostJson: IHostJsonV2 = await AzExtFsExtra.readJSON(hostJsonPath);
+
 		const hostStorageType: DurableBackendValues | undefined =
 			hostJson.extensions?.durableTask?.storageProvider?.type;
 
 		switch (hostStorageType) {
 			case DurableBackend.Netherite:
 				return DurableBackend.Netherite;
+
 			case DurableBackend.SQL:
 				return DurableBackend.SQL;
+
 			case DurableBackend.Storage:
 			default:
 				// New DF's will use the more specific type 'DurableBackend.Storage', but legacy implementations may return this value as 'undefined'
@@ -129,17 +141,22 @@ export namespace durableUtils {
 			case ProjectLanguage.Java:
 				// ???
 				return false;
+
 			case ProjectLanguage.JavaScript:
 			case ProjectLanguage.TypeScript:
 				return await nodeProjectHasDurableDependency(projectPath);
+
 			case ProjectLanguage.CSharp:
 			case ProjectLanguage.FSharp:
 				return await dotnetProjectHasDurableDependency(projectPath);
+
 			case ProjectLanguage.PowerShell:
 				// ???
 				return false;
+
 			case ProjectLanguage.Python:
 				return await pythonProjectHasDurableDependency(projectPath);
+
 			default:
 				return false;
 		}
@@ -155,6 +172,7 @@ export namespace durableUtils {
 		projectPath: string,
 	): Promise<boolean> {
 		const csProjPaths: Uri[] = await findFiles(projectPath, "*.csproj");
+
 		if (
 			!(
 				csProjPaths?.[0]?.path &&
@@ -191,6 +209,7 @@ export namespace durableUtils {
 			projectPath,
 			requirementsFileName,
 		);
+
 		return await pythonUtils.hasDependencyInRequirements(
 			pythonDfPackage,
 			requirementsPath,
@@ -208,14 +227,19 @@ export namespace durableUtils {
 			case ProjectLanguage.Java:
 				// Todo: Revisit when adding Java implementation
 				break;
+
 			case ProjectLanguage.CSharp:
 			case ProjectLanguage.FSharp:
 				await installDotnetDependencies(context);
+
 				break;
+
 			case ProjectLanguage.JavaScript:
 			case ProjectLanguage.TypeScript:
 				await installNodeDependencies(context);
+
 				break;
+
 			case ProjectLanguage.Python:
 				await pythonUtils.addDependencyToRequirements(
 					pythonDfPackage,
@@ -224,10 +248,13 @@ export namespace durableUtils {
 				await venvUtils.runPipInstallCommandIfPossible(
 					context.projectPath,
 				);
+
 				break;
+
 			case ProjectLanguage.PowerShell:
 				// Todo: Revisit when adding PowerShell implementation
 				break;
+
 			default:
 		}
 	}
@@ -236,6 +263,7 @@ export namespace durableUtils {
 		context: IFunctionWizardContext,
 	): Promise<void> {
 		const packageNames: string[] = [];
+
 		const isDotnetIsolated: boolean = /Isolated/i.test(
 			context.functionTemplate?.id ?? "",
 		);
@@ -245,12 +273,16 @@ export namespace durableUtils {
 				isDotnetIsolated
 					? packageNames.push(dotnetIsolatedDfNetheritePackage)
 					: packageNames.push(dotnetInProcDfNetheritePackage);
+
 				break;
+
 			case DurableBackend.SQL:
 				isDotnetIsolated
 					? packageNames.push(dotnetIsolatedDfSqlPackage)
 					: packageNames.push(dotnetInProcDfSqlPackage);
+
 				break;
+
 			case DurableBackend.Storage:
 			default:
 		}
@@ -265,6 +297,7 @@ export namespace durableUtils {
 		}
 
 		const failedPackages: string[] = [];
+
 		for (const packageName of packageNames) {
 			try {
 				await cpUtils.executeCommand(
@@ -305,6 +338,7 @@ export namespace durableUtils {
 			);
 		} catch (error) {
 			const pError: IParsedError = parseError(error);
+
 			const dfDepInstallFailed: string = localize(
 				"failedToAddDurableNodeDependency",
 				'Failed to add or install the "{0}" dependency. Please inspect and verify if it needs to be added manually.',

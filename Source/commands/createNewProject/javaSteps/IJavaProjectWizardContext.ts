@@ -21,6 +21,7 @@ export interface IJavaProjectWizardContext extends IProjectWizardContext {
 
 export function getJavaClassName(name: string): string {
 	name = name.replace("-", "_");
+
 	return name[0].toUpperCase() + name.slice(1);
 }
 

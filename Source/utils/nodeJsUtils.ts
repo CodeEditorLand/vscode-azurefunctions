@@ -32,6 +32,7 @@ export async function hasNodeJsDependency(
 ): Promise<boolean> {
 	try {
 		const packageJson = await tryGetPackageJson(projectPath);
+
 		if (isDevDependency) {
 			return !!packageJson?.devDependencies?.[depName];
 		} else {

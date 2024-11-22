@@ -16,14 +16,17 @@ export function parseJson<T extends object>(data: string): T {
 	}
 
 	const errors: jsonc.ParseError[] = [];
+
 	const result: T = <T>(
 		jsonc.parse(data, errors, { allowTrailingComma: true })
 	);
+
 	if (errors.length > 0) {
 		const [line, column]: [number, number] = getLineAndColumnFromOffset(
 			data,
 			errors[0].offset,
 		);
+
 		throw new Error(
 			localize(
 				"jsonParseError",
@@ -43,15 +46,22 @@ export function getLineAndColumnFromOffset(
 	offset: number,
 ): [number, number] {
 	const lines: string[] = data.split("\n");
+
 	let charCount: number = 0;
+
 	let lineCount: number = 0;
+
 	let column: number = 0;
+
 	for (const line of lines) {
 		lineCount += 1;
+
 		const lineLength: number = line.length + 1;
 		charCount += lineLength;
+
 		if (charCount >= offset) {
 			column = offset - (charCount - lineLength);
+
 			break;
 		}
 	}

@@ -32,6 +32,7 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 		context: IActionContext,
 	): Promise<DotnetFunctionCreateStep> {
 		await validateDotnetInstalled(context);
+
 		return new DotnetFunctionCreateStep();
 	}
 
@@ -45,6 +46,7 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 		assertTemplateIsV1(template);
 
 		const functionName: string = nonNullProp(context, "functionName");
+
 		const args: string[] = [];
 		args.push("--arg:name");
 		args.push(cpUtils.wrapArgInQuotes(functionName));
@@ -62,7 +64,9 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 		}
 
 		const version: FuncVersion = nonNullProp(context, "version");
+
 		let projectTemplateKey = context.projectTemplateKey;
+
 		if (!projectTemplateKey) {
 			const templateProvider = ext.templateProvider.get(context);
 			projectTemplateKey = await templateProvider.getProjectTemplateKey(

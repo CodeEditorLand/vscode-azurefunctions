@@ -26,6 +26,7 @@ export async function executeFunction(
 	node?: FunctionTreeItemBase | IFunction,
 ): Promise<void> {
 	context.telemetry.eventVersion = 2;
+
 	if (!node) {
 		const noItemFoundErrorMessage: string = localize(
 			"noFunctions",
@@ -51,6 +52,7 @@ export async function executeFunction(
 		context.telemetry.properties.triggerBindingType = triggerBindingType;
 
 		let functionInput: string | {} = "";
+
 		if (triggerBindingType === "eventGridTrigger") {
 			return await executeEventGridFunction(context, node);
 		} else if (!func.isTimerTrigger) {
@@ -58,16 +60,20 @@ export async function executeFunction(
 				"enterRequestBody",
 				"Enter request body",
 			);
+
 			let value: string | undefined;
+
 			if (triggerBindingType) {
 				const version: FuncVersion =
 					await node.project.getVersion(context);
+
 				const templateProvider = ext.templateProvider.get(context);
 				value = await templateProvider.tryGetSampleData(
 					context,
 					version,
 					triggerBindingType,
 				);
+
 				if (value) {
 					// Clean up the whitespace to make it more friendly for a one-line input box
 					value = value.replace(/[\r\n\t]/g, " ");
@@ -80,6 +86,7 @@ export async function executeFunction(
 				value,
 				stepName: "requestBody",
 			});
+
 			try {
 				functionInput = <{}>JSON.parse(data);
 			} catch {
@@ -102,7 +109,9 @@ export async function executeFunctionWithInput(
 	const func = node instanceof FunctionTreeItemBase ? node.function : node;
 
 	let triggerRequest: FuncHostRequest;
+
 	let body: {};
+
 	if (func.isHttpTrigger) {
 		triggerRequest = nonNullValue(
 			await func.getTriggerRequest(context),
@@ -117,6 +126,7 @@ export async function executeFunctionWithInput(
 	}
 
 	let responseText: string | null | undefined;
+
 	const execute = async () => {
 		const headers = createHttpHeaders({
 			"Content-Type": "application/json",
@@ -126,6 +136,7 @@ export async function executeFunctionWithInput(
 			node instanceof RemoteFunctionTreeItem
 				? await node.parent.parent.site.createClient(context)
 				: undefined;
+
 		if (client) {
 			headers.set(
 				"x-functions-key",
@@ -143,8 +154,10 @@ export async function executeFunctionWithInput(
 			).bodyAsText;
 		} catch (error) {
 			const errorType = parseError(error).errorType;
+
 			if (!client && errorType === "ECONNREFUSED") {
 				context.errorHandling.suppressReportIssue = true;
+
 				throw new Error(
 					localize(
 						"failedToConnect",

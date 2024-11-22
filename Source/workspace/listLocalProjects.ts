@@ -51,16 +51,20 @@ export async function listLocalProjects(): Promise<ListLocalProjectsResult> {
 		"listLocalProjects",
 		async (context) => {
 			context.errorHandling.rethrow = true;
+
 			const result: ListLocalProjectsResult = {
 				initializedProjects: [],
 				unintializedProjects: [],
 				invalidProjects: [],
 			};
+
 			const workspaceFolders: readonly vscode.WorkspaceFolder[] =
 				vscode.workspace.workspaceFolders || [];
+
 			for (const workspaceFolder of workspaceFolders) {
 				const projectPath: string | undefined =
 					await tryGetFunctionProjectRoot(context, workspaceFolder);
+
 				if (projectPath) {
 					try {
 						const language: ProjectLanguage | undefined =
@@ -68,11 +72,13 @@ export async function listLocalProjects(): Promise<ListLocalProjectsResult> {
 								projectLanguageSetting,
 								projectPath,
 							);
+
 						const languageModel: number | undefined =
 							getWorkspaceSetting(
 								projectLanguageModelSetting,
 								projectPath,
 							);
+
 						const version: FuncVersion | undefined =
 							tryParseFuncVersion(
 								getWorkspaceSetting(
@@ -80,6 +86,7 @@ export async function listLocalProjects(): Promise<ListLocalProjectsResult> {
 									projectPath,
 								),
 							);
+
 						if (language === undefined || version === undefined) {
 							result.unintializedProjects.push({
 								workspaceFolder,
@@ -87,8 +94,11 @@ export async function listLocalProjects(): Promise<ListLocalProjectsResult> {
 							});
 						} else {
 							let preCompiledProjectPath: string | undefined;
+
 							let effectiveProjectPath: string;
+
 							let isIsolated: boolean | undefined;
+
 							const compiledProjectInfo:
 								| CompiledProjectInfo
 								| undefined = await getCompiledProjectInfo(
@@ -96,6 +106,7 @@ export async function listLocalProjects(): Promise<ListLocalProjectsResult> {
 								projectPath,
 								language,
 							);
+
 							if (compiledProjectInfo) {
 								preCompiledProjectPath = projectPath;
 								effectiveProjectPath =
@@ -152,10 +163,13 @@ async function getCompiledProjectInfo(
 				projectLanguage,
 				projectPath,
 			);
+
 		if (projFiles.length === 1) {
 			const targetFramework: string =
 				await dotnetUtils.getTargetFramework(projFiles[0]);
+
 			const isIsolated = await dotnetUtils.getIsIsolated(projFiles[0]);
+
 			return {
 				compiledProjectPath: path.join(
 					projectPath,
@@ -173,10 +187,12 @@ async function getCompiledProjectInfo(
 			javaBuildTool,
 			projectPath,
 		);
+
 		const functionAppName: string | undefined = await getFunctionAppName(
 			projectPath,
 			buildTool,
 		);
+
 		if (!functionAppName) {
 			throw new Error(
 				localize(

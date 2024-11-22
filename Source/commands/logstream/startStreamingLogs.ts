@@ -54,7 +54,9 @@ export async function startStreamingLogs(
 		const verifyLoggingEnabled: () => Promise<void> =
 			async (): Promise<void> => {
 				const client = await site.createClient(context);
+
 				const logsConfig: SiteLogsConfig = await client.getLogsConfig();
+
 				if (!isApplicationLoggingEnabled(logsConfig)) {
 					const message: string = localize(
 						"enableApplicationLogging",
@@ -90,12 +92,15 @@ async function openLiveMetricsStream(
 	node: AzExtTreeItem,
 ): Promise<void> {
 	const client = await site.createClient(context);
+
 	const appSettings: StringDictionary =
 		await client.listApplicationSettings();
+
 	const aiKey: string | undefined =
 		appSettings.properties &&
 		(appSettings.properties.APPLICATIONINSIGHTS_CONNECTION_STRING ||
 			appSettings.properties.APPINSIGHTS_INSTRUMENTATIONKEY);
+
 	if (!aiKey) {
 		// https://github.com/microsoft/vscode-azurefunctions/issues/1432
 		throw new Error(
@@ -107,15 +112,18 @@ async function openLiveMetricsStream(
 	} else {
 		const aiClient: ApplicationInsightsManagementClient =
 			await createAppInsightsClient([context, node.subscription]);
+
 		const components = await uiUtils.listAllIterator(
 			aiClient.components.list(),
 		);
+
 		const component: ApplicationInsightsComponent | undefined =
 			components.find(
 				(c) =>
 					c.connectionString === aiKey ||
 					c.instrumentationKey === aiKey,
 			);
+
 		if (!component) {
 			throw new Error(
 				localize(
@@ -131,6 +139,7 @@ async function openLiveMetricsStream(
 					ResourceGroup: site.resourceGroup,
 				}),
 			);
+
 			const resourceId: string = encodeURIComponent(
 				nonNullProp(component, "id"),
 			);

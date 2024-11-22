@@ -24,6 +24,7 @@ export class EnterPythonAliasStep extends AzureWizardPromptStep<IPythonVenvWizar
 			"pyAliasPlaceholder",
 			"Enter the Python interpreter or full path",
 		);
+
 		const supportedVersions: string[] = await getSupportedPythonVersions(
 			context,
 			context.version,
@@ -49,6 +50,7 @@ async function validatePythonAlias(
 	pyAlias: string,
 ): Promise<string | undefined> {
 	let pyVersion: string;
+
 	try {
 		pyVersion = await getPythonVersion(pyAlias);
 	} catch (error) {
@@ -61,6 +63,7 @@ async function validatePythonAlias(
 		const supportedVersionsString: string = supportedVersions
 			.map((v) => `"${v}.x"`)
 			.join(", ");
+
 		return localize(
 			"notMatchingVersion",
 			'Python version "{0}" does not match supported versions: {1}',

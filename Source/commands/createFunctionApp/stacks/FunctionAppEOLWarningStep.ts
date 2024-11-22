@@ -21,8 +21,10 @@ import { type IFunctionAppWizardContext } from "../IFunctionAppWizardContext";
 export class FunctionAppEOLWarningStep extends AzureWizardPromptStep<IFunctionAppWizardContext> {
 	public async prompt(context: IFunctionAppWizardContext): Promise<void> {
 		const settingKey: string = "endOfLifeWarning";
+
 		if (getWorkspaceSetting<boolean>(settingKey)) {
 			let result: MessageItem = await this.showEOLWarningMessage(context);
+
 			while (result === DialogResponses.learnMore) {
 				await openUrl(funcVersionLink);
 				result = await this.showEOLWarningMessage(context);
@@ -47,9 +49,11 @@ export class FunctionAppEOLWarningStep extends AzureWizardPromptStep<IFunctionAp
 				"After the deadline, function apps can be created and deployed, and existing apps continue to run. " +
 				"However, your apps won't be eligible for new features, security patches, performance optimizations, and support until you upgrade them.",
 		);
+
 		const continueOn: MessageItem = {
 			title: localize("continueOn", "Continue"),
 		};
+
 		return await context.ui.showWarningMessage(
 			message,
 			{ modal: true },

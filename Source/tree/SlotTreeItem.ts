@@ -46,6 +46,7 @@ export class SlotTreeItem extends SlotContainerTreeItemBase {
 		const slotContextValue = this.resolved.site.isSlot
 			? ResolvedFunctionAppResource.slotContextValue
 			: ResolvedFunctionAppResource.productionContextValue;
+
 		const contextValues = [slotContextValue, "slot"];
 		this.contextValue = Array.from(new Set(contextValues)).sort().join(";");
 		this.site = this.resolved.site;

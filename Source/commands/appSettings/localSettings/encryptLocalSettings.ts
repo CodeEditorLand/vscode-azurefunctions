@@ -20,6 +20,7 @@ export async function encryptLocalSettings(
 		"selectLocalSettings",
 		"Select the settings file to encrypt.",
 	);
+
 	const localSettingsPath: string = uri
 		? uri.fsPath
 		: await getLocalSettingsFile(context, message);

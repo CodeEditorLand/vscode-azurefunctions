@@ -106,16 +106,19 @@ export class BallerinaTemplateProvider extends TemplateProviderBase {
 			"resources",
 			`Resources.json`,
 		);
+
 		const templates: string = path.join(
 			rootPath,
 			"templates",
 			"templates.json",
 		);
+
 		const bindings: string = path.join(
 			rootPath,
 			"bindings",
 			"bindings.json",
 		);
+
 		return { resources, templates, bindings };
 	}
 

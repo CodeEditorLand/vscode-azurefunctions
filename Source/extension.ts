@@ -78,9 +78,13 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
         registerFuncHostTaskEvents();
 
         const nodeDebugProvider: NodeDebugProvider = new NodeDebugProvider();
+
         const pythonDebugProvider: PythonDebugProvider = new PythonDebugProvider();
+
         const javaDebugProvider: JavaDebugProvider = new JavaDebugProvider();
+
         const ballerinaDebugProvider: BallerinaDebugProvider = new BallerinaDebugProvider();
+
         const powershellDebugProvider: PowerShellDebugProvider = new PowerShellDebugProvider();
 
         // These don't actually overwrite "node", "python", etc. - they just add to it

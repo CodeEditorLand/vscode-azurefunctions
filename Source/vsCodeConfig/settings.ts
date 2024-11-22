@@ -56,8 +56,10 @@ export function getGlobalSetting<T>(
 ): T | undefined {
 	const projectConfiguration: WorkspaceConfiguration =
 		workspace.getConfiguration(prefix);
+
 	const result: { globalValue?: T } | undefined =
 		projectConfiguration.inspect<T>(key);
+
 	return result && result.globalValue;
 }
 
@@ -71,6 +73,7 @@ export function getWorkspaceSetting<T>(
 ): T | undefined {
 	const projectConfiguration: WorkspaceConfiguration =
 		workspace.getConfiguration(prefix, getScope(fsPath));
+
 	return projectConfiguration.get<T>(key);
 }
 
@@ -90,11 +93,14 @@ export function getWorkspaceSettingFromAnyFolder(
 ): string | undefined {
 	if (workspace.workspaceFolders && workspace.workspaceFolders.length > 0) {
 		let result: string | undefined;
+
 		for (const folder of workspace.workspaceFolders) {
 			const projectConfiguration: WorkspaceConfiguration =
 				workspace.getConfiguration(prefix, folder.uri);
+
 			const folderResult: string | undefined =
 				projectConfiguration.get<string>(key);
+
 			if (!result) {
 				result = folderResult;
 			} else if (folderResult && result !== folderResult) {
@@ -118,18 +124,24 @@ export function getRootFunctionsWorkerRuntime(
 		case ProjectLanguage.JavaScript:
 		case ProjectLanguage.TypeScript:
 			return "node";
+
 		case ProjectLanguage.CSharp:
 		case ProjectLanguage.FSharp:
 			return "dotnet";
+
 		case ProjectLanguage.Ballerina:
 		case ProjectLanguage.Java:
 			return "java";
+
 		case ProjectLanguage.Python:
 			return "python";
+
 		case ProjectLanguage.PowerShell:
 			return "powershell";
+
 		case ProjectLanguage.Custom:
 			return "custom";
+
 		default:
 			return undefined;
 	}
@@ -141,6 +153,7 @@ export async function tryGetFunctionsWorkerRuntimeForProject(
 	projectPath: string | undefined,
 ): Promise<string | undefined> {
 	let runtime = getRootFunctionsWorkerRuntime(language);
+
 	if (
 		language === ProjectLanguage.CSharp ||
 		language === ProjectLanguage.FSharp
@@ -148,6 +161,7 @@ export async function tryGetFunctionsWorkerRuntimeForProject(
 		if (projectPath) {
 			const projFiles: dotnetUtils.ProjectFile[] =
 				await dotnetUtils.getProjFiles(context, language, projectPath);
+
 			if (projFiles.length === 1) {
 				if (await dotnetUtils.getIsIsolated(projFiles[0])) {
 					runtime += "-isolated";
@@ -192,6 +206,7 @@ export function getFuncWatchProblemMatcher(
 	language: string | undefined,
 ): string {
 	const runtime: string | undefined = getRootFunctionsWorkerRuntime(language);
+
 	return runtime && runtime !== "custom"
 		? `$func-${runtime}-watch`
 		: "$func-watch";

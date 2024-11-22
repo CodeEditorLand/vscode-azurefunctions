@@ -21,9 +21,12 @@ export async function copyFolder(
 	toPath: string,
 ): Promise<void> {
 	const files = await AzExtFsExtra.readDirectory(fromPath);
+
 	for (const file of files) {
 		const originPath: string = path.join(fromPath, file.name);
+
 		const targetPath: string = path.join(toPath, file.name);
+
 		if (file.type === FileType.File) {
 			if (await confirmOverwriteFile(context, targetPath)) {
 				await AzExtFsExtra.copy(originPath, targetPath, {
@@ -42,6 +45,7 @@ export async function confirmEditJsonFile(
 	editJson: (existingData: {}) => {} | Promise<{}>,
 ): Promise<void> {
 	let newData: {};
+
 	if (await AzExtFsExtra.pathExists(fsPath)) {
 		try {
 			newData = await editJson(await AzExtFsExtra.readJSON<{}>(fsPath));
@@ -78,6 +82,7 @@ export async function confirmOverwriteFile(
 				DialogResponses.yes,
 				DialogResponses.no,
 			);
+
 		if (result === DialogResponses.yes) {
 			return true;
 		} else {
@@ -90,6 +95,7 @@ export async function confirmOverwriteFile(
 
 export function getRandomHexString(length: number = 10): string {
 	const buffer: Buffer = crypto.randomBytes(Math.ceil(length / 2));
+
 	return buffer.toString("hex").slice(0, length);
 }
 
@@ -99,6 +105,7 @@ export function isPathEqual(
 	relativeFunc: pathRelativeFunc = path.relative,
 ): boolean {
 	const relativePath: string = relativeFunc(fsPath1, fsPath2);
+
 	return relativePath === "";
 }
 
@@ -108,6 +115,7 @@ export function isSubpath(
 	relativeFunc: pathRelativeFunc = path.relative,
 ): boolean {
 	const relativePath: string = relativeFunc(expectedParent, expectedChild);
+
 	return (
 		relativePath !== "" &&
 		!relativePath.startsWith("..") &&

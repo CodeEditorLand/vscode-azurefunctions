@@ -44,6 +44,7 @@ export class LocalAppSettingCreateStep extends AzureWizardExecuteStep<IBindingWi
 				localSettingsFileName,
 			),
 		});
+
 		const appSettingName = String(
 			nonNullValue(
 				getBindingSetting(context, this._setting),

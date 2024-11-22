@@ -18,6 +18,7 @@ export class ShowMarkdownPreviewExecuteStep<
 		assertTemplateIsV2(context.functionTemplate);
 
 		const filename = nonNullProp(this.action, "filePath");
+
 		const content = context.functionTemplate.files[filename] ?? "";
 		await showMarkdownPreviewContent(
 			content,

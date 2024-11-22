@@ -39,6 +39,7 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 			func,
 		);
 		await ti.initAsync(context);
+
 		return ti;
 	}
 
@@ -63,11 +64,13 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 			'Are you sure you want to delete function "{0}"?',
 			this.function.name,
 		);
+
 		const deleting: string = localize(
 			"DeletingFunction",
 			'Deleting function "{0}"...',
 			this.function.name,
 		);
+
 		const deleteSucceeded: string = localize(
 			"DeleteFunctionSucceeded",
 			'Successfully deleted function "{0}".',
@@ -82,6 +85,7 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 			{ location: ProgressLocation.Notification, title: deleting },
 			async (): Promise<void> => {
 				ext.outputChannel.appendLog(deleting);
+
 				const client =
 					await this.parent.parent.site.createClient(context);
 				await client.deleteFunction(this.function.name);
@@ -97,10 +101,12 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 		}
 
 		const client = await this.parent.parent.site.createClient(context);
+
 		if (this.function.config.authLevel === HttpAuthLevel.function) {
 			try {
 				const functionKeys: IFunctionKeys =
 					await client.listFunctionKeys(this.function.name);
+
 				return nonNullProp(functionKeys, "default");
 			} catch (error) {
 				if (parseError(error).errorType === "NotFound") {
@@ -112,6 +118,7 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 		}
 
 		const hostKeys: HostKeys = await client.listHostKeys();
+
 		return nonNullProp(hostKeys, "masterKey");
 	}
 }

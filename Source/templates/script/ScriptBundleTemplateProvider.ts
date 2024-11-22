@@ -36,6 +36,7 @@ export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 	): Promise<string> {
 		const bundleMetadata: IBundleMetadata | undefined =
 			await this.getBundleInfo();
+
 		return await bundleFeedUtils.getLatestTemplateVersion(
 			context,
 			bundleMetadata,
@@ -48,6 +49,7 @@ export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 	): Promise<ITemplates> {
 		const bundleMetadata: IBundleMetadata | undefined =
 			await this.getBundleInfo();
+
 		const release: bundleFeedUtils.ITemplatesReleaseV1 =
 			await bundleFeedUtils.getRelease(
 				context,
@@ -56,6 +58,7 @@ export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 			);
 
 		const language: string = this.getResourcesLanguage();
+
 		const resourcesUrl: string = release.resources.replace(
 			"{locale}",
 			language,
@@ -88,6 +91,7 @@ export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 	public async getBackupTemplates(): Promise<ITemplates> {
 		const bundleMetadata: IBundleMetadata | undefined =
 			await this.getBundleInfo();
+
 		if (
 			!bundleMetadata ||
 			!bundleMetadata.id ||
@@ -108,6 +112,7 @@ export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 	protected async getCacheKeySuffix(): Promise<string> {
 		const bundleMetadata: IBundleMetadata | undefined =
 			await this.getBundleInfo();
+
 		return (
 			(bundleMetadata && bundleMetadata.id) ||
 			bundleFeedUtils.defaultBundleId
@@ -116,11 +121,13 @@ export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 
 	protected async getBundleInfo(): Promise<IBundleMetadata | undefined> {
 		let data: unknown;
+
 		if (this.projectPath) {
 			const hostJsonPath: string = path.join(
 				this.projectPath,
 				hostFileName,
 			);
+
 			if (await AzExtFsExtra.pathExists(hostJsonPath)) {
 				try {
 					data = await AzExtFsExtra.readJSON(hostJsonPath);

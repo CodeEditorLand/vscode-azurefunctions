@@ -20,6 +20,7 @@ export class ScriptFunctionNameStep extends FunctionNameStepBase<IScriptFunction
 			context,
 			"functionTemplate",
 		);
+
 		return await this.getUniqueFsPath(
 			context.projectPath,
 			template.defaultFunctionName,

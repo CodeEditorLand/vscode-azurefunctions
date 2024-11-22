@@ -43,6 +43,7 @@ export class ContainerFunctionItem extends FunctionBase {
 			context,
 			this.parent.subscription,
 		]);
+
 		if (this.config.authLevel === HttpAuthLevel.function) {
 			try {
 				const functionKeys: IFunctionKeys =
@@ -51,6 +52,7 @@ export class ContainerFunctionItem extends FunctionBase {
 						nonNullValueAndProp(this.site, "name"),
 						this.name,
 					);
+
 				return nonNullProp(functionKeys, "default");
 			} catch (error) {
 				if (parseError(error).errorType === "NotFound") {
@@ -64,6 +66,7 @@ export class ContainerFunctionItem extends FunctionBase {
 			nonNullValueAndProp(this.site, "resourceGroup"),
 			nonNullValueAndProp(this.site, "name"),
 		);
+
 		return nonNullProp(hostKeys, "masterKey");
 	}
 }

@@ -20,10 +20,13 @@ export namespace javaUtils {
 				context,
 				{ method: "GET", url: metaDataUrl },
 			);
+
 			const metaData: string = nonNullProp(response, "bodyAsText");
+
 			const match: RegExpMatchArray | null = metaData.match(
 				/<release>(.*)<\/release>/i,
 			);
+
 			if (match) {
 				cachedVersions.set(metaDataUrl, match[1].trim());
 			}

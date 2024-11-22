@@ -39,6 +39,7 @@ class RunningFunctionTaskMap {
 
     public get(key: vscode.WorkspaceFolder | vscode.TaskScope, buildPath?: string): IRunningFuncTask | undefined {
         const values = this._map.get(key) || [];
+
         return values.find(t => {
             const taskExecution = t.taskExecution.task.execution as vscode.ShellExecution;
             // the cwd will include ${workspaceFolder} from our tasks.json so we need to replace it with the actual path
@@ -78,10 +79,12 @@ const funcTaskStartedEmitter = new vscode.EventEmitter<vscode.WorkspaceFolder | 
 export const onFuncTaskStarted = funcTaskStartedEmitter.event;
 
 export const buildPathToWorkspaceFolderMap = new Map<string, vscode.WorkspaceFolder>();
+
 const defaultFuncPort: string = '7071';
 
 export function isFuncHostTask(task: vscode.Task): boolean {
     const commandLine: string | undefined = task.execution && (<vscode.ShellExecution>task.execution).commandLine;
+
     return /func (host )?start/i.test(commandLine || '');
 }
 
@@ -89,8 +92,10 @@ export function registerFuncHostTaskEvents(): void {
     registerEvent('azureFunctions.onDidStartTask', vscode.tasks.onDidStartTaskProcess, async (context: IActionContext, e: vscode.TaskProcessStartEvent) => {
         context.errorHandling.suppressDisplay = true;
         context.telemetry.suppressIfSuccessful = true;
+
         if (e.execution.task.scope !== undefined && isFuncHostTask(e.execution.task)) {
             const portNumber = await getFuncPortFromTaskOrProject(context, e.execution.task, e.execution.task.scope);
+
             const runningFuncTask = { processId: e.processId, taskExecution: e.execution, portNumber };
             runningFuncTaskMap.set(e.execution.task.scope, runningFuncTask);
             funcTaskStartedEmitter.fire(e.execution.task.scope);
@@ -100,6 +105,7 @@ export function registerFuncHostTaskEvents(): void {
     registerEvent('azureFunctions.onDidEndTask', vscode.tasks.onDidEndTaskProcess, (context: IActionContext, e: vscode.TaskProcessEndEvent) => {
         context.errorHandling.suppressDisplay = true;
         context.telemetry.suppressIfSuccessful = true;
+
         if (e.execution.task.scope !== undefined && isFuncHostTask(e.execution.task)) {
             runningFuncTaskMap.delete(e.execution.task.scope, (e.execution.task.execution as vscode.ShellExecution).options?.cwd);
         }
@@ -133,6 +139,7 @@ export function registerFuncHostTaskEvents(): void {
 
 export function stopFuncTaskIfRunning(workspaceFolder: vscode.WorkspaceFolder | vscode.TaskScope, buildPath?: string, killAll?: boolean, terminate?: boolean): void {
     let runningFuncTask: (IRunningFuncTask | undefined)[] | undefined;
+
     if (killAll) {
         // get all is needed here
         runningFuncTask = runningFuncTaskMap.getAll(workspaceFolder);
@@ -143,6 +150,7 @@ export function stopFuncTaskIfRunning(workspaceFolder: vscode.WorkspaceFolder | 
     if (runningFuncTask !== undefined && runningFuncTask.length > 0) {
         for (const runningFuncTaskItem of runningFuncTask) {
             if (!runningFuncTaskItem) break;
+
             if (terminate) {
                 runningFuncTaskItem.taskExecution.terminate()
             } else {
@@ -166,6 +174,7 @@ export async function getFuncPortFromTaskOrProject(context: IActionContext, func
         // First, check the task itself
         if (funcTask && funcTask.execution instanceof vscode.ShellExecution) {
             const match = funcTask.execution?.commandLine?.match(/\s+(?:"|'|)(?:-p|--port)(?:"|'|)\s+(?:"|'|)([0-9]+)/i);
+
             if (match) {
                 return match[1];
             }
@@ -173,6 +182,7 @@ export async function getFuncPortFromTaskOrProject(context: IActionContext, func
 
         // Second, check local.settings.json
         let projectPath: string | undefined;
+
         if (typeof projectPathOrTaskScope === 'string') {
             projectPath = projectPathOrTaskScope;
         } else if (typeof projectPathOrTaskScope === 'object') {
@@ -181,8 +191,10 @@ export async function getFuncPortFromTaskOrProject(context: IActionContext, func
 
         if (projectPath) {
             const localSettings = await getLocalSettingsJson(context, path.join(projectPath, localSettingsFileName));
+
             if (localSettings.Host) {
                 const key = Object.keys(localSettings.Host).find(k => k.toLowerCase() === 'localhttpport');
+
                 if (key && localSettings.Host[key]) {
                     return localSettings.Host[key];
                 }

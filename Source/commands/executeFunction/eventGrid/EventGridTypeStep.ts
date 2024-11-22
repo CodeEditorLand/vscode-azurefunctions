@@ -26,6 +26,7 @@ type FileMetadata = {
 	url: string;
 	html_url: string;
 	git_url: string;
+
 	download_url: string;
 	type: string;
 	_links: {
@@ -45,10 +46,12 @@ export class EventGridTypeStep extends AzureWizardPromptStep<EventGridExecuteFun
 
 		// Get sample files for event source
 		const samplesUrl = sampleFilesUrl.replace("{eventSource}", eventSource);
+
 		const sampleFiles: FileMetadata[] = await feedUtils.getJsonFeed(
 			context,
 			samplesUrl,
 		);
+
 		const fileNames: string[] = sampleFiles.map(
 			(fileMetadata) => fileMetadata.name,
 		);

@@ -21,6 +21,7 @@ export async function startRemoteDebug(
 	}
 
 	const siteClient = await node.site.createClient(context);
+
 	const siteConfig: SiteConfig = await vscode.window.withProgress(
 		{ location: vscode.ProgressLocation.Notification, cancellable: true },
 		async (progress, token) => {
@@ -29,11 +30,13 @@ export async function startRemoteDebug(
 				progress,
 				token,
 			);
+
 			return await siteClient.getSiteConfig();
 		},
 	);
 
 	const appServicePlan = await siteClient.getAppServicePlan();
+
 	const language: appservice.RemoteDebugLanguage = getRemoteDebugLanguage(
 		siteConfig,
 		appServicePlan?.sku?.family,

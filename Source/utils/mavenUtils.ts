@@ -19,6 +19,7 @@ import { openUrl } from "./openUrl";
 
 export namespace mavenUtils {
 	const mvnCommand: string = "mvn";
+
 	export async function validateMavenInstalled(
 		context: IActionContext,
 	): Promise<void> {
@@ -55,6 +56,7 @@ export namespace mavenUtils {
 		pomLocation: string,
 	): Promise<string | undefined> {
 		const pomString: string = await AzExtFsExtra.readFile(pomLocation);
+
 		return await new Promise(
 			(resolve: (ret: string | undefined) => void): void => {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,6 +77,7 @@ export namespace mavenUtils {
 										"functionAppName"
 									] as string | undefined,
 								);
+
 								return;
 							}
 						}
@@ -97,22 +100,28 @@ export namespace mavenUtils {
 			mvnCommand,
 			...args,
 		);
+
 		if (result.code !== 0) {
 			const mvnErrorRegexp: RegExp = new RegExp(/^\[ERROR\](.*)$/, "gm");
+
 			const linesWithErrors: RegExpMatchArray | null =
 				result.cmdOutputIncludingStderr.match(mvnErrorRegexp);
+
 			let errorOutput: string = "";
+
 			if (linesWithErrors !== null) {
 				for (const line of linesWithErrors) {
 					errorOutput += `${line.trim() ? line.trim() : ""}\n`;
 				}
 			}
 			errorOutput = errorOutput.replace(/^\[ERROR\]/gm, "");
+
 			if (telemetryProperties) {
 				telemetryProperties.mavenErrors = errorOutput;
 			}
 			if (outputChannel) {
 				outputChannel.show();
+
 				throw new Error(
 					localize(
 						"commandErrorWithOutput",

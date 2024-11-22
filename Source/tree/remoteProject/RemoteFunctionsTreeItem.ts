@@ -38,6 +38,7 @@ export class RemoteFunctionsTreeItem extends FunctionsTreeItemBase {
 		const ti: RemoteFunctionsTreeItem = new RemoteFunctionsTreeItem(parent);
 		// initialize
 		await ti.initAsync(context);
+
 		return ti;
 	}
 
@@ -68,12 +69,14 @@ export class RemoteFunctionsTreeItem extends FunctionsTreeItemBase {
             Under these circumstances, we will attempt to do the call 3 times during warmup before throwing the error.
         */
 		const retries = 3;
+
 		const client = await this.parent.site.createClient(context);
 
 		const funcs = await retry<FunctionEnvelope[]>(
 			async (attempt: number) => {
 				// Load more currently broken https://github.com/Azure/azure-sdk-for-js/issues/20380
 				const response = await client.listFunctions();
+
 				const failedToList = localize(
 					"failedToList",
 					"Failed to list functions.",

@@ -31,6 +31,7 @@ export class EventGridSourceStep extends AzureWizardPromptStep<EventGridExecuteF
 				data: source,
 			};
 		});
+
 		const eventSource = (
 			await context.ui.showQuickPick(eventGridSourcePicks, {
 				placeHolder: localize(

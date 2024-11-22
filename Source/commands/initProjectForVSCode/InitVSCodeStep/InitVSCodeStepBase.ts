@@ -101,6 +101,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			context.workspacePath,
 			gitignoreFileName,
 		);
+
 		if (await AzExtFsExtra.pathExists(gitignorePath)) {
 			let gitignoreContents: string = (
 				await AzExtFsExtra.readFile(gitignorePath)
@@ -130,6 +131,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 	): string {
 		deploySubpath = this.addSubDir(context, deploySubpath);
 		this.settings.push({ key: deploySubpathSetting, value: deploySubpath });
+
 		return deploySubpath;
 	}
 
@@ -151,10 +153,12 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		language: ProjectLanguage,
 	): Promise<void> {
 		const newTasks: TaskDefinition[] = this.getTasks(language);
+
 		for (const task of newTasks) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			let cwd: string = (task.options && task.options.cwd) || ".";
 			cwd = this.addSubDir(context, cwd);
+
 			if (!isPathEqual(cwd, ".")) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				task.options = task.options || {};
@@ -181,6 +185,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			const currentVersion: string | undefined = getTasksVersion(
 				context.workspaceFolder,
 			);
+
 			if (!currentVersion) {
 				await updateTasksVersion(context.workspaceFolder, tasksVersion);
 			} else if (currentVersion !== tasksVersion) {
@@ -211,6 +216,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 						data.tasks,
 						newTasks,
 					);
+
 					return data;
 				},
 			);
@@ -231,6 +237,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 				return JSON.stringify(value, Object.keys(value).sort());
 			}
 			const t1String = stringifySorted(t1);
+
 			return !existingTasks?.some((t2) => {
 				// just for the sake of comparison: add label to existing task if it doesn't have one
 				return (
@@ -241,9 +248,12 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		});
 
 		const nonMatchingTasks: ITask[] = [];
+
 		const matchingTaskLabels: string[] = [];
+
 		for (const existingTask of existingTasks) {
 			const existingLabel = this.getTaskLabel(existingTask);
+
 			if (
 				existingLabel &&
 				newTasks.some(
@@ -264,6 +274,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 				'This will overwrite the following tasks in your tasks.json: "{0}"',
 				matchingTaskLabels.join('", "'),
 			);
+
 			const overwrite: MessageItem = {
 				title: localize("overwrite", "Overwrite"),
 			};
@@ -288,6 +299,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			case "shell":
 			case "process":
 				return task.label;
+
 			default:
 				return undefined;
 		}
@@ -302,6 +314,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		if (this.getDebugConfiguration) {
 			const newDebugConfig: DebugConfiguration =
 				this.getDebugConfiguration(version);
+
 			const versionMismatchError: Error = new Error(
 				localize(
 					"versionMismatchError",
@@ -318,6 +331,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			if (folder && !isMultiRootWorkspace()) {
 				const currentVersion: string | undefined =
 					getLaunchVersion(folder);
+
 				if (!currentVersion) {
 					await updateLaunchVersion(folder, launchVersion);
 				} else if (currentVersion !== launchVersion) {
@@ -349,6 +363,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 							data.configurations,
 							newDebugConfig,
 						);
+
 						return data;
 					},
 				);
@@ -365,6 +380,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			(l1) => !isDebugConfigEqual(l1, newConfig),
 		);
 		existingConfigs.push(newConfig);
+
 		return existingConfigs;
 	}
 
@@ -459,6 +475,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			extensionsJsonPath,
 			(data: IExtensionsJson): {} => {
 				const recommendations: string[] = [extensionId];
+
 				if (this.getRecommendedExtensions) {
 					recommendations.push(
 						...this.getRecommendedExtensions(language),
@@ -474,6 +491,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 					(rec: string, index: number) =>
 						recommendations.indexOf(rec) === index,
 				);
+
 				return data;
 			},
 		);

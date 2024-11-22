@@ -12,6 +12,7 @@ export interface ILocalFunction {
     isTimerTrigger: boolean;
     isAnonymous: boolean;
     triggerBindingType: string | undefined;
+
     functionJsonPath?: string;
 }
 
@@ -61,6 +62,7 @@ export interface AzureFunctionsExtensionApi {
     revealTreeItem(resourceId: string): Promise<void>;
 
     createFunction(options: ICreateFunctionOptions): Promise<void>;
+
     downloadAppSettings(client: IAppSettingsClient): Promise<void>;
     uploadAppSettings(client: IAppSettingsClient, exclude?: (RegExp | string)[]): Promise<void>;
 

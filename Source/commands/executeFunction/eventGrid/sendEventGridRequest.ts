@@ -21,15 +21,18 @@ export async function sendEventGridRequest(
 			: EventGridExecuteFunctionEntryPoint.TitleBarButton;
 
 	const activeEditor = vscode.window.activeTextEditor;
+
 	if (!activeEditor) {
 		const errorMsg = localize(
 			"noActiveTextEditor",
 			"No active text editor found.",
 		);
+
 		throw new Error(errorMsg);
 	}
 	const document = activeEditor.document;
 	await document.save();
+
 	const requestContent: string = document.getText();
 
 	const node = ext.fileToFunctionNodeMap.get(document.fileName);
@@ -41,6 +44,7 @@ export async function sendEventGridRequest(
 				"This command is intended to be run while an EventGrid function is being executed. " +
 				"Please make sure to execute your EventGrid function.",
 		);
+
 		throw new Error(errorMsg);
 	}
 

@@ -61,12 +61,14 @@ export async function promptForResource<T extends IBaseResourceWithName>(
 				data: undefined,
 				suppressPersistence: true,
 			});
+
 			return picks;
 		});
 
 	const data: T | undefined = (
 		await context.ui.showQuickPick(picksTask, { placeHolder })
 	).data;
+
 	if (data?.name) {
 		context.valuesToMask.push(data.name);
 	}
@@ -86,6 +88,7 @@ export async function registerProviders(
 	);
 
 	const storageProvider = "Microsoft.Storage";
+
 	const providerExecuteSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[] =
 		[
 			new VerifyProvidersStep([
@@ -95,6 +98,7 @@ export async function registerProviders(
 				"Microsoft.OperationalInsights",
 			]),
 		];
+
 	const providerWizard: AzureWizard<IFunctionAppWizardContext> =
 		new AzureWizard(providerContext, {
 			executeSteps: providerExecuteSteps,

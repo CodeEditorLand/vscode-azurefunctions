@@ -47,7 +47,9 @@ export async function installFuncCoreTools(
 				lastCoreToolsInstallCommand[0],
 				...lastCoreToolsInstallCommand.slice(1),
 			);
+
 			break;
+
 		case PackageManager.brew:
 			const brewPackageName: string = getBrewPackageName(version);
 			lastCoreToolsInstallCommand = ["brew", "tap", "azure/functions"];
@@ -64,7 +66,9 @@ export async function installFuncCoreTools(
 				lastCoreToolsInstallCommand[0],
 				...lastCoreToolsInstallCommand.slice(1),
 			);
+
 			break;
+
 		default:
 			throw new RangeError(
 				localize(

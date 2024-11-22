@@ -18,6 +18,7 @@ export class ServiceBusListStep extends AzureWizardPromptStep<IServiceBusWizardC
 			"placeHolder",
 			"Select a service bus namespace",
 		);
+
 		const client: ServiceBusManagementClient =
 			await createServiceBusClient(context);
 		context.sbNamespace = await promptForResource(

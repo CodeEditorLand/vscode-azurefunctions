@@ -29,6 +29,7 @@ export class JavaBuildToolStep extends AzureWizardPromptStep<IJavaProjectWizardC
 				data: JavaBuildTool.gradle,
 			},
 		];
+
 		const placeHolder: string = localize(
 			"selectJavaBuildTool",
 			"Select the build tool for Java project",

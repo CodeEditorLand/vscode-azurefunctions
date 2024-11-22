@@ -39,6 +39,7 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 			func,
 		);
 		await ti.initAsync(context);
+
 		return ti;
 	}
 
@@ -59,11 +60,13 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 			'Are you sure you want to delete function "{0}"?',
 			this.function.name,
 		);
+
 		const deleting: string = localize(
 			"DeletingFunction",
 			'Deleting function "{0}"...',
 			this.function.name,
 		);
+
 		const deleteSucceeded: string = localize(
 			"DeleteFunctionSucceeded",
 			'Successfully deleted function "{0}".',
@@ -78,6 +81,7 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 			{ location: ProgressLocation.Notification, title: deleting },
 			async (): Promise<void> => {
 				ext.outputChannel.appendLog(deleting);
+
 				const client = await createWebSiteClient([
 					context,
 					this.parent.subscription,

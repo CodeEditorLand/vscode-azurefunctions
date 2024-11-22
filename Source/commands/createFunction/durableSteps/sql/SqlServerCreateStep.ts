@@ -33,7 +33,9 @@ export class SqlServerCreateStep<
 		const client: SqlManagementClient = await createSqlClient(
 			<T & ISubscriptionContext>context,
 		);
+
 		const rgName: string = nonNullValue(context.resourceGroup?.name);
+
 		const newServerName: string = nonNullProp(context, "newSqlServerName");
 
 		const creating: string = localize(
@@ -47,6 +49,7 @@ export class SqlServerCreateStep<
 		const location: AzExtLocation = await LocationListStep.getLocation(
 			<T & ISubscriptionContext>context,
 		);
+
 		const serverOptions: Server = {
 			location: nonNullProp(location, "name"),
 			administratorLogin: nonNullProp(context, "newSqlAdminUsername"),

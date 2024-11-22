@@ -33,6 +33,7 @@ export class EventHubListStep extends AzureWizardPromptStep<IEventHubWizardConte
 			context.eventHubsNamespace,
 			"name",
 		);
+
 		const resourceGroupName: string = nonNullValueAndProp(
 			context.resourceGroup,
 			"name",
@@ -42,6 +43,7 @@ export class EventHubListStep extends AzureWizardPromptStep<IEventHubWizardConte
 			"placeHolder",
 			"Select an event hub",
 		);
+
 		const picks: IAzureQuickPickItem<Eventhub | undefined>[] = [
 			{
 				label: localize(
@@ -55,6 +57,7 @@ export class EventHubListStep extends AzureWizardPromptStep<IEventHubWizardConte
 
 		const client: EventHubManagementClient =
 			await createEventHubClient(context);
+
 		const eventHubs = await uiUtils.listAllIterator(
 			client.eventHubs.listByNamespace(resourceGroupName, namespaceName),
 		);

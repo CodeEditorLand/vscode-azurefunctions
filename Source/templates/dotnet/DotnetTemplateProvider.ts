@@ -48,9 +48,11 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 		projectTemplateKey: string | undefined,
 	) {
 		super(version, projectPath, language, projectTemplateKey);
+
 		if (projectPath) {
 			const projGlob =
 				language === ProjectLanguage.FSharp ? "*.fsproj" : "*.csproj";
+
 			const watcher = workspace.createFileSystemWatcher(
 				new RelativePattern(projectPath, projGlob),
 			);
@@ -92,16 +94,19 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 		context: IActionContext,
 	): Promise<ITemplates | undefined> {
 		const projKey = await this.getProjKey(context);
+
 		const projectFilePath: string = getDotnetProjectTemplatePath(
 			context,
 			this.version,
 			projKey,
 		);
+
 		const itemFilePath: string = getDotnetItemTemplatePath(
 			context,
 			this.version,
 			projKey,
 		);
+
 		if (
 			!(await AzExtFsExtra.pathExists(projectFilePath)) ||
 			!(await AzExtFsExtra.pathExists(itemFilePath))
@@ -111,6 +116,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 
 		const cachedDotnetTemplates: object[] | undefined =
 			await this.getCachedValue(projKey);
+
 		if (cachedDotnetTemplates) {
 			return await parseDotnetTemplates(
 				cachedDotnetTemplates,
@@ -130,11 +136,13 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 			context,
 			this.version,
 		);
+
 		let netRelease = await this.getNetRelease(
 			context,
 			projKey,
 			templateVersion,
 		);
+
 		if (netRelease) {
 			return templateVersion;
 		} else {
@@ -142,6 +150,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 				context,
 				this.version,
 			);
+
 			for (const newTemplateVersion of templateVersions) {
 				try {
 					netRelease = await this.getNetRelease(
@@ -149,16 +158,19 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 						projKey,
 						newTemplateVersion,
 					);
+
 					if (netRelease) {
 						const latestFuncRelease = await cliFeedUtils.getRelease(
 							context,
 							templateVersion,
 						);
+
 						const latestProjKeys = Object.values(
 							latestFuncRelease.workerRuntimes.dotnet,
 						).map((r) =>
 							dotnetUtils.getTemplateKeyFromFeedEntry(r),
 						);
+
 						const warning = localize(
 							"oldProjKeyWarning",
 							'WARNING: "{0}" does not support the latest templates. Use "{1}" for the latest.',
@@ -166,6 +178,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 							latestProjKeys.join('", "'),
 						);
 						ext.outputChannel.appendLog(warning);
+
 						return newTemplateVersion;
 					}
 				} catch {
@@ -186,14 +199,18 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 							projKey,
 							newTemplateVersion,
 						);
+
 						if (netRelease) {
 							context.telemetry.properties.effectiveProjectRuntime =
 								newFuncVersion;
+
 							const oldMajorVersion = getMajorVersion(
 								this.version,
 							);
+
 							const newMajorVersion =
 								getMajorVersion(newFuncVersion);
+
 							const warning = localize(
 								"mismatchProjKeyWarning",
 								'WARNING: "{0}" is not supported on Azure Functions v{1}. Using templates from v{2} instead.',
@@ -202,6 +219,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 								newMajorVersion,
 							);
 							ext.outputChannel.appendLog(warning);
+
 							return newTemplateVersion;
 						}
 					}
@@ -227,11 +245,13 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 		await validateDotnetInstalled(context);
 
 		const projKey = await this.getProjKey(context);
+
 		const projectFilePath: string = getDotnetProjectTemplatePath(
 			context,
 			this.version,
 			projKey,
 		);
+
 		const itemFilePath: string = getDotnetItemTemplatePath(
 			context,
 			this.version,
@@ -265,6 +285,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 	): Promise<cliFeedUtils.IWorkerRuntime | undefined> {
 		const funcRelease: cliFeedUtils.IRelease =
 			await cliFeedUtils.getRelease(context, templateVersion);
+
 		return Object.values(funcRelease.workerRuntimes.dotnet).find(
 			(r) => projKey === dotnetUtils.getTemplateKeyFromFeedEntry(r),
 		);
@@ -274,10 +295,12 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 		context: IActionContext,
 	): Promise<ITemplates> {
 		const projKey = await this.getProjKey(context);
+
 		const files: string[] = [
 			getDotnetProjectTemplatePath(context, this.version, projKey),
 			getDotnetItemTemplatePath(context, this.version, projKey),
 		];
+
 		for (const file of files) {
 			await AzExtFsExtra.copy(
 				this.convertToBackupFilePath(projKey, file),
@@ -290,10 +313,12 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 
 	public async updateBackupTemplates(context: IActionContext): Promise<void> {
 		const projKey = await this.getProjKey(context);
+
 		const files: string[] = [
 			getDotnetProjectTemplatePath(context, this.version, projKey),
 			getDotnetItemTemplatePath(context, this.version, projKey),
 		];
+
 		for (const file of files) {
 			await AzExtFsExtra.copy(
 				file,
@@ -335,6 +360,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 				"list",
 			),
 		);
+
 		return parseDotnetTemplates(this._rawTemplates, this.version);
 	}
 
@@ -342,6 +368,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 		template: IFunctionTemplate | IBindingTemplate,
 	): boolean {
 		const isIsolated = (v: string) => v.toLowerCase().includes("isolated");
+
 		return (
 			!("id" in template) ||
 			!this._sessionProjKey ||

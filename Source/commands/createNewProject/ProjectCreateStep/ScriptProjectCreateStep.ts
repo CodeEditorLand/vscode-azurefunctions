@@ -54,10 +54,12 @@ export class ScriptProjectCreateStep extends ProjectCreateStepBase {
 		}>,
 	): Promise<void> {
 		const version: FuncVersion = nonNullProp(context, "version");
+
 		const hostJsonPath: string = path.join(
 			context.projectPath,
 			hostFileName,
 		);
+
 		if (await confirmOverwriteFile(context, hostJsonPath)) {
 			const hostJson: IHostJsonV2 | IHostJsonV1 =
 				version === FuncVersion.v1
@@ -70,9 +72,11 @@ export class ScriptProjectCreateStep extends ProjectCreateStepBase {
 			context.projectPath,
 			localSettingsFileName,
 		);
+
 		if (await confirmOverwriteFile(context, localSettingsJsonPath)) {
 			const functionsWorkerRuntime: string | undefined =
 				getRootFunctionsWorkerRuntime(context.language);
+
 			if (functionsWorkerRuntime) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				this.localSettingsJson.Values![workerRuntimeKey] =
@@ -89,6 +93,7 @@ export class ScriptProjectCreateStep extends ProjectCreateStepBase {
 			context.projectPath,
 			gitignoreFileName,
 		);
+
 		if (await confirmOverwriteFile(context, gitignorePath)) {
 			await AzExtFsExtra.writeFile(
 				gitignorePath,
@@ -110,6 +115,7 @@ __azurite_db*__.json`),
 			context.projectPath,
 			".funcignore",
 		);
+
 		if (await confirmOverwriteFile(context, funcIgnorePath)) {
 			await AzExtFsExtra.writeFile(
 				funcIgnorePath,

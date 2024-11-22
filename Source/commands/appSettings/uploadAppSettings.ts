@@ -39,6 +39,7 @@ export async function uploadAppSettings(
 	exclude?: (RegExp | string)[],
 ): Promise<void> {
 	context.telemetry.eventVersion = 2;
+
 	if (!node) {
 		node = await ext.rgApi.pickAppResource<AppSettingsTreeItem>(context, {
 			filter: functionFilter,
@@ -74,18 +75,22 @@ export async function uploadAppSettingsInternal(
 		"selectLocalSettings",
 		"Select the local settings file to upload.",
 	);
+
 	const localSettingsPath: string = await getLocalSettingsFile(
 		context,
 		message,
 		workspaceFolder,
 	);
+
 	const localSettingsUri: vscode.Uri = vscode.Uri.file(localSettingsPath);
 
 	let localSettings: ILocalSettingsJson = <ILocalSettingsJson>(
 		await AzExtFsExtra.readJSON(localSettingsPath)
 	);
+
 	if (localSettings.IsEncrypted) {
 		await decryptLocalSettings(context, localSettingsUri);
+
 		try {
 			localSettings =
 				await AzExtFsExtra.readJSON<ILocalSettingsJson>(
@@ -99,6 +104,7 @@ export async function uploadAppSettingsInternal(
 	if (localSettings.Values) {
 		const remoteSettings: StringDictionary =
 			await client.listApplicationSettings();
+
 		if (!remoteSettings.properties) {
 			remoteSettings.properties = {};
 		}

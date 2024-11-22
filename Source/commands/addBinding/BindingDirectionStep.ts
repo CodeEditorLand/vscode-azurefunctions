@@ -19,6 +19,7 @@ export class BindingDirectionStep extends AzureWizardPromptStep<IBindingWizardCo
 			"selectDirection",
 			"Select binding direction",
 		);
+
 		const picks: IAzureQuickPickItem<string>[] = [
 			{ label: "in", data: "in" },
 			{ label: "out", data: "out" },

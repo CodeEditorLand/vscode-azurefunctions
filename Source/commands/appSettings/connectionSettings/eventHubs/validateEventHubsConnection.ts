@@ -43,6 +43,7 @@ export async function validateEventHubsConnection(
 			ConnectionKey.EventHubs,
 			projectPath,
 		);
+
 	const eventHubName: string | undefined = await getEventHubName(projectPath);
 
 	if (!!eventHubsConnection && !!eventHubName) {
@@ -54,6 +55,7 @@ export async function validateEventHubsConnection(
 			) {
 				// Found a valid connection in deploy mode. Set it and skip the wizard.
 				context[ConnectionKey.EventHubs] = eventHubsConnection;
+
 				return;
 			}
 			// Found an invalid connection for deploy mode, we need to proceed with acquiring a connection through the wizard...
@@ -66,8 +68,10 @@ export async function validateEventHubsConnection(
 	const wizardContext: IActionContext = Object.assign(context, {
 		projectPath,
 	});
+
 	const promptSteps: AzureWizardPromptStep<IEventHubsConnectionWizardContext>[] =
 		[];
+
 	const executeSteps: AzureWizardExecuteStep<IEventHubsConnectionWizardContext>[] =
 		[];
 
@@ -99,12 +103,15 @@ export async function getEventHubName(
 	projectPath: string,
 ): Promise<string | undefined> {
 	const hostJsonPath = path.join(projectPath, hostFileName);
+
 	if (!(await AzExtFsExtra.pathExists(hostJsonPath))) {
 		return undefined;
 	}
 
 	const hostJson: IHostJsonV2 = await AzExtFsExtra.readJSON(hostJsonPath);
+
 	const taskJson: INetheriteTaskJson = hostJson.extensions
 		?.durableTask as INetheriteTaskJson;
+
 	return taskJson?.hubName;
 }

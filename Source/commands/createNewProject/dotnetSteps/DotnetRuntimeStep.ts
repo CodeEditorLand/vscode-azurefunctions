@@ -25,13 +25,16 @@ export class DotnetRuntimeStep extends AzureWizardPromptStep<IProjectWizardConte
 				typeof context.targetFramework === "string"
 					? [context.targetFramework]
 					: context.targetFramework;
+
 			const runtimes = await getRuntimes(context);
 			// if a targetFramework was provided from createNewProject
 			const filteredRuntimes = runtimes.filter((runtime) =>
 				context.targetFramework?.includes(runtime.targetFramework),
 			);
+
 			let workerRuntime: cliFeedUtils.IWorkerRuntime | undefined =
 				undefined;
+
 			if (filteredRuntimes.length > 1) {
 				const placeHolder: string = localize(
 					"selectWorkerRuntime",
@@ -75,13 +78,16 @@ export class DotnetRuntimeStep extends AzureWizardPromptStep<IProjectWizardConte
 			"selectWorkerRuntime",
 			"Select a .NET runtime",
 		);
+
 		let result: cliFeedUtils.IWorkerRuntime | undefined;
+
 		while (true) {
 			result = (
 				await context.ui.showQuickPick(this.getPicks(context), {
 					placeHolder,
 				})
 			).data;
+
 			if (!result) {
 				context.version = await promptForFuncVersion(context);
 			} else {
@@ -107,6 +113,7 @@ export class DotnetRuntimeStep extends AzureWizardPromptStep<IProjectWizardConte
 		const picks: IAzureQuickPickItem<
 			cliFeedUtils.IWorkerRuntime | undefined
 		>[] = [];
+
 		for (const runtime of runtimes) {
 			picks.push({
 				label: runtime.displayInfo.displayName,
@@ -125,7 +132,9 @@ async function getRuntimes(
 		context,
 		await cliFeedUtils.getLatestVersion(context, context.version),
 	);
+
 	let runtimes = await getReleaseRuntimes(funcRelease);
+
 	if (context.version === FuncVersion.v4) {
 		try {
 			const inProcessRelease = await cliFeedUtils.getRelease(
@@ -135,8 +144,10 @@ async function getRuntimes(
 					"0",
 				),
 			);
+
 			const inProcessRuntimes =
 				await getReleaseRuntimes(inProcessRelease);
+
 			if (inProcessRuntimes.length > 0) {
 				runtimes = runtimes.concat(inProcessRuntimes);
 			}
@@ -154,9 +165,11 @@ async function getReleaseRuntimes(
 	release: cliFeedUtils.IRelease,
 ): Promise<cliFeedUtils.IWorkerRuntime[]> {
 	const showHiddenStacks = getWorkspaceSetting<boolean>(hiddenStacksSetting);
+
 	const runtimes = Object.values(release.workerRuntimes.dotnet).filter(
 		(r) => !r.displayInfo.hidden || showHiddenStacks,
 	);
+
 	return runtimes;
 }
 

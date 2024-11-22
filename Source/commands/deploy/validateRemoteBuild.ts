@@ -33,7 +33,9 @@ export async function validateRemoteBuild(
 			"remoteBuildNotSupported",
 			"The selected Function App doesn't support your project's configuration. Deploy to a newer Function App or downgrade your config.",
 		);
+
 		const learnMoreLink: string = "https://aka.ms/AA5vsfd";
+
 		const downgrade: vscode.MessageItem = {
 			title: localize("downgrade", "Downgrade config"),
 		};
@@ -56,6 +58,7 @@ export async function validateRemoteBuild(
 			packTaskName,
 			workspaceFolder,
 		);
+
 		const zipFileName: string = path.basename(projectPath) + ".zip";
 		// Always use posix separators for config checked in to source control
 		await updateWorkspaceSetting(

@@ -23,10 +23,12 @@ export class NodeV4FunctionNameStep extends FunctionNameStepBase<IScriptFunction
 			context,
 			"functionTemplate",
 		);
+
 		const functionSubpath: string = getWorkspaceSetting(
 			functionSubpathSetting,
 			context.projectPath,
 		) as string;
+
 		return await this.getUniqueFsPath(
 			path.join(context.projectPath, functionSubpath),
 			template.defaultFunctionName,

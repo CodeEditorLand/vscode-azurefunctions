@@ -62,6 +62,7 @@ export async function createFunctionInternal(
 	options: api.ICreateFunctionOptions,
 ): Promise<void> {
 	let workspaceFolder: WorkspaceFolder | undefined;
+
 	let workspacePath: string | undefined = options.folderPath;
 
 	if (workspacePath === undefined) {
@@ -77,10 +78,12 @@ export async function createFunctionInternal(
 		context,
 		workspaceFolder || workspacePath,
 	);
+
 	if (!projectPath) {
 		// If we cannot find a valid Functions project, we need to put the user into the 'Create New Project' flow..
 		context.telemetry.properties.noWorkspaceResult = "createNewProject";
 		await createNewProjectInternal(context, options);
+
 		return;
 	}
 
@@ -92,6 +95,7 @@ export async function createFunctionInternal(
 			options.languageModel,
 			options.version,
 		);
+
 	const hasDurableStorage: boolean =
 		await durableUtils.verifyHasDurableStorage(language, projectPath);
 
@@ -99,6 +103,7 @@ export async function createFunctionInternal(
 		projectTemplateKeySetting,
 		projectPath,
 	);
+
 	const wizardContext: IFunctionWizardContext = Object.assign(
 		context,
 		options,
@@ -114,6 +119,7 @@ export async function createFunctionInternal(
 			templateSchemaVersion,
 		},
 	);
+
 	const wizard: AzureWizard<IFunctionWizardContext> = new AzureWizard(
 		wizardContext,
 		{

@@ -10,6 +10,7 @@ import { cpUtils } from "./cpUtils";
 
 export namespace gitUtils {
 	const gitCommand: string = "git";
+
 	export async function isGitInstalled(
 		workingDirectory: string,
 	): Promise<boolean> {
@@ -20,6 +21,7 @@ export namespace gitUtils {
 				gitCommand,
 				"--version",
 			);
+
 			return true;
 		} catch (error) {
 			return false;
@@ -42,6 +44,7 @@ export namespace gitUtils {
 				"rev-parse",
 				"--git-dir",
 			);
+
 			return true;
 		} catch (error) {
 			return false;

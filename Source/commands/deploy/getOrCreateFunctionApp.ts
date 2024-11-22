@@ -26,6 +26,7 @@ export async function getOrCreateFunctionApp(
 	context: IFuncDeployContext & Partial<IFunctionAppWizardContext>,
 ): Promise<SlotTreeItem> {
 	let node: SlotTreeItem | undefined;
+
 	const wizard: AzureWizard<IAppServiceWizardContext> = new AzureWizard(
 		context,
 		{

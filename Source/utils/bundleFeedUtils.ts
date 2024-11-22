@@ -20,6 +20,7 @@ import { nugetUtils } from "./nugetUtils";
 export namespace bundleFeedUtils {
 	export const defaultBundleId: string =
 		"Microsoft.Azure.Functions.ExtensionBundle";
+
 	export const defaultVersionRange: string = "[1.*, 2.0.0)";
 
 	interface IBundleFeed {
@@ -61,17 +62,21 @@ export namespace bundleFeedUtils {
 		bundleMetadata: IBundleMetadata | undefined,
 	): Promise<string> {
 		bundleMetadata = bundleMetadata || {};
+
 		const versionArray: string[] = await feedUtils.getJsonFeed(
 			context,
 			"https://aka.ms/azFuncBundleVersions",
 		);
+
 		const validVersions: string[] = versionArray.filter(
 			(v: string) => !!semver.valid(v),
 		);
+
 		const bundleVersion: string | undefined = nugetUtils.tryGetMaxInRange(
 			bundleMetadata.version || (await getLatestVersionRange(context)),
 			validVersions,
 		);
+
 		if (!bundleVersion) {
 			throw new Error(
 				localize(
@@ -91,6 +96,7 @@ export namespace bundleFeedUtils {
 		templateVersion: string,
 	): Promise<ITemplatesReleaseV1> {
 		const feed: IBundleFeed = await getBundleFeed(context, bundleMetadata);
+
 		return feed.templates.v1[templateVersion];
 	}
 
@@ -100,6 +106,7 @@ export namespace bundleFeedUtils {
 		// build the url ourselves because the index-v2.json file is no longer publishing version updates for v2 templates
 		const functionsCdn: string =
 			"https://functionscdn.azureedge.net/public/ExtensionBundles/Microsoft.Azure.Functions.ExtensionBundle/";
+
 		return {
 			functions: `${functionsCdn}${templateVersion}/StaticContent/v2/templates/templates.json`,
 			bindings: `${functionsCdn}${templateVersion}/StaticContent/v2/bindings/userPrompts.json`,
@@ -112,6 +119,7 @@ export namespace bundleFeedUtils {
 		template: FunctionTemplateBase | IBindingTemplate,
 	): boolean {
 		const bundleTemplateTypes: string[] = ["durable", "signalr"];
+
 		return (
 			(!template.isHttpTrigger && !template.isTimerTrigger) ||
 			bundleTemplateTypes.some((t) => isTemplateOfType(template, t))
@@ -122,6 +130,7 @@ export namespace bundleFeedUtils {
 		context: IActionContext,
 	): Promise<string> {
 		const feed: IBundleFeed = await getBundleFeed(context, undefined);
+
 		return feed.defaultVersionRange;
 	}
 
@@ -130,6 +139,7 @@ export namespace bundleFeedUtils {
 		hostJson: IHostJsonV2,
 	): Promise<void> {
 		let versionRange: string;
+
 		try {
 			versionRange = await getLatestVersionRange(context);
 		} catch {
@@ -162,7 +172,9 @@ export namespace bundleFeedUtils {
 			process.env.FUNCTIONS_EXTENSIONBUNDLE_SOURCE_URI;
 		// Only use an aka.ms link for the most common case, otherwise we will dynamically construct the url
 		let url: string;
+
 		const templateProvider = ext.templateProvider.get(context);
+
 		if (
 			!envVarUri &&
 			bundleId === defaultBundleId &&
@@ -174,6 +186,7 @@ export namespace bundleFeedUtils {
 				templateProvider.templateSource === TemplateSource.Staging
 					? "staging"
 					: "";
+
 			const baseUrl: string =
 				envVarUri ||
 				`https://functionscdn${suffix}.azureedge.net/public`;

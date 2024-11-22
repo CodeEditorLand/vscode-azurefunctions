@@ -31,6 +31,7 @@ export async function handleUri(uri: vscode.Uri): Promise<void> {
 			if (enableOpenFromPortal) {
 				const parsedQuery: querystring.ParsedUrlQuery =
 					querystring.parse(uri.query);
+
 				const action: string = getRequiredQueryParameter(
 					parsedQuery,
 					"action",
@@ -41,6 +42,7 @@ export async function handleUri(uri: vscode.Uri): Promise<void> {
 				) {
 					const isLoggedIn: boolean =
 						await ext.azureAccountTreeItem.getIsLoggedIn();
+
 					if (!isLoggedIn) {
 						await vscode.commands.executeCommand(
 							"azure-account.login",
@@ -80,6 +82,7 @@ export function getRequiredQueryParameter(
 	key: string,
 ): string {
 	const value: string | string[] | undefined = parsedQuery[key];
+
 	if (value && typeof value === "string") {
 		return value;
 	} else {

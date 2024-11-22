@@ -42,6 +42,7 @@ export async function verifyExtensionBundle(
 		context.language === ProjectLanguage.FSharp
 	) {
 		context.telemetry.properties.bundleResult = "n/a";
+
 		return;
 	}
 
@@ -56,10 +57,12 @@ export async function verifyExtensionBundle(
 			context.projectPath,
 			hostFileName,
 		);
+
 		if (!(await AzExtFsExtra.pathExists(hostFilePath))) {
 			context.telemetry.properties.bundleResult = "missingHostJson";
 		} else {
 			let hostJson: IHostJsonV2;
+
 			try {
 				hostJson =
 					await AzExtFsExtra.readJSON<IHostJsonV2>(hostFilePath);
@@ -109,20 +112,25 @@ async function hasExtensionsVSCodeConfig(
 	workspacePath: string,
 ): Promise<boolean> {
 	let result: boolean = false;
+
 	try {
 		const filesToCheck: string[] = [tasksFileName, settingsFileName];
+
 		for (const file of filesToCheck) {
 			const filePath: string = path.join(
 				workspacePath,
 				vscodeFolderName,
 				file,
 			);
+
 			if (await AzExtFsExtra.pathExists(filePath)) {
 				const contents: string = (
 					await AzExtFsExtra.readFile(filePath)
 				).toString();
+
 				if (contents.includes(extInstallCommand)) {
 					result = true;
+
 					break;
 				}
 			}
@@ -132,6 +140,7 @@ async function hasExtensionsVSCodeConfig(
 	}
 
 	context.telemetry.properties.hasExtensionsVSCodeConfig = String(result);
+
 	return result;
 }
 
@@ -140,6 +149,7 @@ async function hasExtensionsCsproj(
 	projectPath: string,
 ): Promise<boolean> {
 	let result: boolean = false;
+
 	try {
 		result = await AzExtFsExtra.pathExists(
 			path.join(projectPath, extensionsCsprojFileName),
@@ -149,5 +159,6 @@ async function hasExtensionsCsproj(
 	}
 
 	context.telemetry.properties.hasExtensionsCsproj = String(result);
+
 	return result;
 }

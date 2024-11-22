@@ -29,11 +29,13 @@ export async function showCoreToolsWarning(
 	siteName: string,
 ): Promise<void> {
 	const showCoreToolsWarningKey: string = "showCoreToolsWarning";
+
 	if (getWorkspaceSetting<boolean>(showCoreToolsWarningKey)) {
 		const coreToolsVersion = await tryGetLocalFuncVersion(
 			context,
 			undefined,
 		);
+
 		if (coreToolsVersion) {
 			const localVersion = nonNullValue(
 				tryParseFuncVersion(coreToolsVersion),
@@ -62,19 +64,23 @@ async function showCoreToolsWarningHelper(
 	message: string,
 ): Promise<MessageItem> {
 	const showCoreToolsWarningKey: string = "showCoreToolsWarning";
+
 	let result: MessageItem;
+
 	do {
 		result = await context.ui.showWarningMessage(
 			message,
 			DialogResponses.learnMore,
 			DialogResponses.dontWarnAgain,
 		);
+
 		if (result === DialogResponses.learnMore) {
 			await openUrl(funcVersionLink);
 		} else if (result === DialogResponses.dontWarnAgain) {
 			await updateGlobalSetting(showCoreToolsWarningKey, false);
 		}
 	} while (result === DialogResponses.learnMore);
+
 	return result;
 }
 async function showCoreToolsEOLWarning(
@@ -86,6 +92,7 @@ async function showCoreToolsEOLWarning(
 		"Your Azure Functions Core Tools Version ({0}) is past its end of life. Update to the latest version for the best experience.",
 		localVersion,
 	);
+
 	return await showCoreToolsWarningHelper(context, message);
 }
 
@@ -102,5 +109,6 @@ async function showCoreToolsMismatchWarning(
 		runtimeVersion,
 		siteName,
 	);
+
 	return await showCoreToolsWarningHelper(context, message);
 }

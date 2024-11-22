@@ -18,6 +18,7 @@ export class CosmosDBListStep extends AzureWizardPromptStep<ICosmosDBWizardConte
 			"placeHolder",
 			"Select a database account",
 		);
+
 		const client: CosmosDBManagementClient =
 			await createCosmosDBClient(context);
 		context.databaseAccount = await promptForResource(

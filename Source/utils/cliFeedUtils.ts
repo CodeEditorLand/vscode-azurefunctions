@@ -59,6 +59,7 @@ export namespace cliFeedUtils {
 		version: FuncVersion,
 	): Promise<string> {
 		const majorVersion: string = getMajorVersion(version);
+
 		return await getLatestReleaseVersionForMajorVersion(
 			context,
 			majorVersion,
@@ -70,10 +71,14 @@ export namespace cliFeedUtils {
 		majorVersion: string,
 	): Promise<string> {
 		const cliFeed: ICliFeed = await getCliFeed(context);
+
 		let tag: string = "v" + majorVersion;
+
 		const templateProvider = ext.templateProvider.get(context);
+
 		if (templateProvider.templateSource === TemplateSource.Staging) {
 			const newTag = tag + "-prerelease";
+
 			if (cliFeed.tags[newTag]) {
 				tag = newTag;
 			} else {
@@ -88,6 +93,7 @@ export namespace cliFeedUtils {
 		}
 
 		const releaseData = cliFeed.tags[tag];
+
 		if (!releaseData) {
 			throw new Error(
 				localize(
@@ -105,10 +111,13 @@ export namespace cliFeedUtils {
 		version: FuncVersion,
 	): Promise<string[]> {
 		const cliFeed: ICliFeed = await getCliFeed(context);
+
 		const majorVersion = parseInt(getMajorVersion(version));
+
 		const versions = Object.keys(cliFeed.releases).filter(
 			(v) => semver.valid(v) && semver.major(v) === majorVersion,
 		);
+
 		return semver
 			.rsort(versions)
 			.map((v) => (typeof v === "string" ? v : v.version));
@@ -119,6 +128,7 @@ export namespace cliFeedUtils {
 		templateVersion: string,
 	): Promise<IRelease> {
 		const cliFeed: ICliFeed = await getCliFeed(context);
+
 		return cliFeed.releases[templateVersion];
 	}
 

@@ -29,7 +29,9 @@ export async function uninstallFuncCoreTools(
 	packageManagers =
 		packageManagers ||
 		(await getFuncPackageManagers(true /* isFuncInstalled */));
+
 	let packageManager: PackageManager;
+
 	if (packageManagers.length === 0) {
 		throw new Error(
 			localize(
@@ -44,6 +46,7 @@ export async function uninstallFuncCoreTools(
 			"multipleInstalls",
 			"Multiple installs of the func cli detected. Select the one to uninstall",
 		);
+
 		const picks: IAzureQuickPickItem<PackageManager>[] =
 			packageManagers.map((pm) => {
 				return {
@@ -69,12 +72,15 @@ export async function uninstallFuncCoreTools(
 				"-g",
 				funcPackageName,
 			);
+
 			break;
+
 		case PackageManager.brew:
 			const version: FuncVersion = nonNullValue(
 				await tryGetLocalFuncVersion(context, undefined),
 				"localFuncVersion",
 			);
+
 			const brewPackageName: string = nonNullValue(
 				await tryGetInstalledBrewPackageName(version),
 				"brewPackageName",
@@ -86,7 +92,9 @@ export async function uninstallFuncCoreTools(
 				"uninstall",
 				brewPackageName,
 			);
+
 			break;
+
 		default:
 			throw new RangeError(
 				localize(

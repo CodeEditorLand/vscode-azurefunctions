@@ -13,6 +13,7 @@ export class AppendToFileExecuteStep<
 > extends WriteToFileExecuteStep<T> {
 	protected async writeToFile(context: T, filePath: string): Promise<void> {
 		const sourceKey = nonNullProp(this.action, "source");
+
 		const source = context[sourceKey] as string;
 
 		await AzExtFsExtra.appendFile(filePath, source);

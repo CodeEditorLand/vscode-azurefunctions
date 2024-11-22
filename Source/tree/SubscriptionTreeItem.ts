@@ -39,6 +39,7 @@ import { SlotTreeItem } from "./SlotTreeItem";
 export interface ICreateFunctionAppContext extends ICreateChildImplContext {
 	newResourceGroupName?: string;
 	workspaceFolder?: WorkspaceFolder;
+
 	dockerfilePath?: string;
 	rootPath?: string;
 	deployWorkspaceResult?: DeployWorkspaceProjectResults;
@@ -71,7 +72,9 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 			context,
 			this.subscription,
 		]);
+
 		let webAppCollection: Site[];
+
 		try {
 			webAppCollection = await uiUtils.listAllIterator(
 				client.webApps.list(),
@@ -95,6 +98,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 					this.subscription,
 					site,
 				);
+
 				if (resolved.site.isFunctionApp) {
 					return new SlotTreeItem(this, resolved);
 				}
@@ -118,16 +122,19 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 			: getWorkspaceSettingFromAnyFolder(projectLanguageSetting);
 		// Ensure all the providers are registered before
 		const registerProvidersTask = registerProviders(context, subscription);
+
 		const { wizardContext, promptSteps, executeSteps } =
 			await createCreateFunctionAppComponents(
 				context,
 				subscription.subscription,
 				language,
 			);
+
 		const title: string = localize(
 			"functionAppCreatingTitle",
 			"Create new Function App in Azure",
 		);
+
 		const wizard: AzureWizard<IAppServiceWizardContext> = new AzureWizard(
 			wizardContext,
 			{
@@ -166,6 +173,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 		}
 
 		await ext.rgApi.tree.refresh(context);
+
 		return node;
 	}
 

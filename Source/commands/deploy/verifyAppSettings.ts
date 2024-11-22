@@ -60,9 +60,12 @@ export async function verifyAppSettings(options: {
 		bools,
 		durableStorageType,
 	} = options;
+
 	const client = await node.site.createClient(context);
+
 	const appSettings: StringDictionary =
 		await client.listApplicationSettings();
+
 	if (appSettings.properties) {
 		const remoteRuntime: string | undefined =
 			appSettings.properties[workerRuntimeKey];
@@ -78,6 +81,7 @@ export async function verifyAppSettings(options: {
 		// update the settings if the remote runtime was changed
 		let updateAppSettings: boolean =
 			appSettings.properties[workerRuntimeKey] !== remoteRuntime;
+
 		if (node.site.isLinux) {
 			const remoteBuildSettingsChanged = verifyLinuxRemoteBuildSettings(
 				context,
@@ -103,6 +107,7 @@ export async function verifyAppSettings(options: {
 
 		if (updateAppSettings) {
 			await client.updateApplicationSettings(appSettings);
+
 			try {
 				await verifyAppSettingsPropagated(context, client, appSettings);
 			} catch (e) {
@@ -121,6 +126,7 @@ export async function verifyAndUpdateAppConnectionStrings(
 	remoteProperties: { [propertyName: string]: string },
 ): Promise<boolean> {
 	let didUpdate: boolean = false;
+
 	switch (durableStorageType) {
 		case DurableBackend.Netherite:
 			const updatedNetheriteConnection: boolean =
@@ -131,7 +137,9 @@ export async function verifyAndUpdateAppConnectionStrings(
 					context[ConnectionKey.EventHubs],
 				);
 			didUpdate ||= updatedNetheriteConnection;
+
 			break;
+
 		case DurableBackend.SQL:
 			const updatedSqlDbConnection: boolean =
 				updateConnectionStringIfNeeded(
@@ -141,7 +149,9 @@ export async function verifyAndUpdateAppConnectionStrings(
 					context[ConnectionKey.SQL],
 				);
 			didUpdate ||= updatedSqlDbConnection;
+
 			break;
+
 		case DurableBackend.Storage:
 		default:
 	}
@@ -166,6 +176,7 @@ export function updateConnectionStringIfNeeded(
 	if (newValue) {
 		remoteProperties[propertyName] = newValue;
 		context.telemetry.properties[`update${propertyName}`] = "true";
+
 		return true;
 	} else {
 		return false;
@@ -181,8 +192,10 @@ export async function verifyVersionAndLanguage(
 	remoteProperties: { [propertyName: string]: string },
 ): Promise<void> {
 	const rawAzureVersion: string = remoteProperties[extensionVersionKey];
+
 	const azureVersion: FuncVersion | undefined =
 		tryParseFuncVersion(rawAzureVersion);
+
 	const azureWorkerRuntime: string | undefined =
 		remoteProperties[workerRuntimeKey];
 
@@ -214,6 +227,7 @@ export async function verifyVersionAndLanguage(
 			siteName,
 			localWorkerRuntime,
 		);
+
 		if (
 			promptToUpdateDotnetRuntime(azureWorkerRuntime, localWorkerRuntime)
 		) {
@@ -240,9 +254,11 @@ export async function verifyVersionAndLanguage(
 			siteName,
 			localVersion,
 		);
+
 		const deployAnyway: vscode.MessageItem = {
 			title: localize("deployAnyway", "Deploy Anyway"),
 		};
+
 		const learnMoreLink: string = "https://aka.ms/azFuncRuntime";
 		// No need to check result - cancel will throw a UserCancelledError
 		await context.ui.showWarningMessage(
@@ -263,6 +279,7 @@ function verifyRunFromPackage(
 	remoteProperties: { [propertyName: string]: string },
 ): boolean {
 	const shouldAddSetting: boolean = !remoteProperties[runFromPackageKey];
+
 	if (shouldAddSetting) {
 		remoteProperties[runFromPackageKey] = "1";
 		ext.outputChannel.appendLog(
@@ -276,6 +293,7 @@ function verifyRunFromPackage(
 	}
 
 	context.telemetry.properties.addedRunFromPackage = String(shouldAddSetting);
+
 	return shouldAddSetting;
 }
 
@@ -318,6 +336,7 @@ function verifyLinuxRemoteBuildSettings(
 	}
 
 	context.telemetry.properties.linuxBuildSettingsChanged = String(hasChanged);
+
 	return hasChanged;
 }
 
@@ -344,6 +363,7 @@ async function verifyAppSettingsPropagated(
 			);
 
 			const currentAppSettings = await client.listApplicationSettings();
+
 			const currentProperties = currentAppSettings.properties || {};
 			// we need to check the union of the keys because we may have removed properties as well
 			const keysUnion = new Set([

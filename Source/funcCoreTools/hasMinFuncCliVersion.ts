@@ -15,6 +15,7 @@ export async function hasMinFuncCliVersion(
 	projectVersion: FuncVersion,
 ): Promise<boolean> {
 	const majorVersion: string = getMajorVersion(projectVersion);
+
 	if (semver.gtr(minVersion, majorVersion)) {
 		return false;
 	} else if (semver.ltr(minVersion, majorVersion)) {
@@ -23,6 +24,7 @@ export async function hasMinFuncCliVersion(
 		try {
 			const localCliVersion: string | null =
 				await getLocalFuncCoreToolsVersion(context, undefined);
+
 			if (localCliVersion) {
 				return semver.gte(localCliVersion, minVersion);
 			}

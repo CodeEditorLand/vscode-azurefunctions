@@ -26,5 +26,6 @@ export async function stopFunctionApp(
 			await client.stop();
 		},
 	);
+
 	return node;
 }

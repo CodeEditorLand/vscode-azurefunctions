@@ -37,6 +37,7 @@ export class EventHubsConnectionPromptStep<
 				"Connect Event Hubs Namespace",
 			),
 		};
+
 		const useEmulatorButton: MessageItem = { title: useEmulator };
 
 		const message: string = localize(
@@ -55,6 +56,7 @@ export class EventHubsConnectionPromptStep<
 				ConnectionKey.EventHubs,
 				context.projectPath,
 			);
+
 		if (
 			!!eventHubConnection &&
 			!localEventHubsEmulatorConnectionRegExp.test(eventHubConnection)
@@ -67,6 +69,7 @@ export class EventHubsConnectionPromptStep<
 			{ modal: true },
 			...buttons,
 		);
+
 		if (result === connectEventNamespaceButton) {
 			context.eventHubsConnectionType = ConnectionType.Azure;
 		} else {
@@ -113,6 +116,7 @@ export class EventHubsConnectionPromptStep<
 				ConnectionKey.EventHubs,
 				context.projectPath,
 			);
+
 		if (
 			!!eventHubConnection &&
 			!localEventHubsEmulatorConnectionRegExp.test(eventHubConnection)
@@ -128,6 +132,7 @@ export class EventHubsConnectionPromptStep<
 			| AzureWizardPromptStep<ISubscriptionActionContext>
 			| undefined =
 			await ext.azureAccountTreeItem.getSubscriptionPromptStep(context);
+
 		if (subscriptionPromptStep) {
 			promptSteps.push(subscriptionPromptStep);
 		}

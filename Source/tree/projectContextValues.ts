@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 const contextValueSeparator: string = ";";
+
 const contextValuePrefix: string = "azFunc";
 
 export enum ProjectSource {
@@ -36,6 +37,7 @@ export function getProjectContextValue(
 
 export function isProjectCV(contextValue: string | RegExp): boolean {
 	const data: string = normalizeContextValue(contextValue);
+
 	return data.includes(contextValueSeparator);
 }
 
@@ -60,6 +62,7 @@ export function matchesAnyPart(
 	...parts: string[]
 ): boolean {
 	const data: string = normalizeContextValue(contextValue);
+
 	return parts.some((part) =>
 		data.includes(part.toLowerCase() + contextValueSeparator),
 	);
@@ -68,5 +71,6 @@ export function matchesAnyPart(
 function normalizeContextValue(contextValue: string | RegExp): string {
 	const data: string =
 		typeof contextValue === "string" ? contextValue : contextValue.source;
+
 	return data.toLowerCase();
 }

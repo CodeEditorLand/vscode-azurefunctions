@@ -27,16 +27,19 @@ export async function getLocalSettingsFile(
 	workspaceFolder?: WorkspaceFolder,
 ): Promise<string> {
 	workspaceFolder ||= await getRootWorkspaceFolder();
+
 	if (workspaceFolder) {
 		const projectPath: string | undefined = await tryGetFunctionProjectRoot(
 			context,
 			workspaceFolder,
 		);
+
 		if (projectPath) {
 			const localSettingsFile: string = path.join(
 				projectPath,
 				localSettingsFileName,
 			);
+
 			if (await AzExtFsExtra.pathExists(localSettingsFile)) {
 				return localSettingsFile;
 			}
@@ -49,6 +52,7 @@ export async function getLocalSettingsFile(
 		async (f: WorkspaceFolder): Promise<string> => {
 			const projectPath: string =
 				(await tryGetFunctionProjectRoot(context, f)) || f.uri.fsPath;
+
 			return path.relative(
 				f.uri.fsPath,
 				path.join(projectPath, localSettingsFileName),

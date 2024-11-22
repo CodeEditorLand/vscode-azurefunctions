@@ -38,9 +38,11 @@ export class EventHubsNamespaceCreateStep<
 			context.resourceGroup,
 			"name",
 		);
+
 		const newNamespaceName: string = nonNullValue(
 			context.newEventHubsNamespaceName,
 		);
+
 		const creating: string = localize(
 			"creatingEventHubsNamespace",
 			'Creating new event hubs namespace "{0}"...',
@@ -52,9 +54,11 @@ export class EventHubsNamespaceCreateStep<
 		const client: EventHubManagementClient = await createEventHubClient(
 			<T & ISubscriptionContext>context,
 		);
+
 		const location: AzExtLocation = await LocationListStep.getLocation(
 			<T & ISubscriptionContext>context,
 		);
+
 		const defaultParams: EHNamespace = {
 			location: nonNullProp(location, "name"),
 			sku: {

@@ -21,6 +21,7 @@ import { java8 } from "../javaSteps/JavaVersionStep";
 import { ScriptProjectCreateStep } from "./ScriptProjectCreateStep";
 
 const backupGradlePluginVersion = "1.11.0";
+
 const metaDataUrl =
 	"https://plugins.gradle.org/m2/com/microsoft/azure/azure-functions-gradle-plugin/maven-metadata.xml";
 
@@ -41,6 +42,7 @@ export class GradleProjectCreateStep extends ScriptProjectCreateStep {
 			context.projectPath,
 			settingsGradleFileName,
 		);
+
 		if (await confirmOverwriteFile(context, settingsGradlePath)) {
 			await AzExtFsExtra.writeFile(
 				settingsGradlePath,
@@ -52,8 +54,10 @@ export class GradleProjectCreateStep extends ScriptProjectCreateStep {
 			context.projectPath,
 			buildGradleFileName,
 		);
+
 		const buildGradleContent: string =
 			await this.getBuildGradleContent(context);
+
 		if (await confirmOverwriteFile(context, buildGradlePath)) {
 			await AzExtFsExtra.writeFile(buildGradlePath, buildGradleContent);
 		}
@@ -72,6 +76,7 @@ export class GradleProjectCreateStep extends ScriptProjectCreateStep {
 					context,
 					metaDataUrl,
 				);
+
 			return templateVersion
 				? templateVersion
 				: backupGradlePluginVersion;
@@ -86,6 +91,7 @@ export class GradleProjectCreateStep extends ScriptProjectCreateStep {
 
 	getCompatibilityVersion(context: IJavaProjectWizardContext): string {
 		const javaVersion: string = nonNullProp(context, "javaVersion");
+
 		return javaVersion === java8 ? "1.8" : javaVersion;
 	}
 

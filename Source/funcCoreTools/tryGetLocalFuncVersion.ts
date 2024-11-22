@@ -17,6 +17,7 @@ export async function tryGetLocalFuncVersion(
 			context,
 			workspacePath,
 		);
+
 		if (version) {
 			return tryParseFuncVersion(version);
 		}

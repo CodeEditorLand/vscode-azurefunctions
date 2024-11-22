@@ -76,6 +76,7 @@ export abstract class FunctionTreeItemBase extends AzExtTreeItem {
 
 	public get contextValue(): string {
 		let triggerType: string;
+
 		if (this.isHttpTrigger) {
 			triggerType = "Http";
 		} else if (this.isTimerTrigger) {
@@ -97,6 +98,7 @@ export abstract class FunctionTreeItemBase extends AzExtTreeItem {
 
 	public get description(): string | undefined {
 		const descriptions: string[] = [];
+
 		if (this.isHttpTrigger) {
 			descriptions.push(localize("http", "HTTP"));
 		} else if (this.isTimerTrigger) {
@@ -136,6 +138,7 @@ export abstract class FunctionTreeItemBase extends AzExtTreeItem {
 			this._disabled = !!this.function.data.isDisabled;
 		} else {
 			const version: FuncVersion = await this.project.getVersion(context);
+
 			if (version === FuncVersion.v1) {
 				this._disabled = this.function.config.disabled;
 			} else {

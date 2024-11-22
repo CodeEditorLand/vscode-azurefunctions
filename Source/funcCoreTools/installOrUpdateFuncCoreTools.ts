@@ -30,10 +30,13 @@ export async function installOrUpdateFuncCoreTools(
 		context,
 		undefined,
 	);
+
 	const packageManagers: PackageManager[] =
 		await getFuncPackageManagers(isFuncInstalled);
+
 	if (packageManagers.length === 0) {
 		context.errorHandling.suppressReportIssue = true;
+
 		throw new Error(
 			localize(
 				"installNotSupported",
@@ -45,6 +48,7 @@ export async function installOrUpdateFuncCoreTools(
 
 	if (isFuncInstalled) {
 		let packageManager: PackageManager;
+
 		if (packageManagers.length === 1) {
 			packageManager = packageManagers[0];
 		} else {
@@ -52,6 +56,7 @@ export async function installOrUpdateFuncCoreTools(
 				"multipleInstalls",
 				"Multiple installs of the func cli detected. Select the one to update",
 			);
+
 			const picks: IAzureQuickPickItem<PackageManager>[] =
 				packageManagers.map((pm) => {
 					return {
@@ -71,6 +76,7 @@ export async function installOrUpdateFuncCoreTools(
 			context,
 			undefined,
 		);
+
 		if (version === undefined) {
 			version = await promptForFuncVersion(
 				context,

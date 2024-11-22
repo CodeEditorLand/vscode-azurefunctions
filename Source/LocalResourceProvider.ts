@@ -34,6 +34,7 @@ export class FunctionsLocalResourceProvider
 		this._projectDisposables = [];
 
 		const localProjects = await listLocalProjects();
+
 		let hasLocalProject = false;
 
 		for (const project of localProjects.initializedProjects) {

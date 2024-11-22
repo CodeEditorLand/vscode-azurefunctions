@@ -21,9 +21,13 @@ import { type IProjectWizardContext } from "../../createNewProject/IProjectWizar
 import { JavaScriptInitVSCodeStep } from "./JavaScriptInitVSCodeStep";
 
 const npmPruneTaskLabel: string = convertToFunctionsTaskLabel("npm prune");
+
 const npmInstallTaskLabel: string = convertToFunctionsTaskLabel("npm install");
+
 const npmBuildTaskLabel: string = convertToFunctionsTaskLabel("npm build");
+
 const npmWatchTaskLabel: string = convertToFunctionsTaskLabel("npm watch");
+
 const npmCleanTaskLabel: string = convertToFunctionsTaskLabel("npm clean");
 
 export class TypeScriptInitVSCodeStep extends JavaScriptInitVSCodeStep {
@@ -47,6 +51,7 @@ export class TypeScriptInitVSCodeStep extends JavaScriptInitVSCodeStep {
 		const installDependsOn = this.useFuncExtensionsInstall
 			? [extInstallTaskName, npmInstallTaskLabel]
 			: npmInstallTaskLabel;
+
 		const tasks: TaskDefinition[] = [
 			{
 				type: func,

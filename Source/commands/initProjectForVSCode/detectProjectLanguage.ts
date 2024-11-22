@@ -83,6 +83,7 @@ export async function detectProjectLanguage(
 		detectedLangs = detectedLangs.filter(
 			(pl, index) => detectedLangs.indexOf(pl) === index,
 		);
+
 		return detectedLangs.length === 1 ? detectedLangs[0] : undefined;
 	} catch {
 		return undefined;
@@ -169,19 +170,28 @@ async function detectLanguageFromLocalSettings(
 			context,
 			path.join(projectPath, localSettingsFileName),
 		);
+
 		switch (settings.Values?.[workerRuntimeKey]?.toLowerCase()) {
 			case "java":
 				detectedLangs.push(ProjectLanguage.Java);
+
 				break;
+
 			case "python":
 				detectedLangs.push(ProjectLanguage.Python);
+
 				break;
+
 			case "powershell":
 				detectedLangs.push(ProjectLanguage.PowerShell);
+
 				break;
+
 			case "custom":
 				detectedLangs.push(ProjectLanguage.Custom);
+
 				break;
+
 			default:
 			// setting doesn't exist or it could be multiple different languages (aka "node" could by JavaScript or TypeScript)
 		}
@@ -203,14 +213,17 @@ async function detectScriptLanguages(
 		"detectScriptLangs",
 		async () => {
 			const detectedLangs: ProjectLanguage[] = [];
+
 			for (const language of Object.values(ProjectLanguage)) {
 				const functionFileName: string | undefined =
 					getScriptFileNameFromLanguage(language);
+
 				if (functionFileName) {
 					const uris = await findFiles(
 						projectPath,
 						`*/${functionFileName}`,
 					);
+
 					if (uris.length > 0) {
 						detectedLangs.push(language);
 					}
@@ -239,13 +252,17 @@ export async function detectProjectLanguageModel(
 				}
 
 				break;
+
 			case ProjectLanguage.JavaScript:
 			case ProjectLanguage.TypeScript:
 				const packageJson = await tryGetPackageJson(projectPath);
+
 				const funcDepVersion =
 					packageJson?.dependencies?.["@azure/functions"];
+
 				if (funcDepVersion) {
 					const supportedModels = [3, 4];
+
 					for (const model of supportedModels) {
 						if (
 							new RegExp(`^[^0-9]*${model}`).test(funcDepVersion)
@@ -256,6 +273,7 @@ export async function detectProjectLanguageModel(
 				}
 
 				break;
+
 			default:
 				break;
 		}

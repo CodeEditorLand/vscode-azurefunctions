@@ -84,6 +84,7 @@ export class JobsListStep extends AzureWizardPromptStep<IFunctionWizardContext> 
 		context: FunctionV2WizardContext,
 	): Promise<IAzureQuickPickItem<ParsedJob>[]> {
 		assertTemplateIsV2(context.functionTemplate);
+
 		let picks = context.functionTemplate.wizards.map((w) => {
 			return { label: w.name, data: w };
 		});

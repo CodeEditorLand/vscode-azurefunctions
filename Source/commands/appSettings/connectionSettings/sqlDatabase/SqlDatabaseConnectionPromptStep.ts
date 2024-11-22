@@ -32,6 +32,7 @@ export class SqlDatabaseConnectionPromptStep<
 				"Connect Azure SQL Database",
 			),
 		};
+
 		const connectCustomDatabase: MessageItem = {
 			title: localize(
 				"connectCustomSqlDatabase",
@@ -54,6 +55,7 @@ export class SqlDatabaseConnectionPromptStep<
 			{ modal: true },
 			...buttons,
 		);
+
 		if (result === connectAzureDatabase) {
 			context.sqlDbConnectionType = ConnectionType.Azure;
 		} else {
@@ -102,6 +104,7 @@ export class SqlDatabaseConnectionPromptStep<
 				await ext.azureAccountTreeItem.getSubscriptionPromptStep(
 					context,
 				);
+
 			if (subscriptionPromptStep) {
 				promptSteps.push(subscriptionPromptStep);
 			}

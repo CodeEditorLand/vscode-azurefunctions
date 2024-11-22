@@ -49,6 +49,7 @@ export class ScriptInitVSCodeStep extends InitVSCodeStepBase {
 				context.projectPath,
 				extensionsCsprojFileName,
 			);
+
 			if (await AzExtFsExtra.pathExists(extensionsCsprojPath)) {
 				this.useFuncExtensionsInstall = true;
 				context.telemetry.properties.hasExtensionsCsproj = "true";

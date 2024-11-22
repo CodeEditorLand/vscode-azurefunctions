@@ -29,6 +29,7 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 		context: IActionContext,
 	): Promise<OpenAPICreateStep> {
 		await validateAutorestInstalled(context);
+
 		return new OpenAPICreateStep();
 	}
 
@@ -41,7 +42,9 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 			wizardContext,
 			"openApiSpecificationFile",
 		);
+
 		const uri: Uri = uris[0];
+
 		const args: string[] = [];
 
 		args.push(`--input-file:${cpUtils.wrapArgInQuotes(uri.fsPath)}`);
@@ -51,24 +54,32 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 			case ProjectLanguage.TypeScript:
 				args.push("--azure-functions-typescript");
 				args.push("--no-namespace-folders:True");
+
 				break;
+
 			case ProjectLanguage.CSharp:
 				args.push(
 					`--namespace:${nonNullProp(wizardContext, "namespace")}`,
 				);
 				args.push("--azure-functions-csharp");
+
 				break;
+
 			case ProjectLanguage.Java:
 				args.push(
 					`--namespace:${nonNullProp(wizardContext, "javaPackageName")}`,
 				);
 				args.push("--azure-functions-java");
+
 				break;
+
 			case ProjectLanguage.Python:
 				args.push("--azure-functions-python");
 				args.push("--no-namespace-folders:True");
 				args.push("--no-async");
+
 				break;
+
 			default:
 				throw new Error(
 					localize(
@@ -89,6 +100,7 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 				"Using the plugin could overwrite your custom changes to the functions.\nIf autorest fails, you can run the script on your command-line, or try resetting autorest (autorest --reset) and try again.",
 			),
 		);
+
 		const title: string = localize(
 			"generatingFunctions",
 			"Generating from OpenAPI...Check [output window](command:{0}) for status.",
@@ -133,6 +145,7 @@ async function validateAutorestInstalled(
 			"autorestNotFound",
 			'Failed to find "autorest" | Extension needs AutoRest to generate a function app from an OpenAPI specification. Click "Learn more" for more details on installation steps.',
 		);
+
 		if (!context.errorHandling.suppressDisplay) {
 			void window
 				.showErrorMessage(message, DialogResponses.learnMore)
@@ -152,7 +165,9 @@ async function addAutorestSpecificTypescriptDependencies(
 	context: IFunctionWizardContext,
 ): Promise<void> {
 	const coreHttp: string = "@azure/core-http";
+
 	const coreHttpVersion: string = "^1.1.4";
+
 	const packagePath: string = path.join(
 		context.projectPath,
 		packageJsonFileName,
@@ -163,6 +178,7 @@ async function addAutorestSpecificTypescriptDependencies(
 		packagePath,
 		(data: { devDependencies?: { [key: string]: string } }): {} => {
 			data.devDependencies = data.devDependencies || {};
+
 			if (!data.devDependencies[coreHttp]) {
 				data.devDependencies[coreHttp] = coreHttpVersion;
 			}

@@ -27,6 +27,7 @@ export function createRefreshFileWatcher(
 
 	const watcher: FileSystemWatcher =
 		workspace.createFileSystemWatcher(globPattern);
+
 	return Disposable.from(
 		watcher,
 		watcher.onDidChange(refreshMethod),

@@ -20,16 +20,20 @@ export type LinuxDistroTag = Partial<
 // Majority of recent Linux distributions support the /etc/os-release file
 async function getLinuxDistroTag(): Promise<LinuxDistroTag | undefined> {
 	const osReleasePath: string = "/etc/os-release";
+
 	if (!(await AzExtFsExtra.pathExists(osReleasePath))) {
 		return undefined;
 	}
 
 	const linuxDistroTag: LinuxDistroTag = {};
+
 	const releaseContents: string = await AzExtFsExtra.readFile(osReleasePath);
+
 	const lines: string[] = releaseContents.split("\n");
 
 	for (const line of lines) {
 		const [key, value] = line.split("=");
+
 		if (
 			linuxDistroTagKeys.includes(
 				key as (typeof linuxDistroTagKeys)[number],
@@ -46,11 +50,14 @@ export async function generateLinuxErrorMessages(
 	hasPackageManager: boolean,
 ): Promise<ILinuxErrorMessages> {
 	let noPackageManager: string = "";
+
 	let failedInstall: string = "";
+
 	let linuxDistroInfo: string = "";
 
 	const linuxDistroTag: LinuxDistroTag | undefined =
 		await getLinuxDistroTag();
+
 	if (linuxDistroTag) {
 		if (linuxDistroTag.PRETTY_NAME) {
 			linuxDistroInfo += localize(

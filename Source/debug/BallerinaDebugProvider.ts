@@ -28,6 +28,7 @@ export class BallerinaDebugProvider extends FuncDebugProviderBase {
 
 	public async getWorkerArgValue(folder: WorkspaceFolder): Promise<string> {
 		const port: string | number = this.getDebugPortOrPipeName(folder);
+
 		return `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${port}`;
 	}
 
@@ -37,6 +38,7 @@ export class BallerinaDebugProvider extends FuncDebugProviderBase {
 		const debugPort: string | undefined = <string | undefined>(
 			debugConfiguration.debuggeePort
 		);
+
 		if (debugPort !== undefined) {
 			return parseInt(debugPort);
 		}

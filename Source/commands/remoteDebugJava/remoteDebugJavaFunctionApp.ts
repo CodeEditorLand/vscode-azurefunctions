@@ -24,6 +24,7 @@ import { pickFunctionApp } from "../../utils/pickFunctionApp";
 import { DebugProxy } from "./DebugProxy";
 
 const HTTP_PLATFORM_DEBUG_PORT: string = "8898";
+
 const JAVA_OPTS: string = `-Djava.net.preferIPv4Stack=true -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=127.0.0.1:${HTTP_PLATFORM_DEBUG_PORT}`;
 
 export async function remoteDebugJavaFunctionApp(
@@ -34,8 +35,11 @@ export async function remoteDebugJavaFunctionApp(
 		node = await pickFunctionApp(context);
 	}
 	const client: SiteClient = await node.site.createClient(context);
+
 	const portNumber: number = await findFreePort();
+
 	const publishCredential: User = await client.getWebAppPublishCredential();
+
 	const debugProxy: DebugProxy = new DebugProxy(
 		node.site,
 		portNumber,
@@ -44,6 +48,7 @@ export async function remoteDebugJavaFunctionApp(
 
 	debugProxy.on("error", (err: Error) => {
 		debugProxy.dispose();
+
 		throw err;
 	});
 
@@ -59,8 +64,10 @@ export async function remoteDebugJavaFunctionApp(
 					try {
 						const siteConfig: SiteConfigResource =
 							await client.getSiteConfig();
+
 						const appSettings: StringDictionary =
 							await client.listApplicationSettings();
+
 						if (
 							needUpdateSiteConfig(siteConfig) ||
 							(appSettings.properties &&
@@ -70,6 +77,7 @@ export async function remoteDebugJavaFunctionApp(
 								"confirmRemoteDebug",
 								"The configurations of the selected app will be changed before debugging. Would you like to continue?",
 							);
+
 							const result: vscode.MessageItem =
 								await context.ui.showWarningMessage(
 									confirmMsg,
@@ -77,10 +85,12 @@ export async function remoteDebugJavaFunctionApp(
 									DialogResponses.yes,
 									DialogResponses.learnMore,
 								);
+
 							if (result === DialogResponses.learnMore) {
 								await openUrl(
 									"https://aka.ms/azfunc-remotedebug",
 								);
+
 								return;
 							} else {
 								await updateSiteConfig(client, p, siteConfig);
@@ -130,6 +140,7 @@ async function updateSiteConfig(
 ): Promise<void> {
 	p.report({ message: "Fetching site configuration..." });
 	ext.outputChannel.appendLog("Fetching site configuration...");
+
 	if (needUpdateSiteConfig(siteConfig)) {
 		siteConfig.use32BitWorkerProcess = false;
 		siteConfig.webSocketsEnabled = true;
@@ -153,6 +164,7 @@ async function updateAppSettings(
 ): Promise<void> {
 	p.report({ message: "Fetching application settings..." });
 	ext.outputChannel.appendLog("Fetching application settings...");
+
 	if (
 		appSettings.properties &&
 		needUpdateAppSettings(appSettings.properties)

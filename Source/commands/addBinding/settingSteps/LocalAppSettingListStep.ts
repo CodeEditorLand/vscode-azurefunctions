@@ -45,6 +45,7 @@ const showHiddenValuesItem = {
 	label: localize("showHiddenValues", "$(eye) Show hidden values"),
 	data: "hiddenValues",
 };
+
 const hideHiddenValuesItem = {
 	label: localize("hideHiddenValues", "$(eye-closed) Hide hidden values"),
 	data: "hiddenValues",
@@ -58,21 +59,25 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 			context.projectPath,
 			localSettingsFileName,
 		);
+
 		const settings: ILocalSettingsJson = await getLocalSettingsJson(
 			context,
 			localSettingsPath,
 		);
+
 		const existingSettings: [string, string][] = settings.Values
 			? Object.entries(settings.Values)
 			: [];
 
 		let result: string | undefined;
+
 		const placeHolder: string = localize(
 			"selectAppSetting",
 			'Select the app setting with your {1} string from "{0}"',
 			localSettingsFileName,
 			this._setting.label,
 		);
+
 		do {
 			let picks: IAzureQuickPickItem<string | undefined>[] = [
 				{
@@ -92,6 +97,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 					};
 				}),
 			);
+
 			if (picks.length > 1) {
 				// don't add hidden values item if there are no existing settings
 				picks.push(
@@ -102,6 +108,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 			}
 			result = (await context.ui.showQuickPick(picks, { placeHolder }))
 				.data;
+
 			if (result === "hiddenValues") {
 				this._showHiddenValues = !this._showHiddenValues;
 				picks.pop();
@@ -123,29 +130,37 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 					ISubscriptionActionContext &
 					IEventHubsConnectionWizardContext
 			>[] = [];
+
 			const azureExecuteSteps: AzureWizardExecuteStep<
 				IFunctionWizardContext &
 					ISubscriptionActionContext &
 					IEventHubsConnectionWizardContext
 			>[] = [];
+
 			switch (this._resourceType) {
 				case ResourceType.DocumentDB:
 					azurePromptSteps.push(new CosmosDBListStep());
 					azureExecuteSteps.push(
 						new CosmosDBConnectionCreateStep(this._setting),
 					);
+
 					break;
+
 				case ResourceType.Storage:
 					azurePromptSteps.push(
 						new StorageTypePromptStep(this._setting),
 					);
+
 					break;
+
 				case ResourceType.ServiceBus:
 					azurePromptSteps.push(new ServiceBusListStep());
 					azureExecuteSteps.push(
 						new ServiceBusConnectionCreateStep(this._setting),
 					);
+
 					break;
+
 				case ResourceType.EventHub:
 					azurePromptSteps.push(
 						new EventHubsNamespaceListStep(),
@@ -155,11 +170,14 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 					azureExecuteSteps.push(
 						new EventHubConnectionCreateStep(this._setting),
 					);
+
 					break;
+
 				default:
 					// Unsupported resource type - prompt user to enter connection string manually
 					const valueKey: string =
 						this._setting.name.toLowerCase() + "_value";
+
 					return {
 						promptSteps: [
 							new LocalAppSettingNameStep(this._setting),
@@ -180,6 +198,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 				await ext.azureAccountTreeItem.getSubscriptionPromptStep(
 					context,
 				);
+
 			if (subscriptionPromptStep) {
 				azurePromptSteps.unshift(subscriptionPromptStep);
 			}

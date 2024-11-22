@@ -14,5 +14,6 @@ export enum FunctionLocation {
 export interface IPythonFunctionWizardContext
 	extends IScriptFunctionWizardContext {
 	functionLocation?: FunctionLocation;
+
 	functionScript?: string;
 }

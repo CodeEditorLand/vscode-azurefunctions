@@ -34,6 +34,7 @@ function validatePackageName(packageName: string): string | undefined {
 	}
 	for (const s of packageName.split(".")) {
 		const result: string | undefined = validateJavaName(s);
+
 		if (result) {
 			return result;
 		}

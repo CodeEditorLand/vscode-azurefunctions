@@ -23,16 +23,22 @@ export function getScriptFileNameFromLanguage(
 	switch (language) {
 		case ProjectLanguage.CSharpScript:
 			return "run.csx";
+
 		case ProjectLanguage.FSharpScript:
 			return "run.fsx";
+
 		case ProjectLanguage.JavaScript:
 			return "index.js";
+
 		case ProjectLanguage.PowerShell:
 			return "run.ps1";
+
 		case ProjectLanguage.Python:
 			return "__init__.py";
+
 		case ProjectLanguage.TypeScript:
 			return "index.ts";
+
 		default:
 			return undefined;
 	}
@@ -44,16 +50,22 @@ export function getFileExtensionFromLanguage(
 	switch (language) {
 		case ProjectLanguage.CSharpScript:
 			return ".csx";
+
 		case ProjectLanguage.FSharpScript:
 			return ".fsx";
+
 		case ProjectLanguage.JavaScript:
 			return ".js";
+
 		case ProjectLanguage.PowerShell:
 			return ".ps1";
+
 		case ProjectLanguage.Python:
 			return ".py";
+
 		case ProjectLanguage.TypeScript:
 			return ".ts";
+
 		default:
 			return undefined;
 	}
@@ -67,6 +79,7 @@ export class ScriptFunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 			context.projectPath,
 			nonNullProp(context, "functionName"),
 		);
+
 		const template: IScriptFunctionTemplate = nonNullProp(
 			context,
 			"functionTemplate",
@@ -85,11 +98,13 @@ export class ScriptFunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 			template.functionJson,
 			"triggerBinding",
 		);
+
 		for (const setting of template.userPromptedSettings) {
 			triggerBinding[setting.name] = getBindingSetting(context, setting);
 		}
 
 		const functionJson: IFunctionJson = template.functionJson.data;
+
 		if (this.editFunctionJson) {
 			await this.editFunctionJson(context, functionJson);
 		}
@@ -101,6 +116,7 @@ export class ScriptFunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 		await AzExtFsExtra.writeJSON(functionJsonPath, functionJson);
 
 		const language: ProjectLanguage = nonNullProp(context, "language");
+
 		const fileName: string | undefined =
 			getScriptFileNameFromLanguage(language);
 

@@ -21,7 +21,9 @@ import { type IProjectWizardContext } from "../IProjectWizardContext";
 import { ScriptProjectCreateStep } from "./ScriptProjectCreateStep";
 
 const profileps1FileName: string = "profile.ps1";
+
 const requirementspsd1FileName: string = "requirements.psd1";
+
 const profileps1: string = `# Azure Functions profile.ps1
 #
 # This profile.ps1 will get executed every "cold start" of your Function App.
@@ -87,12 +89,14 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 			context.projectPath,
 			profileps1FileName,
 		);
+
 		if (await confirmOverwriteFile(context, profileps1Path)) {
 			await AzExtFsExtra.writeFile(profileps1Path, profileps1);
 		}
 
 		const majorVersion: number | undefined =
 			await this.tryGetLatestAzModuleMajorVersion(context, progress);
+
 		if (majorVersion !== undefined) {
 			progress.report({
 				message: localize(
@@ -115,6 +119,7 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 			context.projectPath,
 			requirementspsd1FileName,
 		);
+
 		if (await confirmOverwriteFile(context, requirementspsd1Path)) {
 			if (majorVersion !== undefined) {
 				await AzExtFsExtra.writeFile(
@@ -135,6 +140,7 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 	): Promise<IHostJsonV2> {
 		const hostJson: IHostJsonV2 = await super.getHostContent(context);
 		hostJson.managedDependency = { enabled: true };
+
 		return hostJson;
 	}
 
@@ -157,9 +163,12 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 				context,
 				{ method: "GET", url: this.azModuleGalleryUrl },
 			);
+
 			const versionResult: string =
 				this.parseLatestAzModuleVersion(response);
+
 			const [major]: string[] = versionResult.split(".");
+
 			return parseInt(major);
 		} catch {
 			return undefined;
@@ -171,6 +180,7 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 	): string {
 		/* eslint-disable */
 		const moduleInfo: any = response.parsedBody;
+
 		if (moduleInfo?.entry && Array.isArray(moduleInfo.entry)) {
 			const releasedVersions: string[] = moduleInfo.entry
 				.filter(
@@ -183,6 +193,7 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 			// Select the latest version
 			if (releasedVersions.length > 0) {
 				const lastIndex: number = releasedVersions.length - 1;
+
 				return releasedVersions[lastIndex];
 			}
 		}

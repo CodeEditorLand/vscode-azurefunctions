@@ -18,6 +18,7 @@ import * as source from "vinyl-source-stream";
 
 async function prepareForWebpack(): Promise<void> {
 	const mainJsPath: string = path.join(__dirname, "main.js");
+
 	let contents: string = (await fse.readFile(mainJsPath)).toString();
 	contents = contents
 		.replace("out/src/extension", "dist/extension.bundle")
@@ -28,10 +29,13 @@ async function prepareForWebpack(): Promise<void> {
 let downloadLink;
 async function getFuncLink() {
     const client = new msRest.ServiceClient();
+
     const cliFeed = (await client.sendRequest({ method: 'GET', url: 'https://aka.ms/V00v5v' })).parsedBody;
     // const version = cliFeed.tags['v4-prerelease'].release;
+
     const version = '4.91.0';
     console.log(`Func cli feed version: ${version}`);
+
     const cliRelease = cliFeed.releases[version].coreTools.find((rel) => {
         return rel.Architecture === 'x64' && (
             matchesCliFeedOS(rel.OperatingSystem) ||
@@ -47,8 +51,10 @@ function matchesCliFeedOS(platform: string) {
 	switch (process.platform) {
 		case "win32":
 			return platform === "Windows";
+
 		case "darwin":
 			return platform === "MacOS";
+
 		default:
 			return platform === "Linux";
 	}
@@ -56,12 +62,14 @@ function matchesCliFeedOS(platform: string) {
 
 function installFuncCli() {
 	const funcDir = path.join(os.homedir(), "tools", "func");
+
 	if (fse.pathExistsSync(funcDir)) {
 		console.log("Removing old install of func.");
 		fse.removeSync(funcDir);
 	}
 
 	const funcFilter = filter("func", { restore: true });
+
 	return request(downloadLink)
 		.pipe(source("funccli.zip"))
 		.pipe(buffer())
@@ -74,6 +82,7 @@ function installFuncCli() {
 
 async function cleanReadme() {
 	const readmePath: string = path.join(__dirname, "README.md");
+
 	let data: string = (await fse.readFile(readmePath)).toString();
 	data = data.replace(
 		/<!-- region exclude-from-marketplace -->.*?<!-- endregion exclude-from-marketplace -->/gis,

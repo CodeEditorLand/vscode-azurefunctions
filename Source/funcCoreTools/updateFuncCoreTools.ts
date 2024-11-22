@@ -23,6 +23,7 @@ export async function updateFuncCoreTools(
 	version: FuncVersion,
 ): Promise<void> {
 	ext.outputChannel.show();
+
 	switch (packageManager) {
 		case PackageManager.npm:
 			const distTag: INpmDistTag = await getNpmDistTag(context, version);
@@ -34,13 +35,17 @@ export async function updateFuncCoreTools(
 				"-g",
 				`${funcPackageName}@${distTag.tag}`,
 			);
+
 			break;
+
 		case PackageManager.brew:
 			const brewPackageName: string = getBrewPackageName(version);
+
 			const installedBrewPackageName: string = nonNullValue(
 				await tryGetInstalledBrewPackageName(version),
 				"brewPackageName",
 			);
+
 			if (brewPackageName !== installedBrewPackageName) {
 				// Uninstall deprecated tag and install latest tag
 				await cpUtils.executeCommand(
@@ -67,6 +72,7 @@ export async function updateFuncCoreTools(
 				);
 			}
 			break;
+
 		default:
 			throw new RangeError(
 				localize(

@@ -31,6 +31,7 @@ export abstract class PromptSchemaStepBase<
 		}
 
 		const validators = parsedInput.validators || [];
+
 		for (const validator of validators) {
 			if (value) {
 				if (!new RegExp(validator.expression).test(value)) {

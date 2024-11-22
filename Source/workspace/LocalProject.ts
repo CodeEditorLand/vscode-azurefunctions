@@ -25,6 +25,7 @@ export class LocalProject implements LocalProjectInternal {
         const version: FuncVersion = await this.getVersion();
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
         const data = await AzExtFsExtra.readJSON<any>(path.join(this.options.effectiveProjectPath, hostFileName));
+
         return parseHostJson(data, version);
     }
 
@@ -34,6 +35,7 @@ export class LocalProject implements LocalProjectInternal {
 
     public async getApplicationSettings(context: IActionContext): Promise<ApplicationSettings> {
         const localSettings: ILocalSettingsJson = await getLocalSettingsJson(context, path.join(this.options.effectiveProjectPath, localSettingsFileName));
+
         return localSettings.Values || {};
     }
 
@@ -43,18 +45,21 @@ export class LocalProject implements LocalProjectInternal {
 
     public async getHostRequest(context: IActionContext): Promise<FuncHostRequest> {
         let port = runningFuncTaskMap.get(this.options.folder)?.portNumber;
+
         if (!port) {
             const funcTask: Task | undefined = (await tasks.fetchTasks()).find(t => t.scope === this.options.folder && isFuncHostTask(t));
             port = await getFuncPortFromTaskOrProject(context, funcTask, this.options.effectiveProjectPath);
         }
 
         const url = `http://localhost:${port}`;
+
         try {
             await requestUtils.sendRequestWithExtTimeout(context, { url: url, method: 'GET' });
         } catch {
             try {
                 const httpsUrl = url.replace('http', 'https');
                 await requestUtils.sendRequestWithExtTimeout(context, { url: httpsUrl, method: 'GET', rejectUnauthorized: false });
+
                 return { url: httpsUrl, rejectUnauthorized: false };
             } catch {
                 // ignore

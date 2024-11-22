@@ -27,6 +27,7 @@ export class ContainerAppSettingsClientProvider
 {
 	private _node: ContainerTreeItem;
 	private _subscription: ISubscriptionContext;
+
 	constructor(node: ContainerTreeItem, subscription: ISubscriptionContext) {
 		this._node = node;
 		this._subscription = subscription;
@@ -35,6 +36,7 @@ export class ContainerAppSettingsClientProvider
 		context: IActionContext,
 	): Promise<IAppSettingsClient> {
 		const client = await createWebSiteClient([context, this._subscription]);
+
 		return new ContainerAppSettingsClient(this._node.site, client);
 	}
 }

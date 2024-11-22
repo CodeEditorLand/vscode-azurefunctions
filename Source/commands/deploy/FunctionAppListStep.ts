@@ -48,7 +48,9 @@ export class FunctionAppListStep extends AzureWizardPromptStep<IFuncDeployContex
 			context,
 			createSubscriptionContext(nonNullProp(context, "subscription")),
 		]);
+
 		const sites = await uiUtils.listAllIterator(client.webApps.list());
+
 		const qp: IAzureQuickPickItem<Site | undefined>[] = sites
 			.filter((s) => !!s.kind?.includes("functionapp"))
 			.map((fa) => {
@@ -65,6 +67,7 @@ export class FunctionAppListStep extends AzureWizardPromptStep<IFuncDeployContex
 			label: "$(plus) Create new function app",
 			data: undefined,
 		});
+
 		return qp;
 	}
 
@@ -90,6 +93,7 @@ export class FunctionAppListStep extends AzureWizardPromptStep<IFuncDeployContex
 				createSubscriptionContext(nonNullProp(context, "subscription")),
 				language,
 			);
+
 		return {
 			// it's ugly, but we can cast because we know that this subwizard doesn't need to have the full IFuncDeployContext
 			promptSteps:

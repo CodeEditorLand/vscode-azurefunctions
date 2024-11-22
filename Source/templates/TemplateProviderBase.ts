@@ -251,6 +251,7 @@ export abstract class TemplateProviderBase implements Disposable {
 		projKey: string | undefined,
 	): Promise<boolean> {
 		let hasChanged: boolean;
+
 		if (!this.refreshProjKey) {
 			hasChanged = false; // proj keys not supported, so it's impossible to have changed
 		} else if (projKey) {
@@ -265,6 +266,7 @@ export abstract class TemplateProviderBase implements Disposable {
 		}
 
 		this._projKeyMayHaveChanged = false;
+
 		return hasChanged;
 	}
 
@@ -273,6 +275,7 @@ export abstract class TemplateProviderBase implements Disposable {
 	): Promise<boolean> {
 		if (this.refreshProjKey) {
 			const projKey = await this.getProjKey(context);
+
 			const cachedProjKey = await this.getCachedValue(
 				TemplateProviderBase.projTemplateKeyCacheKey,
 			);

@@ -19,11 +19,14 @@ export class BindingNameStep extends StringPromptStep {
 		const defaultValue: string | undefined = await super.getDefaultValue(
 			context,
 		);
+
 		if (defaultValue) {
 			let uniqueValue: string = defaultValue;
 
 			let count: number = 1;
+
 			const maxTries: number = 1000;
+
 			while (count < maxTries) {
 				if (!(await this.bindingExists(context, uniqueValue))) {
 					return uniqueValue;

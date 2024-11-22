@@ -8,8 +8,10 @@ import { getCoreNodeModule } from "./getCoreNodeModule";
 
 export function getWindowsProcessTree(): IWindowsProcessTree {
 	const moduleName: string = "@vscode/windows-process-tree";
+
 	const windowsProcessTree: IWindowsProcessTree | undefined =
 		getCoreNodeModule<IWindowsProcessTree>(moduleName);
+
 	if (!windowsProcessTree) {
 		throw new Error(
 			localize(

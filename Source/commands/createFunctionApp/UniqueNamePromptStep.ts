@@ -25,6 +25,7 @@ export class ConfigureCommonNamesStep extends AzureWizardPromptStep<IAppServiceW
 	): Promise<void> {
 		if (!context.advancedCreation) {
 			const newName: string | undefined = await context.relatedNameTask;
+
 			if (!newName) {
 				throw new Error(
 					localize(
@@ -35,6 +36,7 @@ export class ConfigureCommonNamesStep extends AzureWizardPromptStep<IAppServiceW
 			}
 			context.newResourceGroupName =
 				context.newResourceGroupName || newName;
+
 			setConsumptionPlanProperties(context);
 			context.newStorageAccountName = newName;
 			context.newAppInsightsName = newName;

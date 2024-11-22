@@ -22,6 +22,7 @@ export class EnumPromptStep extends BindingSettingStepBase {
 				return { data: e.value, label: e.displayName };
 			},
 		);
+
 		return (
 			await context.ui.showQuickPick(picks, {
 				placeHolder: this._setting.label,

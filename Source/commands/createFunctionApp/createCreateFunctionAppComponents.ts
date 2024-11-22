@@ -80,6 +80,7 @@ export async function createCreateFunctionAppComponents(
 	);
 
 	const promptSteps: AzureWizardPromptStep<IFunctionAppWizardContext>[] = [];
+
 	const executeSteps: AzureWizardExecuteStep<IFunctionAppWizardContext>[] =
 		[];
 
@@ -120,6 +121,7 @@ export async function createCreateFunctionAppComponents(
 			new StorageAccountCreateStep(storageAccountCreateOptions),
 		);
 		executeSteps.push(new AppInsightsCreateStep());
+
 		if (!context.dockerfilePath) {
 			executeSteps.push(new AppServicePlanCreateStep());
 			executeSteps.push(new LogAnalyticsCreateStep());
@@ -189,6 +191,7 @@ async function createFunctionAppWizard(
 	executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[];
 }> {
 	const promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[] = [];
+
 	const executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[] = [];
 
 	if (wizardContext.advancedCreation) {
@@ -218,6 +221,7 @@ async function createContainerizedFunctionAppWizard(): Promise<{
 	executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[];
 }> {
 	const promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[] = [];
+
 	const executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[] = [];
 
 	executeSteps.push(new DeployWorkspaceProjectStep());

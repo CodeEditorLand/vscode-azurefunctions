@@ -25,6 +25,7 @@ export class PythonVenvListStep extends AzureWizardPromptStep<IPythonVenvWizardC
 		const picks: IAzureQuickPickItem<string>[] = this._venvs.map((venv) => {
 			return { label: venv, data: venv };
 		});
+
 		const placeHolder: string = localize(
 			"selectVenv",
 			"Select a virtual environment to use for your project",

@@ -38,6 +38,7 @@ export class AzureWebJobsStoragePromptStep<
 		const connectStorageButton: MessageItem = {
 			title: localize("connectStorageAccount", "Connect Storage Account"),
 		};
+
 		const useEmulatorButton: MessageItem = { title: useEmulator };
 
 		const message: string = localize(
@@ -55,6 +56,7 @@ export class AzureWebJobsStoragePromptStep<
 			{ modal: true },
 			...buttons,
 		);
+
 		if (result === connectStorageButton) {
 			context.azureWebJobsStorageType = ConnectionType.Azure;
 		} else {
@@ -116,6 +118,7 @@ export class AzureWebJobsStoragePromptStep<
 			| AzureWizardPromptStep<ISubscriptionActionContext>
 			| undefined =
 			await ext.azureAccountTreeItem.getSubscriptionPromptStep(context);
+
 		if (subscriptionPromptStep) {
 			promptSteps.push(subscriptionPromptStep);
 		}

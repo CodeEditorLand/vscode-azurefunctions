@@ -27,11 +27,13 @@ export async function verifyPythonVenv(
 	version: FuncVersion,
 ): Promise<void> {
 	const settingKey: string = "showPythonVenvWarning";
+
 	if (getWorkspaceSetting<boolean>(settingKey)) {
 		const venvName: string | undefined = getWorkspaceSetting(
 			pythonVenvSetting,
 			projectPath,
 		);
+
 		if (
 			venvName &&
 			!(await AzExtFsExtra.pathExists(path.join(projectPath, venvName)))
@@ -41,6 +43,7 @@ export async function verifyPythonVenv(
 			const createVenv: vscode.MessageItem = {
 				title: localize("createVenv", "Create virtual environment"),
 			};
+
 			const message: string = localize(
 				"uninitializedWarning",
 				'Failed to find Python virtual environment "{0}", which is expected based on the setting "{1}.{2}".',
@@ -48,12 +51,14 @@ export async function verifyPythonVenv(
 				ext.prefix,
 				pythonVenvSetting,
 			);
+
 			const result: vscode.MessageItem =
 				await context.ui.showWarningMessage(
 					message,
 					createVenv,
 					DialogResponses.dontWarnAgain,
 				);
+
 			if (result === createVenv) {
 				context.errorHandling.suppressDisplay = false;
 				context.telemetry.properties.verifyConfigResult = "update";
@@ -65,6 +70,7 @@ export async function verifyPythonVenv(
 					projectPath,
 					suppressSkipVenv: true,
 				};
+
 				const wizard: AzureWizard<IPythonVenvWizardContext> =
 					new AzureWizard(wizardContext, {
 						promptSteps: [new PythonAliasListStep()],

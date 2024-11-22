@@ -45,26 +45,34 @@ export class FunctionSubWizard {
 
 		const template: FunctionTemplateBase | undefined =
 			context.functionTemplate;
+
 		if (template) {
 			const promptSteps: AzureWizardPromptStep<IFunctionWizardContext>[] =
 				[];
+
 			switch (context.language) {
 				case ProjectLanguage.Java:
 					promptSteps.push(
 						new JavaPackageNameStep(),
 						new JavaFunctionNameStep(),
 					);
+
 					break;
+
 				case ProjectLanguage.Ballerina:
 					promptSteps.push(new BallerinaFunctionNameStep());
+
 					break;
+
 				case ProjectLanguage.CSharp:
 				case ProjectLanguage.FSharp:
 					promptSteps.push(
 						new DotnetFunctionNameStep(),
 						new DotnetNamespaceStep(),
 					);
+
 					break;
+
 				default:
 					if (isNodeV4Plus(context)) {
 						promptSteps.push(new NodeV4FunctionNameStep());
@@ -101,27 +109,37 @@ export class FunctionSubWizard {
 
 			const executeSteps: AzureWizardExecuteStep<IFunctionWizardContext>[] =
 				[];
+
 			if (isNodeV4Plus(context)) {
 				executeSteps.push(new NodeV4FunctionCreateStep());
 			} else {
 				switch (context.language) {
 					case ProjectLanguage.Java:
 						executeSteps.push(new JavaFunctionCreateStep());
+
 						break;
+
 					case ProjectLanguage.CSharp:
 					case ProjectLanguage.FSharp:
 						executeSteps.push(
 							await DotnetFunctionCreateStep.createStep(context),
 						);
+
 						break;
+
 					case ProjectLanguage.TypeScript:
 						executeSteps.push(new TypeScriptFunctionCreateStep());
+
 						break;
+
 					case ProjectLanguage.Ballerina:
 						executeSteps.push(new BallerinaFunctionCreateStep());
+
 						break;
+
 					default:
 						executeSteps.push(new ScriptFunctionCreateStep());
+
 						break;
 				}
 			}
@@ -135,20 +153,26 @@ export class FunctionSubWizard {
 				"Create new {0}",
 				template.name,
 			);
+
 			return { promptSteps, executeSteps, title };
 		} else if (context.generateFromOpenAPI) {
 			const promptSteps: AzureWizardPromptStep<IFunctionWizardContext>[] =
 				[];
+
 			const executeSteps: AzureWizardExecuteStep<IFunctionWizardContext>[] =
 				[];
 
 			switch (context.language) {
 				case ProjectLanguage.Java:
 					promptSteps.push(new JavaPackageNameStep());
+
 					break;
+
 				case ProjectLanguage.CSharp:
 					promptSteps.push(new DotnetNamespaceStep());
+
 					break;
+
 				default:
 					break;
 			}
@@ -161,6 +185,7 @@ export class FunctionSubWizard {
 				"Create new {0}",
 				"HTTP Triggers from OpenAPI (v2/v3) Specification File",
 			);
+
 			return { promptSteps, executeSteps, title };
 		} else {
 			return undefined;

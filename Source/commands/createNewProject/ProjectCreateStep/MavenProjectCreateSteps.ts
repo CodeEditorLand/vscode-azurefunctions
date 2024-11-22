@@ -26,12 +26,15 @@ export class MavenProjectCreateStep extends ProjectCreateStepBase {
 		await mavenUtils.validateMavenInstalled(context);
 
 		const javaVersion: string = nonNullProp(context, "javaVersion");
+
 		const artifactId: string = nonNullProp(context, "javaArtifactId");
+
 		const tempFolder: string = path.join(
 			os.tmpdir(),
 			fsUtil.getRandomHexString(),
 		);
 		await AzExtFsExtra.ensureDir(tempFolder);
+
 		try {
 			// Use maven command to init Java function project.
 			ext.outputChannel.show();

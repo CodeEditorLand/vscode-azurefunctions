@@ -31,10 +31,15 @@ export async function addBinding(
 	data: Uri | LocalFunctionTreeItem | undefined,
 ): Promise<void> {
 	let functionJsonPath: string;
+
 	let workspaceFolder: WorkspaceFolder;
+
 	let workspacePath: string;
+
 	let projectPath: string | undefined;
+
 	let language: ProjectLanguage;
+
 	let version: FuncVersion;
 
 	if (data instanceof Uri) {
@@ -50,6 +55,7 @@ export async function addBinding(
 				workspaceFolder,
 				"modalPrompt",
 			)) || workspacePath;
+
 		const verifiedInit = await verifyInitForVSCode(context, projectPath);
 		language = verifiedInit.language;
 		version = verifiedInit.version;
@@ -88,6 +94,7 @@ export async function addBinding(
 		projectTemplateKeySetting,
 		projectPath,
 	);
+
 	const wizardContext: IBindingWizardContext = Object.assign(context, {
 		functionJsonPath,
 		workspacePath,
@@ -97,6 +104,7 @@ export async function addBinding(
 		version,
 		projectTemplateKey,
 	});
+
 	const wizard: AzureWizard<IBindingWizardContext> =
 		createBindingWizard(wizardContext);
 	await wizard.prompt();

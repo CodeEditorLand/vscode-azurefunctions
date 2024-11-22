@@ -107,11 +107,13 @@ export class ResolvedContainerizedFunctionAppResource
 			subscription,
 			site,
 		);
+
 		const client = await createWebSiteClient([context, subscription]);
 		resource.site.siteConfig = await client.webApps.getConfiguration(
 			nonNullProp(resource.site, "resourceGroup"),
 			nonNullProp(resource.site, "name"),
 		);
+
 		return resource;
 	}
 
@@ -131,9 +133,11 @@ export class ResolvedContainerizedFunctionAppResource
 		context: IActionContext,
 	): Promise<IParsedHostJson> {
 		let result: IParsedHostJson | undefined = this._cachedHostJson;
+
 		if (!result) {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let data: any;
+
 			const version: FuncVersion = await this.getVersion(context);
 			result = parseHostJson(data, version);
 			this._cachedHostJson = result;
@@ -143,15 +147,19 @@ export class ResolvedContainerizedFunctionAppResource
 
 	public async getVersion(context: IActionContext): Promise<FuncVersion> {
 		let result: FuncVersion | undefined = this._cachedVersion;
+
 		if (result === undefined) {
 			let version: FuncVersion | undefined;
+
 			try {
 				const proxyTree: ContainerTreeItem =
 					this as unknown as ContainerTreeItem;
+
 				const client = await new ContainerAppSettingsClientProvider(
 					proxyTree,
 					proxyTree.subscription,
 				).createClient(context);
+
 				const appSettings: StringDictionary =
 					await client.listApplicationSettings();
 				version = tryParseFuncVersion(
@@ -172,12 +180,15 @@ export class ResolvedContainerizedFunctionAppResource
 	): Promise<ApplicationSettings> {
 		const proxyTree: ContainerTreeItem =
 			this as unknown as ContainerTreeItem;
+
 		const client = await new ContainerAppSettingsClientProvider(
 			proxyTree,
 			proxyTree.subscription,
 		).createClient(context);
+
 		const appSettings: StringDictionary =
 			await client.listApplicationSettings();
+
 		return appSettings.properties || {};
 	}
 
@@ -188,12 +199,15 @@ export class ResolvedContainerizedFunctionAppResource
 	): Promise<void> {
 		const proxyTree: ContainerTreeItem =
 			this as unknown as ContainerTreeItem;
+
 		const client = await new ContainerAppSettingsClientProvider(
 			proxyTree,
 			proxyTree.subscription,
 		).createClient(context);
+
 		const appSettings: StringDictionary =
 			await client.listApplicationSettings();
+
 		if (!appSettings.properties) {
 			appSettings.properties = {};
 		}
@@ -252,6 +266,7 @@ export class ResolvedContainerizedFunctionAppResource
 			'Are you sure you want to delete function app "{0}"?',
 			this.site.name,
 		);
+
 		const title: string = localize(
 			"DeleteFunctionApp",
 			'Delete Function App "{0}"...',
@@ -276,6 +291,7 @@ export class ResolvedContainerizedFunctionAppResource
 				AppSettingsTreeItem.contextValue,
 				AppSettingTreeItem.contextValue,
 			];
+
 			if (
 				matchContextValue(
 					expectedContextValue,

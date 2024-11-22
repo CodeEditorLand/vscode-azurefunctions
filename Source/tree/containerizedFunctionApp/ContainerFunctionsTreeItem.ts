@@ -50,10 +50,12 @@ export class ContainerFunctionsTreeItem extends FunctionsTreeItemBase {
             Under these circumstances, we will attempt to do the call 3 times during warmup before throwing the error.
         */
 		const retries = 3;
+
 		const client = await createWebSiteClient([
 			context,
 			this.parent.subscription,
 		]);
+
 		const funcs = await retry<FunctionEnvelope[]>(
 			async (attempt: number) => {
 				// Load more currently broken https://github.com/Azure/azure-sdk-for-js/issues/20380
@@ -63,6 +65,7 @@ export class ContainerFunctionsTreeItem extends FunctionsTreeItemBase {
 						nonNullValueAndProp(this.site, "name"),
 					),
 				);
+
 				const failedToList = localize(
 					"failedToList",
 					"Failed to list functions.",

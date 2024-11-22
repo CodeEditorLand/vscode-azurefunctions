@@ -27,9 +27,11 @@ export class PythonAliasListStep extends AzureWizardPromptStep<IPythonVenvWizard
 			"selectAlias",
 			"Select a Python interpreter to create a virtual environment",
 		);
+
 		const result: string | boolean = (
 			await context.ui.showQuickPick(getPicks(context), { placeHolder })
 		).data;
+
 		if (typeof result === "string") {
 			context.pythonAlias = result;
 			context.telemetry.properties.pythonAliasBehavior = "selectAlias";
@@ -68,6 +70,7 @@ async function getPicks(
 	);
 
 	const aliasesToTry: string[] = ["python", "python3", "py"];
+
 	for (const version of supportedVersions) {
 		aliasesToTry.push(`python${version}`, `py -${version}`);
 	}
@@ -76,14 +79,18 @@ async function getPicks(
 		"pythonPath",
 		"python",
 	);
+
 	if (globalPythonPathSetting) {
 		aliasesToTry.unshift(globalPythonPathSetting);
 	}
 
 	const picks: IAzureQuickPickItem<string | boolean>[] = [];
+
 	const versions: string[] = [];
+
 	for (const alias of aliasesToTry) {
 		let version: string;
+
 		try {
 			version = await getPythonVersion(alias);
 		} catch {

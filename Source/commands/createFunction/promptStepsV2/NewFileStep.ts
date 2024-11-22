@@ -27,6 +27,7 @@ export class NewFileStep<
 		};
 
 		const fileName = await context.ui.showInputBox(options);
+
 		return fileName.split(".")[0]; // remove file extension (if any)
 	}
 
@@ -47,6 +48,7 @@ export class NewFileStep<
 		input: string | undefined,
 	): Promise<string | undefined> {
 		const error = super.validateInput(input, this.input);
+
 		if (error) {
 			return error;
 		}

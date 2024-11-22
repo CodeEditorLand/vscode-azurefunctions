@@ -39,12 +39,14 @@ export async function runPreDeployTask(
 		preDeployTaskSetting,
 		deployFsPath,
 	);
+
 	if (preDeployTask && preDeployTask.startsWith("func:")) {
 		const message: string = localize(
 			"installFuncTools",
 			'You must have the Azure Functions Core Tools installed to run preDeployTask "{0}".',
 			preDeployTask,
 		);
+
 		if (
 			!(await validateFuncCoreToolsInstalled(
 				context,
@@ -92,6 +94,7 @@ async function promptToBuildNativeDeps(
 		"funcPackFailed",
 		"Failed to package your project. Use a Docker container to build incompatible dependencies?",
 	);
+
 	const result: vscode.MessageItem | undefined =
 		await vscode.window.showErrorMessage(
 			message,
@@ -99,6 +102,7 @@ async function promptToBuildNativeDeps(
 			DialogResponses.yes,
 			DialogResponses.learnMore,
 		);
+
 	if (result === DialogResponses.yes) {
 		context.telemetry.properties.preDeployTaskResponse = "packNativeDeps";
 		await updateWorkspaceSetting(
@@ -106,13 +110,16 @@ async function promptToBuildNativeDeps(
 			`${packTaskName} ${buildNativeDeps}`,
 			deployFsPath,
 		);
+
 		return await tryRunPreDeployTask(context, deployFsPath, scmType);
 	} else if (result === DialogResponses.learnMore) {
 		context.telemetry.properties.preDeployTaskResponse = "packLearnMore";
 		await openUrl("https://aka.ms/func-python-publish");
+
 		throw new UserCancelledError("funcPackFailed|learnMore");
 	} else {
 		context.telemetry.properties.preDeployTaskResponse = "cancel";
+
 		throw new UserCancelledError("funcPackFailed");
 	}
 }

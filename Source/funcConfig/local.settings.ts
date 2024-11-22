@@ -37,6 +37,7 @@ export async function getLocalSettingsConnectionString(
 		context,
 		path.join(projectPath, localSettingsFileName),
 	);
+
 	return settings.Values && settings.Values[connectionKey];
 }
 
@@ -68,12 +69,14 @@ export async function setLocalAppSetting(
 		functionAppPath,
 		localSettingsFileName,
 	);
+
 	const settings: ILocalSettingsJson = await getLocalSettingsJson(
 		context,
 		localSettingsPath,
 	);
 
 	settings.Values = settings.Values || {};
+
 	if (settings.Values[key] === value) {
 		return;
 	} else if (settings.Values[key]) {
@@ -83,6 +86,7 @@ export async function setLocalAppSetting(
 				"Local app setting '{0}' already exists. Overwrite?",
 				key,
 			);
+
 			if (
 				(await context.ui.showWarningMessage(
 					message,
@@ -110,6 +114,7 @@ export async function getLocalSettingsJson(
 		const data: string = (
 			await AzExtFsExtra.readFile(localSettingsPath)
 		).toString();
+
 		if (/[^\s]/.test(data)) {
 			try {
 				return parseJson(data);
@@ -121,6 +126,7 @@ export async function getLocalSettingsJson(
 						localSettingsFileName,
 						parseError(error).message,
 					);
+
 					const overwriteButton: vscode.MessageItem = {
 						title: localize("overwrite", "Overwrite"),
 					};
@@ -137,6 +143,7 @@ export async function getLocalSettingsJson(
 						localSettingsFileName,
 						parseError(error).message,
 					);
+
 					throw new Error(message);
 				}
 			}

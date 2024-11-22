@@ -16,6 +16,7 @@ import { type Sku } from "../stacks/models/FlexSkuModel";
 export class MaximumInstanceCountPromptStep extends AzureWizardPromptStep<IFlexFunctionAppWizardContext> {
 	public async prompt(context: IFlexFunctionAppWizardContext): Promise<void> {
 		const flexSku = nonNullProp(context, "newFlexSku");
+
 		const options: AzExtInputBoxOptions = {
 			validateInput: (val: string) => this.validateInput(flexSku, val),
 			prompt: localize(
@@ -39,6 +40,7 @@ export class MaximumInstanceCountPromptStep extends AzureWizardPromptStep<IFlexF
 
 		const { lowestMaximumInstanceCount, highestMaximumInstanceCount } =
 			flexSku.maximumInstanceCount;
+
 		if (isNaN(num)) {
 			return localize(
 				"enterNumber",

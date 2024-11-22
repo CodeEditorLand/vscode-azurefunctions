@@ -28,11 +28,14 @@ export class EventHubConnectionCreateStep extends AzureConnectionCreateStepBase<
 			context.eventHubsNamespace,
 			"name",
 		);
+
 		const resourceGroupName: string = nonNullValueAndProp(
 			context.resourceGroup,
 			"name",
 		);
+
 		const eventHubName: string = nonNullProp(context, "eventhubname");
+
 		const authRuleName: string = nonNullValueAndProp(
 			context.authRule,
 			"name",
@@ -40,7 +43,9 @@ export class EventHubConnectionCreateStep extends AzureConnectionCreateStepBase<
 
 		const client: EventHubManagementClient =
 			await createEventHubClient(context);
+
 		let connectionString: string;
+
 		if (context.isNamespaceAuthRule) {
 			const keys: AccessKeys = await client.namespaces.listKeys(
 				resourceGroupName,

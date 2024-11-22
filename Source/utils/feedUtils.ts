@@ -30,6 +30,7 @@ export namespace feedUtils {
 		url: string,
 	): Promise<T> {
 		let cachedFeed: ICachedFeed | undefined = cachedFeeds.get(url);
+
 		if (!cachedFeed || Date.now() > cachedFeed.nextRefreshTime) {
 			const response = await requestUtils.sendRequestWithExtTimeout(
 				context,

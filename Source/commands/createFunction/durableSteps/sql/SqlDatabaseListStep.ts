@@ -38,9 +38,11 @@ export class SqlDatabaseListStep<
 		const client: SqlManagementClient = await createSqlClient(
 			<T & ISubscriptionContext>context,
 		);
+
 		const rgName: string = getResourceGroupFromId(
 			nonNullValue(context.sqlServer?.id),
 		);
+
 		const serverName: string = nonNullValue(context.sqlServer?.name);
 
 		const quickPickOptions: IAzureQuickPickOptions = {
@@ -49,6 +51,7 @@ export class SqlDatabaseListStep<
 				"Select a SQL database.",
 			),
 		};
+
 		const picksTask: Promise<IAzureQuickPickItem<Database | undefined>[]> =
 			this.getQuickPicks(
 				uiUtils.listAllIterator(
@@ -71,6 +74,7 @@ export class SqlDatabaseListStep<
 
 		const promptSteps: AzureWizardPromptStep<T & ISubscriptionContext>[] =
 			[];
+
 		const executeSteps: AzureWizardExecuteStep<T & ISubscriptionContext>[] =
 			[];
 
@@ -107,6 +111,7 @@ export class SqlDatabaseListStep<
 		];
 
 		const dbs: Database[] = await dbTask;
+
 		for (const db of dbs) {
 			picks.push({
 				id: db.id,

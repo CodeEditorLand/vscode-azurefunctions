@@ -31,20 +31,26 @@ export class ServiceBusConnectionCreateStep extends AzureConnectionCreateStepBas
 		context: IServiceBusWizardContext,
 	): Promise<IConnection> {
 		const sbNamespace: SBNamespace = nonNullProp(context, "sbNamespace");
+
 		const id: string = nonNullProp(sbNamespace, "id");
+
 		const name: string = nonNullProp(sbNamespace, "name");
 
 		const resourceGroup: string = getResourceGroupFromId(id);
+
 		const client: ServiceBusManagementClient =
 			await createServiceBusClient(context);
+
 		const authRules: SBAuthorizationRule[] = await uiUtils.listAllIterator(
 			client.namespaces.listAuthorizationRules(resourceGroup, name),
 		);
+
 		const authRule: SBAuthorizationRule | undefined = authRules.find(
 			(ar) =>
 				ar.rights &&
 				ar.rights.some((r) => r.toLowerCase() === "listen"),
 		);
+
 		if (!authRule) {
 			throw new Error(
 				localize(
@@ -59,6 +65,7 @@ export class ServiceBusConnectionCreateStep extends AzureConnectionCreateStepBas
 			name,
 			nonNullProp(authRule, "name"),
 		);
+
 		return {
 			name: name,
 			connectionString: nonNullProp(keys, "primaryConnectionString"),

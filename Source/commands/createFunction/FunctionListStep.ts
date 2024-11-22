@@ -61,8 +61,11 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 	): Promise<void> {
 		if (this._options.templateId) {
 			const language: ProjectLanguage = nonNullProp(context, "language");
+
 			const version: FuncVersion = nonNullProp(context, "version");
+
 			const templateProvider = ext.templateProvider.get(context);
+
 			const templates: FunctionTemplateBase[] =
 				await templateProvider.getFunctionTemplates(
 					context,
@@ -73,10 +76,12 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 					TemplateFilter.All,
 					context.projectTemplateKey,
 				);
+
 			const foundTemplate: FunctionTemplateBase | undefined =
 				templates.find((t: FunctionTemplateBase) => {
 					if (this._options.templateId) {
 						const actualId: string = t.id.toLowerCase();
+
 						const expectedId: string =
 							this._options.templateId.toLowerCase();
 
@@ -101,6 +106,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 						return false;
 					}
 				});
+
 			if (foundTemplate) {
 				context.functionTemplate = foundTemplate;
 			} else {
@@ -129,6 +135,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 
 		const requiresDurableStorageSetup: boolean =
 			durableUtils.requiresDurableStorageSetup(context);
+
 		if (requiresDurableStorageSetup) {
 			return { promptSteps: [new DurableStorageTypePromptStep()] };
 		} else {
@@ -151,6 +158,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 					) || TemplateFilter.Verified;
 
 		const templateProvider = ext.templateProvider.get(context);
+
 		while (!context.functionTemplate) {
 			let placeHolder: string = this._isProjectWizard
 				? localize(
@@ -176,8 +184,10 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 					{ placeHolder },
 				)
 			).data;
+
 			if (result === "skipForNow") {
 				context.telemetry.properties.templateId = "skipForNow";
+
 				break;
 			} else if (result === "changeFilter") {
 				templateFilter = await promptForTemplateFilter(context);
@@ -195,6 +205,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 				context.telemetry.properties.changedFilter = "true";
 			} else if (result === "openAPI") {
 				context.generateFromOpenAPI = true;
+
 				break;
 			} else if (result === "reloadTemplates") {
 				await templateProvider.clearTemplateCache(
@@ -227,8 +238,11 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 		IAzureQuickPickItem<FunctionTemplateBase | TemplatePromptResult>[]
 	> {
 		const language: ProjectLanguage = nonNullProp(context, "language");
+
 		const languageModel = context.languageModel;
+
 		const version: FuncVersion = nonNullProp(context, "version");
+
 		const templateProvider = ext.templateProvider.get(context);
 
 		const templates: FunctionTemplateBase[] =
@@ -242,6 +256,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 				context.projectTemplateKey,
 			);
 		context.telemetry.measurements.templateCount = templates.length;
+
 		const picks: IAzureQuickPickItem<
 			FunctionTemplateBase | TemplatePromptResult
 		>[] = templates
@@ -327,6 +342,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 interface IFunctionListStepOptions {
 	isProjectWizard: boolean;
 	templateId: string | undefined;
+
 	functionSettings: { [key: string]: string | undefined } | undefined;
 }
 
@@ -356,6 +372,7 @@ async function promptForTemplateFilter(
 		suppressPersistence: true,
 		placeHolder: localize("selectFilter", "Select a template filter"),
 	};
+
 	return (await context.ui.showQuickPick(picks, options)).data;
 }
 
@@ -374,8 +391,11 @@ function doesTemplateRequireExistingStorageSetup(
 	}
 
 	const durableFunctions = /DurableFunctions/i;
+
 	const entity = /DurableFunctionsEntity/i;
+
 	const orchestrator = /Orchestrat/i;
+
 	const entityTrigger = /DurableFunctionsEntityHttpStart/i; // filter out directly due to overlap with the base entity template pattern
 
 	return (

@@ -19,16 +19,19 @@ export namespace pythonUtils {
 			projectPath,
 			requirementsFileName,
 		);
+
 		if (await hasDependencyInRequirements(dependency, requirementsPath)) {
 			return;
 		}
 
 		const contents: string = await AzExtFsExtra.readFile(requirementsPath);
+
 		const lines: string[] = contents.split("\n");
 
 		// Trim any empty lines from the end before adding new dependency
 		for (let i = lines.length - 1; i >= 0; i--) {
 			const line = lines[i].trim();
+
 			if (!line) {
 				lines.pop();
 			} else {
@@ -56,10 +59,12 @@ export namespace pythonUtils {
 		}
 
 		const contents: string = await AzExtFsExtra.readFile(filePath);
+
 		const lines: string[] = contents.split("\n");
 
 		for (let line of lines) {
 			line = line.trim();
+
 			if (line === dependency) {
 				return true;
 			}

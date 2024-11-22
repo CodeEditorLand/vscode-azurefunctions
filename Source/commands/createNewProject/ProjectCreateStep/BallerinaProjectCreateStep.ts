@@ -24,6 +24,7 @@ export class BallerinaProjectCreateStep extends ScriptProjectCreateStep {
 		}>,
 	): Promise<void> {
 		await ballerinaUtils.getBallerinaVersion(context);
+
 		const ballerinaTomlPath: string = path.join(
 			context.projectPath,
 			ballerinaTomlFileName,
@@ -32,8 +33,10 @@ export class BallerinaProjectCreateStep extends ScriptProjectCreateStep {
 		// Having a Ballerina.toml file specifies a Ballerina project. If it doesn't exist, create one using the 'bal init' command.
 		if (!(await AzExtFsExtra.pathExists(ballerinaTomlPath))) {
 			await ballerinaUtils.executeInit(context);
+
 			let ballerinaTomlContents: string =
 				await AzExtFsExtra.readFile(ballerinaTomlPath);
+
 			const buildOptions: string = await this.getBuildOptions(context);
 			ballerinaTomlContents = ballerinaTomlContents + buildOptions;
 			await AzExtFsExtra.writeFile(

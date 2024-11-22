@@ -22,7 +22,9 @@ export async function addJavaInitVSCodeSteps(
 ): Promise<void> {
 	if (!context.buildTool) {
 		const isMaven: boolean = await isMavenProject(context.projectPath);
+
 		const isGradle: boolean = await isGradleProject(context.projectPath);
+
 		if (isMaven === isGradle) {
 			promptSteps.push(new JavaBuildToolStep());
 		} else if (isMaven) {

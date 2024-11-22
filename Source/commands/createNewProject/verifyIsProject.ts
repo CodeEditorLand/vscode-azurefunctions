@@ -49,6 +49,7 @@ export async function tryGetFunctionProjectRoot(
 				typeof workspaceFolder === "string"
 					? workspaceFolder
 					: workspaceFolder.uri.fsPath;
+
 			if (
 				!getWorkspaceSetting<boolean>(
 					"suppressProject",
@@ -59,6 +60,7 @@ export async function tryGetFunctionProjectRoot(
 					projectSubpathSetting,
 					workspaceFolder,
 				);
+
 				if (subpath) {
 					return path.join(folderPath, subpath);
 				} else if (await AzExtFsExtra.pathExists(folderPath)) {
@@ -69,6 +71,7 @@ export async function tryGetFunctionProjectRoot(
 							workspaceFolder,
 							`*/${hostFileName}`,
 						);
+
 						if (hostJsonUris.length !== 1) {
 							// NOTE: If we found a single project at the root or one level down, we will use that without searching any further.
 							// This will reduce false positives in the case of compiled languages like C# where a 'host.json' file is often copied to a build/publish directory a few levels down
@@ -84,6 +87,7 @@ export async function tryGetFunctionProjectRoot(
 						const projectPaths = hostJsonUris.map((uri) =>
 							path.dirname(uri.fsPath),
 						);
+
 						if (projectPaths.length === 1) {
 							return projectPaths[0];
 						} else if (
@@ -93,12 +97,14 @@ export async function tryGetFunctionProjectRoot(
 							const subpaths = projectPaths.map((p) =>
 								path.relative(folderPath, p),
 							);
+
 							const pickedSubpath = await promptForProjectSubpath(
 								context,
 								folderPath,
 								subpaths,
 								promptBehavior,
 							);
+
 							return path.join(folderPath, pickedSubpath);
 						}
 					}
@@ -120,7 +126,9 @@ async function promptForProjectSubpath(
 		"detectedMultipleProject",
 		"Detected multiple function projects in the same workspace folder. You must either set the default or use a multi-root workspace.",
 	);
+
 	const learnMoreLink: string = "https://aka.ms/AA4nmfy";
+
 	const setDefault: MessageItem = {
 		title: localize("setDefault", "Set default"),
 	};
@@ -138,10 +146,12 @@ async function promptForProjectSubpath(
 	const picks: IAzureQuickPickItem<string>[] = matchingSubpaths.map((p) => {
 		return { label: p, data: p };
 	});
+
 	const placeHolder: string = localize(
 		"selectProject",
 		"Select the default project subpath",
 	);
+
 	const subpath: string = (
 		await context.ui.showQuickPick(picks, {
 			placeHolder,

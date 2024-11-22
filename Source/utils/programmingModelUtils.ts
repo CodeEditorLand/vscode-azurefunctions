@@ -21,6 +21,7 @@ export function isNodeV4Plus(context: {
 	languageModel?: number;
 }): boolean {
 	const { language, languageModel } = context;
+
 	return (
 		(language === ProjectLanguage.JavaScript ||
 			language === ProjectLanguage.TypeScript) &&

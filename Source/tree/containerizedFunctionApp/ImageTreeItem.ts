@@ -27,7 +27,9 @@ export class ImageTreeItem extends AzExtParentTreeItem {
 
 	public async loadMoreChildrenImpl(): Promise<AzExtTreeItem[]> {
 		const imageInfo = this.site.siteConfig?.linuxFxVersion?.split("|")[1];
+
 		const loginServer = imageInfo?.split("/")[0];
+
 		const imageAndTag = imageInfo?.substring(
 			nonNullValue(loginServer?.length) + 1,
 			imageInfo?.length,

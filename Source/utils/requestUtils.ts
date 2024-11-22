@@ -78,18 +78,22 @@ export namespace requestUtils {
 		filePath: string,
 	): Promise<void> {
 		await AzExtFsExtra.ensureDir(path.dirname(filePath));
+
 		const request = createPipelineRequest(
 			typeof requestOptionsOrUrl === "string"
 				? { method: "GET", url: requestOptionsOrUrl }
 				: requestOptionsOrUrl,
 		);
 		request.streamResponseStatusCodes = new Set([Number.POSITIVE_INFINITY]);
+
 		const client: ServiceClient = await createGenericClient(
 			context,
 			undefined,
 		);
+
 		const response: AzExtPipelineResponse =
 			await client.sendRequest(request);
+
 		const stream: NodeJS.ReadableStream = nonNullProp(
 			response,
 			"readableStreamBody",
@@ -109,6 +113,7 @@ export namespace requestUtils {
 	 */
 	export function convertToAzureSdkObject(data: {}): {} {
 		const result: Record<string, unknown> = {};
+
 		for (const key of Object.keys(data)) {
 			result[convertPropertyName(key)] = convertPropertyValue(
 				data[key] as string | null | undefined,
@@ -122,6 +127,7 @@ export namespace requestUtils {
 		queryParams: Record<string, string>,
 	): string {
 		const queryString = new URLSearchParams(queryParams).toString();
+
 		return `${base}?${queryString}`;
 	}
 
@@ -132,6 +138,7 @@ export namespace requestUtils {
 		// eslint-disable-next-line no-constant-condition
 		while (true) {
 			const match: RegExpMatchArray | null = /_([a-z])/g.exec(name);
+
 			if (match) {
 				name = name.replace(match[0], match[1].toUpperCase());
 			} else {

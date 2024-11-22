@@ -34,6 +34,7 @@ export class DurableStorageTypePromptStep<
 			"Netherite",
 			"MSSQL",
 		];
+
 		const durableStorageInfo: string = localize(
 			"durableStorageInfo",
 			"$(link-external)  Learn more about the tradeoffs between storage providers",
@@ -43,6 +44,7 @@ export class DurableStorageTypePromptStep<
 			"chooseDurableStorageType",
 			"Choose a durable storage type.",
 		);
+
 		const picks: IAzureQuickPickItem<DurableBackendValues | undefined>[] = [
 			{
 				label: durableStorageLabels[0],
@@ -68,9 +70,11 @@ export class DurableStorageTypePromptStep<
 		];
 
 		let pick: DurableBackendValues | undefined;
+
 		while (!pick) {
 			pick = (await context.ui.showQuickPick(picks, { placeHolder }))
 				.data;
+
 			if (!pick) {
 				await openUrl("https://aka.ms/durable-storage-providers");
 			}

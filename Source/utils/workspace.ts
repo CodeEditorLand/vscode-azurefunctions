@@ -42,9 +42,11 @@ export async function getRootWorkspaceFolder(): Promise<
 			"selectRootWorkspace",
 			"Select the folder containing your function project",
 		);
+
 		const folder = await vscode.window.showWorkspaceFolderPick({
 			placeHolder,
 		});
+
 		if (!folder) {
 			throw new UserCancelledError("selectRootWorkspace");
 		}
@@ -63,8 +65,11 @@ export async function findFiles(
 	const posixBase = path.posix
 		.normalize(typeof base === "string" ? base : base.uri.fsPath)
 		.replace(/\\/g, "/");
+
 	const escapedBase = escapeCharacters(posixBase);
+
 	const fullPattern = path.posix.join(escapedBase, pattern);
+
 	return (await globby(fullPattern, { ignore: ["**/node_modules/**"] })).map(
 		(s) => vscode.Uri.file(s),
 	);
@@ -107,6 +112,7 @@ export async function selectWorkspaceFile(
 	) => string | undefined | Promise<string | undefined>,
 ): Promise<string> {
 	let defaultUri: vscode.Uri | undefined;
+
 	if (
 		vscode.workspace.workspaceFolders &&
 		vscode.workspace.workspaceFolders.length > 0 &&
@@ -114,7 +120,9 @@ export async function selectWorkspaceFile(
 	) {
 		const firstFolder: vscode.WorkspaceFolder =
 			vscode.workspace.workspaceFolders[0];
+
 		const subPath: string | undefined = await getSubPath(firstFolder);
+
 		if (subPath) {
 			defaultUri = vscode.Uri.file(
 				path.join(firstFolder.uri.fsPath, subPath),
@@ -145,12 +153,14 @@ export async function selectWorkspaceItem(
 	) => string | undefined | Promise<string | undefined>,
 ): Promise<string> {
 	let folder: IAzureQuickPickItem<string | undefined> | undefined;
+
 	if (vscode.workspace.workspaceFolders) {
 		const folderPicks: IAzureQuickPickItem<string | undefined>[] =
 			await Promise.all(
 				vscode.workspace.workspaceFolders.map(
 					async (f: vscode.WorkspaceFolder) => {
 						let subpath: string | undefined;
+
 						if (getSubPath) {
 							subpath = await getSubPath(f);
 						}
@@ -158,6 +168,7 @@ export async function selectWorkspaceItem(
 						const fsPath: string = subpath
 							? path.join(f.uri.fsPath, subpath)
 							: f.uri.fsPath;
+
 						return {
 							label: path.basename(fsPath),
 							description: fsPath,
@@ -185,6 +196,7 @@ export function getContainingWorkspace(
 ): vscode.WorkspaceFolder | undefined {
 	const openFolders: readonly vscode.WorkspaceFolder[] =
 		vscode.workspace.workspaceFolders || [];
+
 	return openFolders.find((f: vscode.WorkspaceFolder): boolean => {
 		return (
 			fsUtils.isPathEqual(f.uri.fsPath, fsPath) ||

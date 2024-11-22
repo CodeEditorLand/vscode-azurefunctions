@@ -24,12 +24,14 @@ export async function promptToReinitializeProject(
 		const updateConfig: vscode.MessageItem = {
 			title: localize("reinit", "Reinitialize Project"),
 		};
+
 		const result: vscode.MessageItem = await context.ui.showWarningMessage(
 			message,
 			{ learnMoreLink, stepName: "reinitProject" },
 			updateConfig,
 			DialogResponses.dontWarnAgain,
 		);
+
 		if (result === DialogResponses.dontWarnAgain) {
 			context.telemetry.properties.verifyConfigResult = "dontWarnAgain";
 			await updateWorkspaceSetting(settingKey, false, fsPath);

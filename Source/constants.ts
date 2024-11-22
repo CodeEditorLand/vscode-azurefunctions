@@ -186,10 +186,12 @@ export const contentShareKey: string = "WEBSITE_CONTENTSHARE";
  * Any significantly changed new model should use an incremented number.
  */
 export const nodeDefaultModelVersion: number = 4;
+
 const nodeDefaultModel: IAzureQuickPickItem<number | undefined> = {
 	data: nodeDefaultModelVersion,
 	label: localize("modelV4", "Model V4"),
 };
+
 const nodeV3Model: IAzureQuickPickItem<number | undefined> = {
 	data: undefined,
 	label: localize("modelV3", "Model V3"),
@@ -199,10 +201,12 @@ export const nodeModels = [nodeDefaultModel, nodeV3Model];
 export const nodeLearnMoreLink = "https://aka.ms/AzFuncNodeV4";
 
 export const pythonDefaultModelVersion: number = 2;
+
 const pythonV2Model: IAzureQuickPickItem<number | undefined> = {
 	data: pythonDefaultModelVersion,
 	label: localize("pyModelV2", "Model V2"),
 };
+
 const pythonV1Model: IAzureQuickPickItem<number | undefined> = {
 	data: undefined,
 	label: localize("pyModelV1", "Model V1"),

@@ -92,6 +92,7 @@ export class DurableProjectConfigureStep<
 					durableUtils.getDefaultStorageTaskConfig();
 				// Omit setting azureWebJobsStorage since it should already be initialized during 'createNewProject'
 				break;
+
 			case DurableBackend.Netherite:
 				hostJson.extensions.durableTask =
 					durableUtils.getDefaultNetheriteTaskConfig();
@@ -102,7 +103,9 @@ export class DurableProjectConfigureStep<
 					"",
 					MismatchBehavior.Overwrite,
 				);
+
 				break;
+
 			case DurableBackend.SQL:
 				hostJson.extensions.durableTask =
 					durableUtils.getDefaultSqlTaskConfig();
@@ -113,7 +116,9 @@ export class DurableProjectConfigureStep<
 					"",
 					MismatchBehavior.Overwrite,
 				);
+
 				break;
+
 			default:
 		}
 

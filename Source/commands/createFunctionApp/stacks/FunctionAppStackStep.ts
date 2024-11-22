@@ -35,8 +35,11 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 			"selectRuntimeStack",
 			"Select a runtime stack.",
 		);
+
 		const isFlex: boolean = context.newPlanSku?.tier === "FlexConsumption";
+
 		let result: FullFunctionAppStack | undefined;
+
 		while (true) {
 			const options: AgentQuickPickOptions = {
 				placeHolder,
@@ -50,6 +53,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 
 			const picks = await this.getPicks(context, isFlex);
 			result = (await context.ui.showQuickPick(picks, options)).data;
+
 			if (!result) {
 				context.version = await promptForFuncVersion(context);
 			} else {
@@ -58,6 +62,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 		}
 
 		context.newSiteStack = result as FullFunctionAppStack;
+
 		if (
 			!context.newSiteStack.minorVersion.stackSettings
 				.linuxRuntimeSettings
@@ -90,6 +95,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 	): Promise<IWizardOptions<IFlexFunctionAppWizardContext>> {
 		const promptSteps: AzureWizardPromptStep<IFlexFunctionAppWizardContext>[] =
 			[];
+
 		if (shouldShowEolWarning(context.newSiteStack?.minorVersion)) {
 			promptSteps.push(new FunctionAppEOLWarningStep());
 		}
@@ -120,6 +126,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 		let picks: AgentQuickPickItem<
 			IAzureQuickPickItem<FullFunctionAppStack | undefined>
 		>[] = await getStackPicks(context, isFlex);
+
 		if (
 			picks.filter((p) => p.label !== noRuntimeStacksAvailableLabel)
 				.length === 0
@@ -129,7 +136,9 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 		}
 
 		const majorVersion = getMajorVersion(context.version);
+
 		const isEol = Number(majorVersion) === 2 || Number(majorVersion) === 3;
+
 		if (picks.length === 0) {
 			const noPicksMessage = context.stackFilter
 				? localize(
@@ -143,6 +152,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 						"$(warning) No stacks found for Azure Functions v{0}",
 						majorVersion,
 					);
+
 			const upgradeMessage = localize(
 				"eolWarning",
 				"$(warning) No stacks found for Azure Functions v{0} due to being EOL. Learn how to upgrade to V4...",

@@ -64,6 +64,7 @@ export class CentralTemplateProvider implements Disposable {
 
 	public dispose(): void {
 		const allProviders: TemplateProviderBase[] = [];
+
 		for (const p of this._providersMap.values()) {
 			allProviders.push(...p.providers);
 		}
@@ -79,6 +80,7 @@ export class CentralTemplateProvider implements Disposable {
 		projectTemplateKey: string | undefined,
 	): TemplateProviderBase[] {
 		const providers: TemplateProviderBase[] = [];
+
 		switch (language) {
 			case ProjectLanguage.CSharp:
 			case ProjectLanguage.FSharp:
@@ -90,7 +92,9 @@ export class CentralTemplateProvider implements Disposable {
 						projectTemplateKey,
 					),
 				);
+
 				break;
+
 			case ProjectLanguage.Java:
 				providers.push(
 					new JavaTemplateProvider(
@@ -100,7 +104,9 @@ export class CentralTemplateProvider implements Disposable {
 						projectTemplateKey,
 					),
 				);
+
 				break;
+
 			case ProjectLanguage.Ballerina:
 				providers.push(
 					new BallerinaTemplateProvider(
@@ -110,7 +116,9 @@ export class CentralTemplateProvider implements Disposable {
 						projectTemplateKey,
 					),
 				);
+
 				break;
+
 			default:
 				if (isPythonV2Plus(language, languageModel)) {
 					providers.push(
@@ -139,6 +147,7 @@ export class CentralTemplateProvider implements Disposable {
 							projectTemplateKey,
 						),
 					);
+
 					if (version !== FuncVersion.v1) {
 						providers.push(
 							new ScriptBundleTemplateProvider(
@@ -174,9 +183,11 @@ export class CentralTemplateProvider implements Disposable {
 			version,
 			projectTemplateKey,
 		);
+
 		switch (templateFilter) {
 			case TemplateFilter.All:
 				return templates.functionTemplates;
+
 			case TemplateFilter.Core:
 				return templates.functionTemplates.filter(
 					(t: IFunctionTemplate) =>
@@ -185,6 +196,7 @@ export class CentralTemplateProvider implements Disposable {
 								c === TemplateCategory.Core,
 						) !== undefined,
 				);
+
 			case TemplateFilter.Verified:
 			default:
 				const verifiedTemplateIds = getScriptVerifiedTemplateIds(
@@ -196,6 +208,7 @@ export class CentralTemplateProvider implements Disposable {
 							getBallerinaVerifiedTemplateIds(),
 						),
 					);
+
 				return templates.functionTemplates.filter(
 					(t: IFunctionTemplate) =>
 						verifiedTemplateIds.find((vt) =>
@@ -222,6 +235,7 @@ export class CentralTemplateProvider implements Disposable {
 				version,
 				undefined,
 			);
+
 		for (const provider of providers) {
 			await provider.clearCachedTemplateMetadata();
 			await provider.clearCachedTemplates(context);
@@ -233,6 +247,7 @@ export class CentralTemplateProvider implements Disposable {
 			languageModel,
 			version,
 		);
+
 		if (cachedProviders) {
 			delete cachedProviders.templatesTask;
 		}
@@ -253,6 +268,7 @@ export class CentralTemplateProvider implements Disposable {
 			version,
 			undefined,
 		);
+
 		return templates.bindingTemplates;
 	}
 
@@ -273,12 +289,14 @@ export class CentralTemplateProvider implements Disposable {
 				TemplateFilter.All,
 				undefined,
 			);
+
 			const template: IScriptFunctionTemplate | undefined =
 				templates.find(
 					(t) =>
 						t.functionJson.triggerBinding?.type?.toLowerCase() ===
 						triggerBindingType.toLowerCase(),
 				);
+
 			return template?.templateFiles["sample.dat"];
 		} catch {
 			return undefined;
@@ -307,6 +325,7 @@ export class CentralTemplateProvider implements Disposable {
 			cachedProviders.providers[0],
 			"firstProvider",
 		);
+
 		return await provider.getProjKey(context);
 	}
 
@@ -330,6 +349,7 @@ export class CentralTemplateProvider implements Disposable {
 			languageModel,
 			version,
 		);
+
 		if (this._providersMap.has(key)) {
 			return this._providersMap.get(key);
 		} else if (projectPath) {
@@ -351,6 +371,7 @@ export class CentralTemplateProvider implements Disposable {
 			languageModel,
 			version,
 		);
+
 		if (cachedProviders.providers.some((p) => p.supportsProjKey())) {
 			key += projectPath;
 		}
@@ -371,6 +392,7 @@ export class CentralTemplateProvider implements Disposable {
 			languageModel,
 			version,
 		);
+
 		if (!cachedProviders) {
 			cachedProviders = {
 				providers: CentralTemplateProvider.getProviders(
@@ -427,8 +449,10 @@ export class CentralTemplateProvider implements Disposable {
 			version,
 			projectTemplateKey,
 		);
+
 		let templatesTask: Promise<ITemplates> | undefined =
 			cachedProviders.templatesTask;
+
 		if (templatesTask) {
 			return await templatesTask;
 		} else {
@@ -437,11 +461,13 @@ export class CentralTemplateProvider implements Disposable {
 				cachedProviders.providers,
 			);
 			cachedProviders.templatesTask = templatesTask;
+
 			try {
 				return await templatesTask;
 			} catch (error) {
 				// If an error occurs, we want to start from scratch next time we try to get templates so remove this task from the map
 				delete cachedProviders.templatesTask;
+
 				throw error;
 			}
 		}
@@ -477,7 +503,9 @@ export class CentralTemplateProvider implements Disposable {
 		provider: TemplateProviderBase,
 	): Promise<ITemplates> {
 		let result: ITemplates | undefined;
+
 		let latestErrorMessage: string | undefined;
+
 		try {
 			const latestTemplateVersion: string =
 				await provider.getLatestTemplateVersion(context);
@@ -588,12 +616,14 @@ export class CentralTemplateProvider implements Disposable {
 			this.templateSource === TemplateSource.Staging
 		) {
 			context.telemetry.properties.templateSource = "latest";
+
 			const result: ITemplates = await provider.getLatestTemplates(
 				context,
 				latestTemplateVersion,
 			);
 			await provider.cacheTemplateMetadata(latestTemplateVersion);
 			await provider.cacheTemplates(context);
+
 			return result;
 		}
 
@@ -607,6 +637,7 @@ export class CentralTemplateProvider implements Disposable {
 		if (!this.templateSource) {
 			try {
 				context.telemetry.properties.templateSource = "cache";
+
 				if (await provider.doesCachedProjKeyMatch(context)) {
 					return await provider.getCachedTemplates(context);
 				} else {
@@ -639,14 +670,17 @@ export class CentralTemplateProvider implements Disposable {
 		) {
 			try {
 				context.telemetry.properties.templateSource = "backup";
+
 				const backupTemplateVersion: string =
 					await provider.getBackupTemplateVersion();
 				context.telemetry.properties.backupTemplateVersion =
 					backupTemplateVersion;
+
 				const result: ITemplates =
 					await provider.getBackupTemplates(context);
 				await provider.cacheTemplateMetadata(backupTemplateVersion);
 				await provider.cacheTemplates(context);
+
 				return result;
 			} catch (error) {
 				const errorMessage: string = parseError(error).message;

@@ -25,6 +25,7 @@ export class DeleteContainerizedFunctionappStep extends AzureWizardExecuteStep<D
 			'Deleting function app "{0}"...',
 			context.site.name,
 		);
+
 		const deleteSucceeded: string = localize(
 			"DeleteFunctionAppSucceeded",
 			'Successfully deleted function app "{0}".',
@@ -32,6 +33,7 @@ export class DeleteContainerizedFunctionappStep extends AzureWizardExecuteStep<D
 		);
 
 		ext.outputChannel.appendLog(deleting);
+
 		const client = await createWebSiteClient(context);
 		await client.webApps.delete(
 			nonNullValueAndProp(context.site, "resourceGroup"),

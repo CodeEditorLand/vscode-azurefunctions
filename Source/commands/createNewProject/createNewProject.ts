@@ -72,20 +72,24 @@ export async function createNewProjectInternal(
 	const language: ProjectLanguage | undefined =
 		<ProjectLanguage>options.language ||
 		getGlobalSetting(projectLanguageSetting);
+
 	const version: string =
 		options.version ||
 		getGlobalSetting(funcVersionSetting) ||
 		(await tryGetLocalFuncVersion(context, undefined)) ||
 		latestGAVersion;
+
 	const projectTemplateKey: string | undefined = getGlobalSetting(
 		projectTemplateKeySetting,
 	);
+
 	const wizardContext: Partial<IFunctionWizardContext> & IActionContext =
 		Object.assign(context, options, {
 			language,
 			version: tryParseFuncVersion(version),
 			projectTemplateKey,
 		});
+
 	const optionalExecuteStep = options.executeStep;
 
 	if (optionalExecuteStep instanceof CreateDockerfileProjectStep) {
@@ -93,6 +97,7 @@ export async function createNewProjectInternal(
 			"installFuncTools",
 			"You must have the Azure Functions Core Tools installed to run this command.",
 		);
+
 		if (!(await validateFuncCoreToolsInstalled(context, message))) {
 			throw new UserCancelledError("validateFuncCoreToolsInstalled");
 		}

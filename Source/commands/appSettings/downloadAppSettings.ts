@@ -60,10 +60,12 @@ export async function downloadAppSettingsInternal(
 		"selectLocalSettings",
 		"Select the destination file for your downloaded settings.",
 	);
+
 	const localSettingsPath: string = await getLocalSettingsFile(
 		context,
 		message,
 	);
+
 	const localSettingsUri: vscode.Uri = vscode.Uri.file(localSettingsPath);
 
 	let localSettings: ILocalSettingsJson = await getLocalSettingsJson(
@@ -73,6 +75,7 @@ export async function downloadAppSettingsInternal(
 	);
 
 	const isEncrypted: boolean | undefined = localSettings.IsEncrypted;
+
 	if (localSettings.IsEncrypted) {
 		await decryptLocalSettings(context, localSettingsUri);
 		localSettings =
@@ -91,6 +94,7 @@ export async function downloadAppSettingsInternal(
 			localize("downloadingSettings", "Downloading settings..."),
 			{ resourceName: client.fullName },
 		);
+
 		if (remoteSettings.properties) {
 			await confirmOverwriteSettings(
 				context,
@@ -112,6 +116,7 @@ export async function downloadAppSettingsInternal(
 		localize("downloadedSettings", "Successfully downloaded settings."),
 		{ resourceName: client.fullName },
 	);
+
 	const openFile: string = localize("openFile", "Open File");
 	// don't wait
 	void vscode.window

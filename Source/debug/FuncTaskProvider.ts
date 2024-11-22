@@ -79,6 +79,7 @@ export class FuncTaskProvider implements TaskProvider {
 
 				if (workspace.workspaceFolders) {
 					let lastError: unknown;
+
 					for (const folder of workspace.workspaceFolders) {
 						try {
 							const projectRoot: string | undefined =
@@ -86,6 +87,7 @@ export class FuncTaskProvider implements TaskProvider {
 									context,
 									folder,
 								);
+
 							if (projectRoot) {
 								const language: string | undefined =
 									getWorkspaceSetting(
@@ -150,6 +152,7 @@ export class FuncTaskProvider implements TaskProvider {
 
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const command: string | undefined = task.definition.command;
+
 				if (
 					command &&
 					task.scope !== undefined &&
@@ -157,10 +160,12 @@ export class FuncTaskProvider implements TaskProvider {
 					task.scope !== TaskScope.Workspace
 				) {
 					const folder: WorkspaceFolder = task.scope;
+
 					const language: string | undefined = getWorkspaceSetting(
 						projectLanguageSetting,
 						folder.uri.fsPath,
 					);
+
 					return this.createTask(
 						context,
 						command,
@@ -185,7 +190,9 @@ export class FuncTaskProvider implements TaskProvider {
 		definition?: TaskDefinition,
 	): Promise<Task> {
 		const funcCliPath = await getFuncCliPath(context, folder);
+
 		let commandLine: string = `${funcCliPath} ${command}`;
+
 		if (language === ProjectLanguage.Python) {
 			commandLine = venvUtils.convertToVenvCommand(
 				commandLine,
@@ -194,18 +201,22 @@ export class FuncTaskProvider implements TaskProvider {
 		}
 
 		let problemMatcher: string | undefined;
+
 		let options: ShellExecutionOptions | undefined;
+
 		if (/^\s*(host )?start/i.test(command)) {
 			problemMatcher = getFuncWatchProblemMatcher(language);
 			options = await this.getHostStartOptions(folder, language);
 		}
 
 		options = options || {};
+
 		if (projectRoot) {
 			options.cwd = projectRoot;
 		}
 
 		definition = definition || { type: func, command };
+
 		return new Task(
 			definition,
 			folder,
@@ -221,23 +232,34 @@ export class FuncTaskProvider implements TaskProvider {
 		language: string | undefined,
 	): Promise<ShellExecutionOptions | undefined> {
 		let debugProvider: FuncDebugProviderBase;
+
 		switch (language) {
 			case ProjectLanguage.Python:
 				debugProvider = this._pythonDebugProvider;
+
 				break;
+
 			case ProjectLanguage.JavaScript:
 			case ProjectLanguage.TypeScript:
 				debugProvider = this._nodeDebugProvider;
+
 				break;
+
 			case ProjectLanguage.Java:
 				debugProvider = this._javaDebugProvider;
+
 				break;
+
 			case ProjectLanguage.Ballerina:
 				debugProvider = this._ballerinaDebugProvider;
+
 				break;
+
 			case ProjectLanguage.PowerShell:
 				debugProvider = this._powershellDebugProvider;
+
 				break;
+
 			default:
 				return undefined;
 		}

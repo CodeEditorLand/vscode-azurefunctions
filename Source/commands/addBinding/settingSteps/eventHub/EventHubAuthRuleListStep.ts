@@ -28,10 +28,12 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 			context.eventHubsNamespace,
 			"name",
 		);
+
 		const resourceGroupName: string = nonNullValueAndProp(
 			context.resourceGroup,
 			"name",
 		);
+
 		const eventHubName: string = nonNullProp(context, "eventhubname");
 
 		const client: EventHubManagementClient =
@@ -41,6 +43,7 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 			"namespacePolicy",
 			"(namespace policy)",
 		);
+
 		const hubDescription: string = localize("hubPolicy", "(hub policy)");
 		// concats hub policies with namespace policies and adds a description to each
 		async function getEventHubAuthRules(): Promise<AuthorizationRule[]> {
@@ -55,6 +58,7 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 				(r: IBaseResourceWithName) =>
 					(r._description = namespaceDescription),
 			);
+
 			const hubRules: AuthorizationRule[] = await uiUtils.listAllIterator(
 				client.eventHubs.listAuthorizationRules(
 					resourceGroupName,
@@ -65,6 +69,7 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 			hubRules.forEach(
 				(r: IBaseResourceWithName) => (r._description = hubDescription),
 			);
+
 			return hubRules.concat(namespaceRules);
 		}
 
@@ -72,12 +77,14 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 			"placeHolder",
 			"Select an event hub policy",
 		);
+
 		const result: (AuthorizationRule & IBaseResourceWithName) | undefined =
 			await promptForResource(
 				context,
 				placeHolder,
 				getEventHubAuthRules(),
 			);
+
 		if (result) {
 			context.authRule = result;
 			context.isNamespaceAuthRule =

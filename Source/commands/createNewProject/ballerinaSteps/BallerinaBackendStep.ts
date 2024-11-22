@@ -20,6 +20,7 @@ export class BallerinaBackendStep extends AzureWizardPromptStep<IBallerinaProjec
 			{ label: "JVM", data: BallerinaBackend.jvm },
 			{ label: "Native", data: BallerinaBackend.native },
 		];
+
 		const placeHolder: string = localize(
 			"selectBallerinaBackend",
 			"Select the backend for Ballerina project",

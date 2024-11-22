@@ -26,6 +26,7 @@ export namespace dotnetUtils {
 		public fullPath: string;
 		// We likely need to check a few things in quick succession, so we'll cache the contents here
 		private _cachedContents: string | undefined;
+
 		constructor(name: string, projectPath: string) {
 			this.name = name;
 			this.fullPath = path.join(projectPath, name);
@@ -61,7 +62,9 @@ export namespace dotnetUtils {
 					projectLanguage === ProjectLanguage.FSharp
 						? "*.fsproj"
 						: "*.csproj";
+
 				const uris = await findFiles(projectPath, pattern);
+
 				return uris
 					.map((uri) => path.basename(uri.fsPath))
 					.filter((f) => f.toLowerCase() !== "extensions.csproj")
@@ -116,21 +119,27 @@ export namespace dotnetUtils {
 		prop: string,
 	): Promise<string> {
 		const regExp: RegExp = new RegExp(`<${prop}>(.*)<\\/${prop}>`);
+
 		const matches: RegExpMatchArray | null = (
 			await projFile.getContents()
 		).match(regExp);
+
 		if (!matches) {
 			// if we can't find the targetFramework in the csproj, there may be a `Directory.Build.props` file that sets it
 			const buildPropsFile: string = "Directory.Build.props";
+
 			const buildPropsFiles = await workspace.findFiles(
 				buildPropsFile,
 				null,
 			);
+
 			if (buildPropsFiles.length > 0) {
 				const buildPropsContents = await AzExtFsExtra.readFile(
 					buildPropsFiles[0],
 				);
+
 				const buildPropsMatches = buildPropsContents.match(regExp);
+
 				if (buildPropsMatches) {
 					return buildPropsMatches[1];
 				}
@@ -156,21 +165,30 @@ export namespace dotnetUtils {
 		language: ProjectLanguage,
 	): Promise<string> {
 		let isIsolated: boolean = false;
+
 		let targetFramework: string;
+
 		switch (
 			version // set up defaults
 		) {
 			case FuncVersion.v4:
 				targetFramework = "net6.0";
+
 				break;
+
 			case FuncVersion.v3:
 				targetFramework = "netcoreapp3.1";
+
 				break;
+
 			case FuncVersion.v2:
 				targetFramework = "netcoreapp2.1";
+
 				break;
+
 			case FuncVersion.v1:
 				targetFramework = "net48";
+
 				break;
 		}
 
@@ -180,6 +198,7 @@ export namespace dotnetUtils {
 				language,
 				projectPath,
 			);
+
 			if (projFiles.length === 1) {
 				targetFramework = await getTargetFramework(projFiles[0]);
 				isIsolated = await getIsIsolated(projFiles[0]);
@@ -195,6 +214,7 @@ export namespace dotnetUtils {
 		const isIsolated =
 			runtimeInfo.sdk.name.toLowerCase() ===
 			isolatedSdkName.toLowerCase();
+
 		return getProjectTemplateKey(runtimeInfo.targetFramework, isIsolated);
 	}
 
@@ -204,6 +224,7 @@ export namespace dotnetUtils {
 	): string {
 		// Remove any OS-specific stuff from target framework if present https://docs.microsoft.com/dotnet/standard/frameworks#net-5-os-specific-tfms
 		let result = targetFramework.split("-")[0];
+
 		if (isIsolated) {
 			result += "-isolated";
 		}
@@ -231,12 +252,14 @@ export namespace dotnetUtils {
 		// package references can be split across multiple item groups
 		xml.Project?.ItemGroup?.forEach((itemGroup) => {
 			const references = itemGroup.PackageReference;
+
 			if (references) {
 				references.forEach((reference) => {
 					packageReferences.push(reference.$);
 				});
 			}
 		});
+
 		return packageReferences;
 	}
 }

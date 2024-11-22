@@ -24,6 +24,7 @@ export class FolderListStep extends AzureWizardPromptStep<IProjectWizardContext>
 		context.workspacePath =
 			(context.workspaceFolder && context.workspaceFolder.uri.fsPath) ||
 			projectPath;
+
 		if (context.workspaceFolder) {
 			context.openBehavior = "AlreadyOpen";
 		}

@@ -29,10 +29,13 @@ export class JavaFunctionCreateStep extends FunctionCreateStepBase<
 			context,
 			"functionTemplate",
 		);
+
 		const packageName: string = nonNullProp(context, "javaPackageName");
+
 		const functionName: string = nonNullProp(context, "functionName");
 
 		const args: Map<string, string> = new Map<string, string>();
+
 		for (const setting of template.userPromptedSettings) {
 			const value = getBindingSetting(context, setting);
 			// NOTE: Explicitly checking against undefined. Empty string is a valid value
@@ -47,7 +50,9 @@ export class JavaFunctionCreateStep extends FunctionCreateStepBase<
 		args.set("packageName", packageName);
 		args.set("functionName", functionName);
 		args.set("className", functionName.replace("-", "_"));
+
 		const content: string = substituteParametersInTemplate(template, args);
+
 		const path: string = getJavaFunctionFilePath(
 			context.projectPath,
 			packageName,
@@ -55,6 +60,7 @@ export class JavaFunctionCreateStep extends FunctionCreateStepBase<
 		);
 		await AzExtFsExtra.ensureFile(path);
 		await AzExtFsExtra.writeFile(path, content);
+
 		return getJavaFunctionFilePath(
 			context.projectPath,
 			packageName,
@@ -74,5 +80,6 @@ function substituteParametersInTemplate(
 			value,
 		);
 	});
+
 	return javaTemplate;
 }

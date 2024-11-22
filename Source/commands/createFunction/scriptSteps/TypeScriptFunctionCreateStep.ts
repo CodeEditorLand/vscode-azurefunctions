@@ -18,6 +18,7 @@ export class TypeScriptFunctionCreateStep extends ScriptFunctionCreateStep {
 		functionJson: IFunctionJson,
 	): Promise<void> {
 		let outDir: string = tsDefaultOutDir;
+
 		try {
 			const tsconfigPath: string = path.join(
 				context.projectPath,

@@ -112,12 +112,14 @@ async function deploy(
 		actionContext,
 		deployPaths.workspaceFolder,
 	);
+
 	if (projectPath === undefined) {
 		const message: string = localize(
 			"functionProjectRootNotFound",
 			"No azure function project root could be found. This can be caused by a missing {0} file.",
 			hostFileName,
 		);
+
 		throw new Error(message);
 	}
 
@@ -172,6 +174,7 @@ async function deploy(
 		context.errorHandling.suppressDisplay = true;
 		context.telemetry.properties.error =
 			"Deploy not supported for containerized function apps";
+
 		throw new Error();
 	}
 
@@ -186,6 +189,7 @@ async function deploy(
 
 	if (language === ProjectLanguage.Python && !node.site.isLinux) {
 		context.errorHandling.suppressReportIssue = true;
+
 		throw new Error(
 			localize(
 				"pythonNotAvailableOnWindows",
@@ -197,11 +201,15 @@ async function deploy(
 	void showCoreToolsWarning(context, version, node.site.fullName);
 
 	const client = await node.site.createClient(actionContext);
+
 	const siteConfig: SiteConfigResource = await client.getSiteConfig();
+
 	const isConsumption: boolean = await client.getIsConsumption(actionContext);
+
 	let isZipDeploy: boolean =
 		siteConfig.scmType !== ScmType.LocalGit &&
 		siteConfig.scmType !== ScmType.GitHub;
+
 	if (!isZipDeploy && node.site.isLinux && isConsumption) {
 		ext.outputChannel.appendLog(
 			localize(
@@ -227,6 +235,7 @@ async function deploy(
 		) && !isFlexConsumption;
 	actionContext.telemetry.properties.scmDoBuildDuringDeployment =
 		String(doRemoteBuild);
+
 	if (doRemoteBuild) {
 		await validateRemoteBuild(
 			context,
@@ -334,6 +343,7 @@ async function deploy(
 				)
 			) {
 				deployFsPath = context.originalDeployFsPath;
+
 				const noSubpathWarning: string = `WARNING: Ignoring deploySubPath "${getWorkspaceSetting(deploySubpathSetting, context.originalDeployFsPath)}" for non-zip deploy.`;
 				ext.outputChannel.appendLog(noSubpathWarning);
 			}
@@ -358,12 +368,14 @@ async function updateWorkerProcessTo64BitIfRequired(
 	durableStorageType: DurableBackendValues | undefined,
 ): Promise<void> {
 	const client = await node.site.createClient(context);
+
 	const config: SiteConfigResource = {
 		use32BitWorkerProcess: false,
 	};
 
 	if (durableStorageType === DurableBackend.Netherite) {
 		await client.updateConfiguration(config);
+
 		return;
 	}
 
@@ -371,16 +383,19 @@ async function updateWorkerProcessTo64BitIfRequired(
 		context,
 		context.workspaceFolder,
 	);
+
 	if (functionProject === undefined) {
 		return;
 	}
 	const projectFiles: dotnetUtils.ProjectFile[] =
 		await dotnetUtils.getProjFiles(context, language, functionProject);
+
 	if (projectFiles.length !== 1) {
 		return;
 	}
 	const platformTarget: string | undefined =
 		await dotnetUtils.tryGetPlatformTarget(projectFiles[0]);
+
 	if (platformTarget === "x64" && siteConfig.use32BitWorkerProcess === true) {
 		const message: string = localize(
 			"overwriteSetting",
@@ -388,9 +403,11 @@ async function updateWorkerProcessTo64BitIfRequired(
 			"32 bit",
 			"64 bit",
 		);
+
 		const deployAnyway: vscode.MessageItem = {
 			title: localize("deployAnyway", "Deploy Anyway"),
 		};
+
 		const dialogResult: vscode.MessageItem =
 			await context.ui.showWarningMessage(
 				message,
@@ -398,6 +415,7 @@ async function updateWorkerProcessTo64BitIfRequired(
 				DialogResponses.yes,
 				deployAnyway,
 			);
+
 		if (dialogResult === deployAnyway) {
 			return;
 		}
@@ -410,17 +428,22 @@ async function validateGlobSettings(
 	fsPath: string,
 ): Promise<void> {
 	const includeKey: string = "zipGlobPattern";
+
 	const excludeKey: string = "zipIgnorePattern";
+
 	const includeSetting: string | undefined = getWorkspaceSetting(
 		includeKey,
 		fsPath,
 	);
+
 	const excludeSetting: string | string[] | undefined = getWorkspaceSetting(
 		excludeKey,
 		fsPath,
 	);
+
 	if (includeSetting || excludeSetting) {
 		context.telemetry.properties.hasOldGlobSettings = "true";
+
 		const message: string = localize(
 			"globSettingRemoved",
 			'"{0}" and "{1}" settings are no longer supported. Instead, place a ".funcignore" file at the root of your repo, using the same syntax as a ".gitignore" file.',

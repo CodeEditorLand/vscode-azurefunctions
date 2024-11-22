@@ -34,14 +34,17 @@ export async function setupProjectFolder(
 	const parsedQuery: querystring.ParsedUrlQuery = querystring.parse(
 		uri.query,
 	);
+
 	const resourceId: string = getRequiredQueryParameter(
 		parsedQuery,
 		"resourceId",
 	);
+
 	const devContainerName: string = getRequiredQueryParameter(
 		parsedQuery,
 		"devcontainer",
 	);
+
 	const language: string = getRequiredQueryParameter(parsedQuery, "language");
 
 	const toBeDeletedFolderPathUri: vscode.Uri = vscode.Uri.joinPath(
@@ -52,6 +55,7 @@ export async function setupProjectFolder(
 	try {
 		const functionAppName: string =
 			parseAzureResourceId(resourceId).resourceName;
+
 		const downloadFilePath: string = vscode.Uri.joinPath(
 			toBeDeletedFolderPathUri,
 			`${functionAppName}.zip`,
@@ -72,6 +76,7 @@ export async function setupProjectFolder(
 						...context,
 						loadAll: true,
 					});
+
 				if (!slotTreeItem) {
 					throw new Error(
 						localize(
@@ -83,8 +88,10 @@ export async function setupProjectFolder(
 				}
 
 				const client = await slotTreeItem.site.createClient(context);
+
 				const hostKeys: HostKeys | undefined =
 					await client.listHostKeys();
+
 				const defaultHostName: string | undefined =
 					slotTreeItem.site.defaultHostName;
 
@@ -114,7 +121,9 @@ export async function setupProjectFolder(
 					vsCodeFilePathUri,
 					`${functionAppName}`,
 				);
+
 				const projectFilePath: string = projectFilePathUri.fsPath;
+
 				const devContainerFolderPathUri: vscode.Uri =
 					vscode.Uri.joinPath(projectFilePathUri, ".devcontainer");
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -171,13 +180,17 @@ function getProjectLanguageForLanguage(language: string): ProjectLanguage {
 	switch (language) {
 		case "powershell":
 			return ProjectLanguage.PowerShell;
+
 		case "node":
 			return ProjectLanguage.JavaScript;
+
 		case "python":
 			return ProjectLanguage.Python;
+
 		case "dotnetcore2.1":
 		case "dotnetcore3.1":
 			return ProjectLanguage.CSharpScript;
+
 		default:
 			throw new Error(`Language not supported: ${language}`);
 	}

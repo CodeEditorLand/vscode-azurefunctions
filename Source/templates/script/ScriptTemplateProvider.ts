@@ -51,12 +51,15 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 		const cachedResources: object | undefined = await this.getCachedValue(
 			this._resourcesKey,
 		);
+
 		const cachedTemplates: object[] | undefined = await this.getCachedValue(
 			this._templatesKey,
 		);
+
 		const cachedConfig: object | undefined = await this.getCachedValue(
 			this._bindingsKey,
 		);
+
 		if (cachedResources && cachedTemplates && cachedConfig) {
 			return parseScriptTemplates(
 				cachedResources,
@@ -86,6 +89,7 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 			"script",
 			getRandomHexString(),
 		);
+
 		try {
 			const filePath: string = path.join(templatesPath, "templates.zip");
 			await requestUtils.downloadFile(
@@ -114,11 +118,13 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 		const paths: ITemplatePaths = this.getTemplatePaths(
 			this.getBackupPath(),
 		);
+
 		const fileData: [string, object][] = [
 			[paths.resources, this._rawResources],
 			[paths.templates, this._rawTemplates],
 			[paths.bindings, this._rawBindings],
 		];
+
 		for (const [file, data] of fileData) {
 			await AzExtFsExtra.ensureFile(file);
 			await AzExtFsExtra.writeJSON(file, data);
@@ -157,6 +163,7 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 			paths.templates,
 		);
 		this._rawBindings = await AzExtFsExtra.readJSON<object>(paths.bindings);
+
 		return parseScriptTemplates(
 			this._rawResources,
 			this._rawTemplates,
@@ -176,16 +183,19 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 			"resources",
 			`Resources${language === english ? "" : "." + language}.json`,
 		);
+
 		const templates: string = path.join(
 			rootPath,
 			"templates",
 			"templates.json",
 		);
+
 		const bindings: string = path.join(
 			rootPath,
 			"bindings",
 			"bindings.json",
 		);
+
 		return { resources, templates, bindings };
 	}
 }

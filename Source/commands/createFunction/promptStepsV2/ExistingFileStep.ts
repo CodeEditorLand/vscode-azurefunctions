@@ -30,6 +30,7 @@ export class ExistingFileStep<
 		const fileType = getFileExtensionFromLanguage(
 			context.language,
 		)?.substring(1);
+
 		const options: AzExtOpenDialogOptions = {
 			title: this.input.help,
 			defaultUri: Utils.joinPath(
@@ -40,6 +41,7 @@ export class ExistingFileStep<
 		};
 
 		// remove file extension (if any);
+
 		return Utils.basename(
 			(await context.ui.showOpenDialog(options))[0],
 		).split(".")[0];

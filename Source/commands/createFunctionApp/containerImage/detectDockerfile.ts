@@ -19,7 +19,9 @@ export async function detectDockerfile(
 ): Promise<void> {
 	if (vscode.workspace.workspaceFolders) {
 		context.workspaceFolder = vscode.workspace.workspaceFolders[0];
+
 		const workspacePath = context.workspaceFolder.uri.fsPath;
+
 		let dockerfilePath: string = workspacePath;
 		context.rootPath = workspacePath;
 
@@ -29,6 +31,7 @@ export async function detectDockerfile(
 				context.workspaceFolder,
 				`**/${dockerfileGlobPattern}`,
 			);
+
 			if (files.length === 0) {
 				return;
 			}
@@ -50,16 +53,20 @@ export async function detectDockerfile(
 				"detectedDockerfile",
 				"Dockerfile detected. What would you like to deploy?",
 			);
+
 			const containerImageButton: vscode.MessageItem = {
 				title: localize("containerImage", "Container Image"),
 			};
+
 			const codeButton: vscode.MessageItem = {
 				title: localize("code", "Code"),
 			};
+
 			const buttons: vscode.MessageItem[] = [
 				containerImageButton,
 				codeButton,
 			];
+
 			const result: vscode.MessageItem =
 				await context.ui.showWarningMessage(
 					placeHolder,
@@ -81,6 +88,7 @@ export async function detectFunctionsDockerfile(
 	file: string,
 ): Promise<boolean> {
 	const content = await AzExtFsExtra.readFile(file);
+
 	const lines: string[] = content.split("\n");
 
 	for (const line of lines) {

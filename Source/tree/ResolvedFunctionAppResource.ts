@@ -112,6 +112,7 @@ export class ResolvedFunctionAppResource
 		this._subscription = subscription;
 		this.contextValuesToAdd = [];
 		this._isFlex = !!site.functionAppConfig;
+
 		if (this._isFlex) {
 			this.contextValuesToAdd.push(
 				ResolvedFunctionAppResource.flexContextValue,
@@ -159,6 +160,7 @@ export class ResolvedFunctionAppResource
 				async (client) =>
 					(resource.data.siteConfig = await client.getSiteConfig()),
 			);
+
 		return resource;
 	}
 
@@ -181,6 +183,7 @@ export class ResolvedFunctionAppResource
 
 	public get iconPath(): TreeItemIconPath {
 		const proxyTree: SlotTreeItem = this as unknown as SlotTreeItem;
+
 		return treeUtils.getIconPath(proxyTree.contextValue);
 	}
 
@@ -205,10 +208,13 @@ export class ResolvedFunctionAppResource
 
 	public async getVersion(context: IActionContext): Promise<FuncVersion> {
 		let result: FuncVersion | undefined = this._cachedVersion;
+
 		if (result === undefined) {
 			let version: FuncVersion | undefined;
+
 			try {
 				const client = await this.site.createClient(context);
+
 				const appSettings: StringDictionary =
 					await client.listApplicationSettings();
 				version = tryParseFuncVersion(
@@ -229,9 +235,11 @@ export class ResolvedFunctionAppResource
 		context: IActionContext,
 	): Promise<IParsedHostJson> {
 		let result: IParsedHostJson | undefined = this._cachedHostJson;
+
 		if (!result) {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let data: any;
+
 			try {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				data = JSON.parse(
@@ -258,8 +266,10 @@ export class ResolvedFunctionAppResource
 		context: IActionContext,
 	): Promise<ApplicationSettings> {
 		const client = await this.site.createClient(context);
+
 		const appSettings: StringDictionary =
 			await client.listApplicationSettings();
+
 		return appSettings.properties || {};
 	}
 
@@ -269,8 +279,10 @@ export class ResolvedFunctionAppResource
 		value: string,
 	): Promise<void> {
 		const client = await this.site.createClient(context);
+
 		const settings: StringDictionary =
 			await client.listApplicationSettings();
+
 		if (!settings.properties) {
 			settings.properties = {};
 		}
@@ -280,6 +292,7 @@ export class ResolvedFunctionAppResource
 
 	public async getIsConsumption(context: IActionContext): Promise<boolean> {
 		let result: boolean | undefined = this._cachedIsConsumption;
+
 		if (result === undefined) {
 			try {
 				const client = await this.site.createClient(context);
@@ -299,9 +312,12 @@ export class ResolvedFunctionAppResource
 		context: IActionContext,
 	): Promise<AzExtTreeItem[]> {
 		const client = await this.site.createClient(context);
+
 		const siteConfig: SiteConfig = await client.getSiteConfig();
+
 		const sourceControl: SiteSourceControl =
 			await client.getSourceControl();
+
 		const proxyTree: SlotTreeItem = this as unknown as SlotTreeItem;
 
 		this.deploymentsNode = new DeploymentsTreeItem(proxyTree, {
@@ -365,6 +381,7 @@ export class ResolvedFunctionAppResource
 					case SlotsTreeItem.contextValue:
 					case ResolvedFunctionAppResource.slotContextValue:
 						return this._slotsTreeItem;
+
 					default:
 				}
 			}
@@ -376,6 +393,7 @@ export class ResolvedFunctionAppResource
 					AppSettingsTreeItem.contextValue,
 					AppSettingTreeItem.contextValue,
 				];
+
 				if (
 					matchContextValue(
 						expectedContextValue,
@@ -389,6 +407,7 @@ export class ResolvedFunctionAppResource
 					DeploymentsTreeItem.contextValueUnconnected,
 					DeploymentTreeItem.contextValue,
 				];
+
 				if (
 					matchContextValue(
 						expectedContextValue,
@@ -434,8 +453,10 @@ export class ResolvedFunctionAppResource
 
 	public async isReadOnly(context: IActionContext): Promise<boolean> {
 		const client = await this.site.createClient(context);
+
 		const appSettings: StringDictionary =
 			await client.listApplicationSettings();
+
 		return [runFromPackageKey, "WEBSITE_RUN_FROM_ZIP"].some(
 			(key) =>
 				appSettings.properties &&

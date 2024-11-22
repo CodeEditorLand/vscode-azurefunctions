@@ -20,14 +20,17 @@ export async function setAzureWebJobsStorage(
 		"selectLocalSettings",
 		"Select your local settings file.",
 	);
+
 	const localSettingsFile: string = await getLocalSettingsFile(
 		context,
 		message,
 	);
+
 	const wizardContext: IAzureWebJobsStorageWizardContext = Object.assign(
 		context,
 		{ projectPath: path.dirname(localSettingsFile) },
 	);
+
 	const wizard: AzureWizard<IAzureWebJobsStorageWizardContext> =
 		new AzureWizard(wizardContext, {
 			promptSteps: [new AzureWebJobsStoragePromptStep()],

@@ -34,10 +34,13 @@ export class SqlDatabaseCreateStep<
 		const client: SqlManagementClient = await createSqlClient(
 			<T & ISubscriptionContext>context,
 		);
+
 		const serverName: string = nonNullValue(context.sqlServer?.name);
+
 		const rgName: string = getResourceGroupFromId(
 			nonNullValue(context.sqlServer?.id),
 		);
+
 		const newDatabaseName: string = nonNullProp(
 			context,
 			"newSqlDatabaseName",
@@ -54,6 +57,7 @@ export class SqlDatabaseCreateStep<
 		const location: AzExtLocation = await LocationListStep.getLocation(
 			<T & ISubscriptionContext>context,
 		);
+
 		const dbParams: Database = {
 			location: nonNullProp(location, "name"),
 			sku: {

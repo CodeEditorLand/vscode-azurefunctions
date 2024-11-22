@@ -60,6 +60,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		progress: Progress<{ message?: string; increment?: number }>,
 	): Promise<void> {
 		const os: WebsiteOS = nonNullProp(context, "newSiteOS");
+
 		const stack: FullFunctionAppStack = nonNullProp(
 			context,
 			"newSiteStack",
@@ -82,6 +83,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		progress.report({ message });
 
 		const siteName: string = nonNullProp(context, "newSiteName");
+
 		const rgName: string = nonNullProp(
 			nonNullProp(context, "resourceGroup"),
 			"name",
@@ -96,6 +98,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		context.activityResult = context.site as AppResource;
 
 		const site = new ParsedSite(context.site, context);
+
 		if (!site.isLinux) {
 			// not supported on linux
 			try {
@@ -124,6 +127,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 			context,
 			webProvider,
 		);
+
 		const site: Site = {
 			name: context.newSiteName,
 			kind: getSiteKind(context),
@@ -141,10 +145,13 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		// Always on setting added for App Service plans excluding the free tier https://github.com/microsoft/vscode-azurefunctions/issues/3037
 		if (context.plan?.sku?.family) {
 			const isNotFree = context.plan.sku.family.toLowerCase() !== "f";
+
 			const isNotElasticPremium =
 				context.plan.sku.family.toLowerCase() !== "ep";
+
 			const isNotConsumption: boolean =
 				context.plan.sku.family.toLowerCase() !== "y";
+
 			if (isNotFree && isNotElasticPremium && isNotConsumption) {
 				nonNullProp(site, "siteConfig").alwaysOn = true;
 			}
@@ -172,6 +179,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 			context,
 			webProvider,
 		);
+
 		const site: Site = {
 			name: context.newSiteName,
 			kind: getSiteKind(context),
@@ -223,6 +231,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		const storageConnectionString: string = (
 			await getStorageConnectionString(context)
 		).connectionString;
+
 		let appSettings: NameValuePair[] = [
 			{
 				name: ConnectionKey.Storage,
@@ -264,10 +273,12 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 
 		const isElasticPremium: boolean =
 			context.plan?.sku?.family?.toLowerCase() === "ep";
+
 		const isConsumption: boolean =
 			context.plan?.sku?.family?.toLowerCase() === "y";
 		// no stack means it's a flex app
 		const isFlex: boolean = !stack;
+
 		if (isConsumption || isElasticPremium) {
 			// WEBSITE_CONTENT* settings are added for consumption/premium plans, but not dedicated
 			// https://github.com/microsoft/vscode-azurefunctions/issues/1702
@@ -321,6 +332,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		}
 
 		newSiteConfig.appSettings = appSettings;
+
 		return newSiteConfig;
 	}
 
@@ -332,9 +344,11 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 	): Promise<Site> {
 		const client: WebSiteManagementClient =
 			await createWebSiteClient(context);
+
 		const site = context.newFlexSku
 			? await this.getNewFlexSite(context, context.newFlexSku)
 			: await this.getNewSite(context, stack);
+
 		const result = await client.webApps.beginCreateOrUpdateAndWait(
 			rgName,
 			siteName,
@@ -354,7 +368,9 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 
 function getNewFileShareName(siteName: string): string {
 	const randomLetters: number = 6;
+
 	const maxFileShareNameLength: number = 63;
+
 	return (
 		siteName
 			.toLowerCase()
@@ -365,6 +381,7 @@ function getNewFileShareName(siteName: string): string {
 
 function getSiteKind(context: IAppServiceWizardContext): string {
 	let kind: string = context.newSiteKind;
+
 	if (context.newSiteOS === "linux") {
 		kind += ",linux";
 	}
@@ -382,12 +399,16 @@ async function tryCreateStorageContainer(
 	const blobClient = BlobServiceClient.fromConnectionString(
 		storageConnectionString,
 	);
+
 	const containerUrl: string | undefined =
 		site.functionAppConfig?.deployment?.storage?.value;
+
 	if (containerUrl) {
 		const containerName = containerUrl.split("/").pop();
+
 		if (containerName) {
 			const client = blobClient.getContainerClient(containerName);
+
 			if (!(await client.exists())) {
 				await blobClient.createContainer(containerName);
 			} else {
@@ -398,6 +419,7 @@ async function tryCreateStorageContainer(
 						containerName,
 					),
 				);
+
 				return;
 			}
 		}
@@ -409,5 +431,6 @@ async function tryCreateStorageContainer(
 			"No deployment storage specified in function app.",
 		),
 	);
+
 	return;
 }

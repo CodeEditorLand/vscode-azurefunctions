@@ -13,6 +13,7 @@ import { cpUtils } from "../../utils/cpUtils";
 
 export async function executeDotnetTemplateCommand(context: IActionContext, version: FuncVersion, projTemplateKey: string, workingDirectory: string | undefined, operation: 'list' | 'create', ...args: string[]): Promise<string> {
     const jsonDllPath: string = ext.context.asAbsolutePath(path.join('resources', 'dotnetJsonCli', 'Microsoft.TemplateEngine.JsonCli.dll'));
+
     return await cpUtils.executeCommand(
         undefined,
         workingDirectory,
@@ -37,6 +38,7 @@ export function getDotnetProjectTemplatePath(context: IActionContext, version: F
 
 export function getDotnetTemplateDir(context: IActionContext, version: FuncVersion, projTemplateKey: string): string {
     const templateProvider = ext.templateProvider.get(context);
+
     return path.join(ext.context.globalStoragePath, templateProvider.templateSource || '', version, projTemplateKey);
 }
 
@@ -49,6 +51,7 @@ let cachedFramework: string | undefined;
 async function getFramework(context: IActionContext, workingDirectory: string | undefined): Promise<string> {
     if (!cachedFramework) {
         let versions: string = '';
+
         try {
             versions += await cpUtils.executeCommand(undefined, workingDirectory, 'dotnet', '--version');
         } catch {
@@ -63,6 +66,7 @@ async function getFramework(context: IActionContext, workingDirectory: string | 
 
         // Prioritize "LTS", then "Current", then "Preview"
         const netVersions: string[] = ['6.0', '7.0', '8.0', '9.0'];
+
         const semVersions: SemVer[] = netVersions.map(v => semVerCoerce(v) as SemVer);
 
         let pickedVersion: SemVer | undefined;
@@ -70,8 +74,10 @@ async function getFramework(context: IActionContext, workingDirectory: string | 
         // Try to get a GA version first (i.e. "1.0.0")
         for (const semVersion of semVersions) {
             const regExp: RegExp = new RegExp(`^\\s*${semVersion.major}\\.${semVersion.minor}\\.[0-9]+(\\s|$)`, 'm');
+
             if (regExp.test(versions)) {
                 pickedVersion = semVersion;
+
                 break;
             }
         }
@@ -80,8 +86,10 @@ async function getFramework(context: IActionContext, workingDirectory: string | 
         if (!pickedVersion) {
             for (const semVersion of semVersions) {
                 const regExp: RegExp = new RegExp(`^\\s*${semVersion.major}\\.${semVersion.minor}\\.`, 'm');
+
                 if (regExp.test(versions)) {
                     pickedVersion = semVersion;
+
                     break;
                 }
             }
@@ -90,6 +98,7 @@ async function getFramework(context: IActionContext, workingDirectory: string | 
 
         if (!pickedVersion) {
             context.errorHandling.suppressReportIssue = true;
+
             throw new Error(localize('noMatchingFramework', 'You must have the [.NET Core SDK](https://aka.ms/AA4ac70) installed to perform this operation. See [here](https://aka.ms/AA1tpij) for supported versions.'));
         } else {
             cachedFramework = `${pickedVersion.major < 4 ? 'netcoreapp' : 'net'}${pickedVersion.major}.${pickedVersion.minor}`;

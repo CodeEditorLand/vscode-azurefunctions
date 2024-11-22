@@ -41,6 +41,7 @@ export async function validateSqlDbConnection(
 		context,
 		{ projectPath },
 	);
+
 	const wizard: AzureWizard<IEventHubsConnectionWizardContext> =
 		new AzureWizard(wizardContext, {
 			promptSteps: [

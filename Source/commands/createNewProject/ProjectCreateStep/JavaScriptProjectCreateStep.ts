@@ -52,6 +52,7 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 			context.projectPath,
 			packageJsonFileName,
 		);
+
 		if (await confirmOverwriteFile(context, packagePath)) {
 			await AzExtFsExtra.writeJSON(
 				packagePath,
@@ -122,6 +123,7 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 		[key: string]: string;
 	} {
 		const deps: { [key: string]: string } = {};
+
 		if (isNodeV4Plus(context)) {
 			deps[azureFunctionsDependency] = azureFunctionsDependencyVersion;
 		}
@@ -143,6 +145,7 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 			"src",
 			"index.js",
 		);
+
 		if (await confirmOverwriteFile(context, indexPath)) {
 			await AzExtFsExtra.writeFile(
 				indexPath,

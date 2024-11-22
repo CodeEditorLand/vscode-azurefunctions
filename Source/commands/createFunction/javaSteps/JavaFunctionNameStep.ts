@@ -31,6 +31,7 @@ export class JavaFunctionNameStep extends FunctionNameStepBase<
 		assertTemplateIsV1(template);
 
 		const packageName: string = nonNullProp(context, "javaPackageName");
+
 		return await this.getUniqueFsPath(
 			getJavaPackagePath(context.projectPath, packageName),
 			getJavaClassName(template.defaultFunctionName),
@@ -43,6 +44,7 @@ export class JavaFunctionNameStep extends FunctionNameStepBase<
 		name: string,
 	): Promise<string | undefined> {
 		const packageName: string = nonNullProp(context, "javaPackageName");
+
 		if (
 			await AzExtFsExtra.pathExists(
 				getJavaFunctionFilePath(context.projectPath, packageName, name),

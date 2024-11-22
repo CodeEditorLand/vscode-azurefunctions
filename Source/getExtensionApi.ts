@@ -20,6 +20,7 @@ export async function getResourceGroupsApi(): Promise<AzureHostExtensionApi> {
 		await apiUtils.getExtensionExports<apiUtils.AzureExtensionApiProvider>(
 			"ms-azuretools.vscode-azureresourcegroups",
 		);
+
 	if (rgApiProvider) {
 		return rgApiProvider.getApi<AzureHostExtensionApi>("^0.0.1");
 	} else {
@@ -40,6 +41,7 @@ export async function getAzureContainerAppsApi(
 	installMessage?: string,
 ): Promise<acaApi.AzureContainerAppsExtensionApi> {
 	const acaExtensionId: string = "ms-azuretools.vscode-azurecontainerapps";
+
 	const acaExtension: apiUtils.AzureExtensionApiProvider | undefined =
 		await apiUtils.getExtensionExports(acaExtensionId);
 
@@ -67,6 +69,7 @@ export async function getAzureContainerAppsApi(
 export async function getGitApi(): Promise<GitAPI> {
 	const gitExtension: GitExtension | undefined =
 		await apiUtils.getExtensionExports("vscode.git");
+
 	if (gitExtension) {
 		return gitExtension.getAPI(1);
 	}

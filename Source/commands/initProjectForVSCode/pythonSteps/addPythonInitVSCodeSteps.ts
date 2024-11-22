@@ -27,6 +27,7 @@ export async function addPythonInitVSCodeSteps(
 		"createPythonVenv",
 		context.workspacePath,
 	);
+
 	const venvs: string[] = [];
 
 	context.telemetry.properties.createPythonVenv = String(createPythonVenv);
@@ -49,6 +50,7 @@ export async function addPythonInitVSCodeSteps(
 
 	if (venvs.length > 0) {
 		context.useExistingVenv = true;
+
 		if (venvs.length === 1) {
 			context.venvName = venvs[0];
 		} else {

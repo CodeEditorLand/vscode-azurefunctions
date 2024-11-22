@@ -94,6 +94,7 @@ export class FunctionAppResolver implements AppResourceResolver {
 						nonNullValueAndProp(site, "resourceGroup"),
 						nonNullValueAndProp(site, "name"),
 					);
+
 					return ResolvedContainerizedFunctionAppResource.createResolvedFunctionAppResource(
 						context,
 						subContext,

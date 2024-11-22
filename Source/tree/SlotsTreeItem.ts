@@ -91,13 +91,16 @@ export class SlotsTreeItem extends AzExtParentTreeItem {
 		const existingSlots: SlotTreeItem[] = <SlotTreeItem[]>(
 			await this.getCachedChildren(context)
 		);
+
 		const newSite: Site = await createSlot(
 			this.parent.site,
 			existingSlots.map((s) => s.site),
 			context,
 		);
+
 		const parsedSite = new ParsedSite(newSite, this.subscription);
 		showSiteCreated(parsedSite, context);
+
 		return new SlotTreeItem(
 			this,
 			new ResolvedFunctionAppResource(this.subscription, newSite),

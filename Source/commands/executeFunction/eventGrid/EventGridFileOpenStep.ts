@@ -31,7 +31,9 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 		}>,
 	): Promise<void> {
 		const eventSource = nonNullProp(context, "eventSource");
+
 		const selectedFileName = nonNullProp(context, "selectedFileName");
+
 		const selectedFileUrl = nonNullProp(context, "selectedFileUrl");
 
 		// Get selected contents of sample request
@@ -40,6 +42,7 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 			"Downloading sample request...",
 		);
 		progress.report({ message: downloadingMsg });
+
 		const selectedFileContent = await feedUtils.getJsonFeed(
 			context,
 			selectedFileUrl,
@@ -51,11 +54,13 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 			"Opening file...",
 		);
 		progress.report({ message: openingFileMsg });
+
 		const tempFilePath: string = await createTempSampleFile(
 			eventSource,
 			selectedFileName,
 			selectedFileContent,
 		);
+
 		const document: vscode.TextDocument =
 			await vscode.workspace.openTextDocument(tempFilePath);
 		await vscode.window.showTextDocument(document, {
@@ -126,6 +131,7 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 								reject(error);
 							} finally {
 								closedListenerDisposable.dispose();
+
 								if (modifiedListenerDisposable) {
 									modifiedListenerDisposable.dispose();
 								}
@@ -147,7 +153,9 @@ async function createTempSampleFile(
 	contents: {},
 ): Promise<string> {
 	const samplesDirPath = await getSamplesDirPath(eventSource);
+
 	const sampleFileName = fileName.replace(/\.json$/, ".eventgrid.json");
+
 	const filePath: string = path.join(samplesDirPath, sampleFileName);
 
 	await AzExtFsExtra.writeJSON(filePath, contents);
@@ -163,6 +171,7 @@ async function getSamplesDirPath(eventSource: string): Promise<string> {
 		"azureFunctions",
 		"eventGridSamples",
 	);
+
 	const dirPath = path.join(baseDir, eventSource);
 
 	// Create the directory if it doesn't already exist

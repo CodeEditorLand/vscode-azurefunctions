@@ -67,6 +67,7 @@ export class EventHubsNamespaceNameStep<
 		const isAvailable: boolean = !!(
 			await this.client.namespaces.checkNameAvailability({ name })
 		).nameAvailable;
+
 		if (!isAvailable) {
 			return localize(
 				"eventHubNamespaceExists",

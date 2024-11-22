@@ -57,16 +57,21 @@ export async function getStorageConnectionString(
 	}
 
 	const client: StorageManagementClient = await createStorageClient(context);
+
 	const storageAccount: StorageAccount = nonNullProp(
 		context,
 		"storageAccount",
 	);
+
 	const name: string = nonNullProp(storageAccount, "name");
+
 	const resourceGroup: string = getResourceGroupFromId(
 		nonNullProp(storageAccount, "id"),
 	);
+
 	const result: StorageAccountListKeysResult =
 		await client.storageAccounts.listKeys(resourceGroup, name);
+
 	const key: string = nonNullProp(
 		nonNullValue(nonNullProp(result, "keys")[0], "keys[0]"),
 		"value",
@@ -92,9 +97,11 @@ export async function getEventHubsConnectionString(
 ): Promise<IResourceResult> {
 	const client: EventHubManagementClient =
 		await createEventHubClient(context);
+
 	const rgName: string = getResourceGroupFromId(
 		nonNullValue(context.eventHubsNamespace?.id),
 	);
+
 	const namespaceName: string = nonNullValue(
 		context.eventHubsNamespace?.name,
 	);
@@ -103,19 +110,23 @@ export async function getEventHubsConnectionString(
 		rgName,
 		namespaceName,
 	);
+
 	const authRules: AuthorizationRule[] =
 		await uiUtils.listAllIterator(authRulesIterable);
+
 	const manageAccessRules: AuthorizationRule[] = authRules.filter(
 		(authRule) => authRule.rights?.includes(KnownAccessRights.Manage),
 	);
 
 	let authRuleName: string;
+
 	if (!manageAccessRules.length) {
 		authRuleName = await createAndGetAuthRuleName(context);
 	} else if (manageAccessRules.length === 1) {
 		authRuleName = nonNullProp(authRules[0], "name");
 	} else {
 		const rootKeyName: string = "RootManageSharedAccessKey";
+
 		const placeHolder: string = localize(
 			"chooseSharedAccessPolicy",
 			"Choose a shared access policy.",
@@ -143,12 +154,14 @@ export async function getEventHubsConnectionString(
 		namespaceName,
 		authRuleName,
 	);
+
 	if (
 		!accessKeys.primaryConnectionString &&
 		!accessKeys.secondaryConnectionString
 	) {
 		const learnMoreLink: string =
 			"https://aka.ms/event-hubs-connection-string";
+
 		const message: string = localize(
 			"missingEventHubsConnectionString",
 			'There are no connection strings available on your namespace\'s shared access policy. Locate a valid access policy and add the connection string to "{0}".',
@@ -171,7 +184,9 @@ export async function getSqlDatabaseConnectionString(
 	context: ISqlDatabaseConnectionWizardContext,
 ): Promise<IResourceResult> {
 	const serverName: string = nonNullValue(context.sqlServer?.name);
+
 	const dbName: string = nonNullValue(context.sqlDatabase?.name);
+
 	const username: string | undefined = context.sqlServer?.administratorLogin;
 
 	if (!username) {

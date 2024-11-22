@@ -43,6 +43,7 @@ class StaticContentProvider implements vscode.TextDocumentContentProvider {
 
 		// TODO: Do we need the hash now?
 		const hash = getPseudononymousStringHash(content);
+
 		const uri = vscode.Uri.from({
 			scheme: contentScheme,
 			path: `${hash}/${filename}`,

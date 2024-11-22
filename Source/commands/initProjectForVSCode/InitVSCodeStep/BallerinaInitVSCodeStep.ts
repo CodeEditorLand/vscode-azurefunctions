@@ -32,6 +32,7 @@ export class BallerinaInitVSCodeStep extends InitVSCodeStepBase {
 		const isProject: boolean = await isBallerinaProject(
 			context.projectPath,
 		);
+
 		if (!isProject) {
 			this._debugSubpath = "azure_functions";
 		}

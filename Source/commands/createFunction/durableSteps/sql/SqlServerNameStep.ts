@@ -67,6 +67,7 @@ export class SqlServerNameStep<
 				type: "Microsoft.Sql/servers",
 			})
 		).available;
+
 		if (!isAvailable) {
 			return localize(
 				"sqlServerExists",

@@ -15,11 +15,14 @@ export namespace nugetUtils {
 		versions: string[],
 	): string | undefined {
 		let finalRange: string = wildcard;
+
 		const range: IVersionRange | string = parseVersionRange(rangeString);
+
 		if (typeof range === "string") {
 			finalRange = range;
 		} else {
 			const minVersion: string | undefined = range.minVersion;
+
 			if (minVersion) {
 				if (minVersion.includes(wildcard)) {
 					if (range.includeMinVersion) {
@@ -43,6 +46,7 @@ export namespace nugetUtils {
 			}
 
 			const maxVersion: string | undefined = range.maxVersion;
+
 			if (maxVersion) {
 				if (range.includeMaxVersion) {
 					versions = versions.filter((v) =>
@@ -84,8 +88,11 @@ export namespace nugetUtils {
 		}
 
 		let includeMinVersion: boolean;
+
 		let minVersion: string | undefined;
+
 		let includeMaxVersion: boolean | undefined;
+
 		let maxVersion: string | undefined;
 
 		if (value[0] === "(" || value[0] === "[") {
@@ -93,10 +100,14 @@ export namespace nugetUtils {
 			switch (value[0]) {
 				case "[":
 					includeMinVersion = true;
+
 					break;
+
 				case "(":
 					includeMinVersion = false;
+
 					break;
+
 				default:
 					throw error;
 			}
@@ -105,10 +116,14 @@ export namespace nugetUtils {
 			switch (value[value.length - 1]) {
 				case "]":
 					includeMaxVersion = true;
+
 					break;
+
 				case ")":
 					includeMaxVersion = false;
+
 					break;
+
 				default:
 					throw error;
 			}
@@ -118,6 +133,7 @@ export namespace nugetUtils {
 
 			// Split by comma, and make sure we get between 1 and 2 non-empty parts
 			const parts: string[] = value.split(",").map((p) => p.trim());
+
 			if (parts.length > 2 || !parts.some((p) => !!p)) {
 				throw error;
 			}
@@ -143,6 +159,7 @@ export namespace nugetUtils {
 				}
 			} else {
 				minVersion = appendMissingParts(minVersion);
+
 				if (!semver.valid(minVersion)) {
 					throw error;
 				}
@@ -152,6 +169,7 @@ export namespace nugetUtils {
 		if (maxVersion) {
 			// max does not support wildcards
 			maxVersion = appendMissingParts(maxVersion);
+
 			if (!semver.valid(maxVersion)) {
 				throw error;
 			}
@@ -174,6 +192,7 @@ export namespace nugetUtils {
 			return version;
 		} else {
 			let count: number = (version.match(/\./g) || []).length;
+
 			while (count < 2) {
 				version += ".0";
 				count += 1;

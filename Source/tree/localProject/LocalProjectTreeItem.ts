@@ -38,6 +38,7 @@ export class LocalProjectTreeItem extends LocalProjectTreeItemBase implements Di
 
     public constructor(parent: AzExtParentTreeItem, localProject: LocalProjectInternal) {
         const options = localProject.options;
+
         super(parent, options.preCompiledProjectPath || options.effectiveProjectPath, options.folder);
         this.effectiveProjectPath = options.effectiveProjectPath;
         this.workspacePath = options.folder.uri.fsPath;

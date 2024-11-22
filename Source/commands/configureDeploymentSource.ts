@@ -22,6 +22,7 @@ export async function configureDeploymentSource(
 		node.site,
 		node.subscription,
 	);
+
 	if (updatedScmType !== undefined) {
 		context.telemetry.properties.updatedScmType = updatedScmType;
 	}

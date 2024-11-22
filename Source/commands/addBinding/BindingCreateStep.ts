@@ -42,6 +42,7 @@ export class BindingCreateStep extends AzureWizardExecuteStep<IBindingWizardCont
 
 		for (const b of bindingTemplate.settings) {
 			const bindingSetting = getBindingSetting(context, b);
+
 			if (
 				!b.required &&
 				typeof bindingSetting !== "boolean" &&
@@ -58,7 +59,9 @@ export class BindingCreateStep extends AzureWizardExecuteStep<IBindingWizardCont
 			context.functionJsonPath,
 			(functionJson: IFunctionJson) => {
 				functionJson.bindings = functionJson.bindings || [];
+
 				functionJson.bindings.push(binding);
+
 				return functionJson;
 			},
 		);

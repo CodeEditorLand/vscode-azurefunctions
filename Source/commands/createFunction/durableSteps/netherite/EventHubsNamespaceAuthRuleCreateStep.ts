@@ -34,13 +34,17 @@ export class EventHubsNamespaceAuthRuleCreateStep<
 		const client: EventHubManagementClient = await createEventHubClient(
 			<T & ISubscriptionContext>context,
 		);
+
 		const rgName: string = getResourceGroupFromId(
 			nonNullValue(context.eventHubsNamespace?.id),
 		);
+
 		const namespaceName: string = nonNullValue(
 			context.eventHubsNamespace?.name,
 		);
+
 		const authRuleName: string = nonNullProp(context, "newAuthRuleName");
+
 		const defaultParams: AuthorizationRule = {
 			rights: [
 				KnownAccessRights.Manage,

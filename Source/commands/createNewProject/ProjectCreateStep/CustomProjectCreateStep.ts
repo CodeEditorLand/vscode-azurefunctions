@@ -19,6 +19,7 @@ export class CustomProjectCreateStep extends ScriptProjectCreateStep {
 				arguments: [],
 			},
 		};
+
 		return hostJson;
 	}
 }

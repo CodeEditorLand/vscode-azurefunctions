@@ -24,6 +24,7 @@ export function addBindingSettingSteps(
 ): void {
 	for (const setting of settings) {
 		const name: string = setting.name.toLowerCase();
+
 		if (setting.resourceType === ResourceType.ExistingFile) {
 			// don't prompt for this as we already ask the user for this in the wizard
 			continue;
@@ -37,13 +38,18 @@ export function addBindingSettingSteps(
 			switch (setting.valueType) {
 				case ValueType.boolean:
 					promptSteps.push(new BooleanPromptStep(setting));
+
 					break;
+
 				case ValueType.enum:
 					promptSteps.push(new EnumPromptStep(setting));
+
 					break;
+
 				default:
 					// Default to 'string' type for any valueType that isn't supported
 					promptSteps.push(new StringPromptStep(setting));
+
 					break;
 			}
 		}

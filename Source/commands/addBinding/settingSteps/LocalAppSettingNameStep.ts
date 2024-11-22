@@ -13,6 +13,7 @@ export class LocalAppSettingNameStep extends BindingSettingStepBase {
 		context: IBindingWizardContext,
 	): Promise<BindingSettingValue> {
 		const appSettingSuffix: string = `_${this._resourceType.toUpperCase()}`;
+
 		return await context.ui.showInputBox({
 			placeHolder: localize(
 				"appSettingKeyPlaceholder",

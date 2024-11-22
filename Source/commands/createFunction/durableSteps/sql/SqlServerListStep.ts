@@ -38,6 +38,7 @@ export class SqlServerListStep<
 		const quickPickOptions: IAzureQuickPickOptions = {
 			placeHolder: localize("selectSqlServer", "Select a SQL server."),
 		};
+
 		const picksTask: Promise<IAzureQuickPickItem<Server | undefined>[]> =
 			this.getQuickPicks(uiUtils.listAllIterator(client.servers.list()));
 
@@ -52,6 +53,7 @@ export class SqlServerListStep<
 	): Promise<IWizardOptions<T> | undefined> {
 		const promptSteps: AzureWizardPromptStep<T & ISubscriptionContext>[] =
 			[];
+
 		const executeSteps: AzureWizardExecuteStep<T & ISubscriptionContext>[] =
 			[];
 
@@ -92,6 +94,7 @@ export class SqlServerListStep<
 		];
 
 		const sqlServers: Server[] = await serverTask;
+
 		for (const server of sqlServers) {
 			picks.push({
 				id: server.id,

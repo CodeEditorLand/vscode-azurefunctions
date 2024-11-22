@@ -14,13 +14,16 @@ export async function getLocalFuncCoreToolsVersion(
 	workspacePath: string | undefined,
 ): Promise<string | null> {
 	const funcCliPath = await getFuncCliPath(context, workspacePath);
+
 	const output: string = await cpUtils.executeCommand(
 		undefined,
 		workspacePath,
 		funcCliPath,
 		"--version",
 	);
+
 	const version: string | null = semver.clean(output);
+
 	if (version) {
 		return version;
 	} else {
@@ -28,6 +31,7 @@ export async function getLocalFuncCoreToolsVersion(
 		const matchResult: RegExpMatchArray | null = output.match(
 			/(?:.*)Azure Functions Core Tools (.*)/,
 		);
+
 		if (matchResult !== null) {
 			let localVersion: string = matchResult[1]
 				.replace(/[()]/g, "")

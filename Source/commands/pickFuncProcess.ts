@@ -33,6 +33,7 @@ export async function startFuncProcessFromApi(
     };
 
     let funcHostStartCmd: string = 'func host start';
+
     if (args) {
         funcHostStartCmd += ` ${args.join(' ')}`;
     }
@@ -77,13 +78,16 @@ export async function startFuncProcessFromApi(
 
 export async function pickFuncProcess(context: IActionContext, debugConfig: vscode.DebugConfiguration): Promise<string | undefined> {
     const result: IPreDebugValidateResult = await preDebugValidate(context, debugConfig);
+
     if (!result.shouldContinue) {
         throw new UserCancelledError('preDebugValidate');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const preLaunchTaskName: string | undefined = debugConfig.preLaunchTask;
+
     const tasks: vscode.Task[] = await vscode.tasks.fetchTasks();
+
     const funcTask: vscode.Task | undefined = tasks.find(t => {
         return t.scope === result.workspace && (preLaunchTaskName ? t.name === preLaunchTaskName : isFuncHostTask(t));
     });
@@ -94,7 +98,9 @@ export async function pickFuncProcess(context: IActionContext, debugConfig: vsco
 
     const buildPath: string = (funcTask.execution as vscode.ShellExecution)?.options?.cwd || result.workspace.uri.fsPath;
     await waitForPrevFuncTaskToStop(result.workspace, buildPath);
+
     const taskInfo = await startFuncTask(context, result.workspace, buildPath, funcTask);
+
     return await pickChildProcess(taskInfo);
 }
 
@@ -102,7 +108,9 @@ async function waitForPrevFuncTaskToStop(workspaceFolder: vscode.WorkspaceFolder
     stopFuncTaskIfRunning(workspaceFolder, buildPath);
 
     const timeoutInSeconds: number = 30;
+
     const maxTime: number = Date.now() + timeoutInSeconds * 1000;
+
     while (Date.now() < maxTime) {
         if (!runningFuncTaskMap.has(workspaceFolder)) {
             return;
@@ -114,14 +122,18 @@ async function waitForPrevFuncTaskToStop(workspaceFolder: vscode.WorkspaceFolder
 
 async function startFuncTask(context: IActionContext, workspaceFolder: vscode.WorkspaceFolder, buildPath: string, funcTask: vscode.Task): Promise<IRunningFuncTask> {
     const settingKey: string = 'pickProcessTimeout';
+
     const settingValue: number | undefined = getWorkspaceSetting<number>(settingKey);
+
     const timeoutInSeconds: number = Number(settingValue);
+
     if (isNaN(timeoutInSeconds)) {
         throw new Error(localize('invalidSettingValue', 'The setting "{0}" must be a number, but instead found "{1}".', settingKey, settingValue));
     }
     context.telemetry.properties.timeoutInSeconds = timeoutInSeconds.toString();
 
     let taskError: Error | undefined;
+
     const errorListener: vscode.Disposable = vscode.tasks.onDidEndTaskProcess((e: vscode.TaskProcessEndEvent) => {
         if (e.execution.task.scope === workspaceFolder && e.exitCode !== 0) {
             context.errorHandling.suppressReportIssue = true;
@@ -137,18 +149,24 @@ async function startFuncTask(context: IActionContext, workspaceFolder: vscode.Wo
         await taskUtils.executeIfNotActive(funcTask);
 
         const intervalMs: number = 500;
+
         const funcPort: string = await getFuncPortFromTaskOrProject(context, funcTask, workspaceFolder);
+
         let statusRequestTimeout: number = intervalMs;
+
         const maxTime: number = Date.now() + timeoutInSeconds * 1000;
+
         while (Date.now() < maxTime) {
             if (taskError !== undefined) {
                 throw taskError;
             }
 
             const taskInfo: IRunningFuncTask | undefined = runningFuncTaskMap.get(workspaceFolder, buildPath);
+
             if (taskInfo) {
                 for (const scheme of ['http', 'https']) {
                     const statusRequest: AzExtRequestPrepareOptions = { url: `${scheme}://localhost:${funcPort}/admin/host/status`, method: 'GET' };
+
                     if (scheme === 'https') {
                         statusRequest.rejectUnauthorized = false;
                     }
@@ -159,6 +177,7 @@ async function startFuncTask(context: IActionContext, workspaceFolder: vscode.Wo
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                         if (response.parsedBody.state.toLowerCase() === 'running') {
                             funcTaskReadyEmitter.fire(workspaceFolder);
+
                             return taskInfo;
                         }
                     } catch (error) {
@@ -201,7 +220,9 @@ async function pickChildProcess(taskInfo: IRunningFuncTask): Promise<string> {
         }
     }
     const children: OSAgnosticProcess[] = process.platform === 'win32' ? await getWindowsChildren(taskInfo.processId) : await getUnixChildren(taskInfo.processId);
+
     const child: OSAgnosticProcess | undefined = children.reverse().find(c => /(dotnet|func)(\.exe|)$/i.test(c.command || ''));
+
     return child ? child.pid.toString() : String(taskInfo.processId);
 }
 
@@ -219,14 +240,17 @@ async function getUnixChildren(pid: number): Promise<OSAgnosticProcess[]> {
             }
         });
     });
+
     return processes.map(c => { return { command: c.COMMAND || c.COMM, pid: c.PID }; });
 }
 
 async function getWindowsChildren(pid: number): Promise<OSAgnosticProcess[]> {
     const windowsProcessTree: IWindowsProcessTree = getWindowsProcessTree();
+
     const processes: (IProcessInfo[] | undefined) = await new Promise((resolve): void => {
         windowsProcessTree.getProcessList(pid, resolve, ProcessDataFlag.None);
     });
+
     return (processes || []).map(c => { return { command: c.name, pid: c.pid }; });
 }
 
@@ -236,6 +260,7 @@ function isRunning(pid: number): boolean {
         // This method will throw an error if the target pid does not exist. As a special case, a signal of 0 can be used to test for the existence of a process.
         // Even though the name of this function is process.kill(), it is really just a signal sender, like the kill system call.
         process.kill(pid, 0);
+
         return true;
     } catch {
         return false;

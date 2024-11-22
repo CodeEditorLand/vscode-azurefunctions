@@ -43,6 +43,7 @@ export class EventHubsNamespaceListStep<
 				"Select an event hubs namespace.",
 			),
 		};
+
 		const picksTask: Promise<
 			IAzureQuickPickItem<EHNamespace | undefined>[]
 		> = this.getQuickPicks(
@@ -53,6 +54,7 @@ export class EventHubsNamespaceListStep<
 			await context.ui.showQuickPick(picksTask, quickPickOptions)
 		).data;
 		context.eventHubsNamespace = result;
+
 		if (result) {
 			const rgClient = await createResourceClient(context);
 			context.resourceGroup = await rgClient.resourceGroups.get(
@@ -68,11 +70,13 @@ export class EventHubsNamespaceListStep<
 			context.valuesToMask.push(
 				nonNullProp(context.eventHubsNamespace, "name"),
 			);
+
 			return undefined;
 		}
 
 		const promptSteps: AzureWizardPromptStep<T & ISubscriptionContext>[] =
 			[];
+
 		const executeSteps: AzureWizardExecuteStep<T & ISubscriptionContext>[] =
 			[];
 
@@ -103,6 +107,7 @@ export class EventHubsNamespaceListStep<
 		];
 
 		const eventHubNamespaces: EHNamespace[] = await namespaceTask;
+
 		for (const namespace of eventHubNamespaces) {
 			picks.push({
 				id: namespace.id,

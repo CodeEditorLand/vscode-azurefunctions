@@ -22,6 +22,7 @@ import { type IProjectWizardContext } from "../../createNewProject/IProjectWizar
 import { ScriptInitVSCodeStep } from "./ScriptInitVSCodeStep";
 
 const npmInstallTaskLabel: string = convertToFunctionsTaskLabel("npm install");
+
 const npmPruneTaskLabel: string = convertToFunctionsTaskLabel("npm prune");
 
 export class JavaScriptInitVSCodeStep extends ScriptInitVSCodeStep {
@@ -33,6 +34,7 @@ export class JavaScriptInitVSCodeStep extends ScriptInitVSCodeStep {
 		this.hasPackageJson = await AzExtFsExtra.pathExists(
 			path.join(context.projectPath, packageJsonFileName),
 		);
+
 		if (this.hasPackageJson) {
 			this.preDeployTask = npmPruneTaskLabel;
 			this.settings.push({

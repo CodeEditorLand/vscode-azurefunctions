@@ -17,6 +17,7 @@ import { type Sku } from "../stacks/models/FlexSkuModel";
 export class InstanceMemoryMBPromptStep extends AzureWizardPromptStep<IFlexFunctionAppWizardContext> {
 	public async prompt(context: IFlexFunctionAppWizardContext): Promise<void> {
 		const flexSku = nonNullProp(context, "newFlexSku");
+
 		const options: IAzureQuickPickOptions = {
 			placeHolder: localize(
 				"instanceMemory",
@@ -41,6 +42,7 @@ export class InstanceMemoryMBPromptStep extends AzureWizardPromptStep<IFlexFunct
 				description: im.isDefault ? "Default" : undefined,
 			};
 		});
+
 		return picks.sort(
 			(a, b) => Number(!!b.description) - Number(!!a.description),
 		);

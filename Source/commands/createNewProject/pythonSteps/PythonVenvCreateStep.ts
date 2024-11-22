@@ -32,6 +32,7 @@ export class PythonVenvCreateStep extends AzureWizardExecuteStep<IPythonVenvWiza
 		});
 
 		const pythonAlias: string = nonNullProp(context, "pythonAlias");
+
 		if (!context.venvName) {
 			context.venvName = ".venv";
 		}

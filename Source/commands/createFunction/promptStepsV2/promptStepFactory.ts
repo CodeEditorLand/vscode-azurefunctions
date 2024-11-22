@@ -21,14 +21,18 @@ export function promptStepFactory<T extends FunctionV2WizardContext>(
 	switch (input.value) {
 		case "enum":
 			return new EnumInputStep(input);
+
 		case "boolean":
 			return new BooleanInputStep(input);
+
 		default:
 			switch (input.resource) {
 				case ResourceType.ExistingFile:
 					return new ExistingFileStep(input);
+
 				case ResourceType.NewFile:
 					return new NewFileStep(input);
+
 				default:
 					if (input.resource) {
 						return new LocalAppSettingListStep(input);

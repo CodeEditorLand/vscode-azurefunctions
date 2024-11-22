@@ -36,11 +36,13 @@ export class SqlDatabaseNameStep<
 			const rgName: string = getResourceGroupFromId(
 				nonNullValue(context.sqlServer?.id),
 			);
+
 			const serverName: string = nonNullProp(context.sqlServer, "name");
 
 			const client: SqlManagementClient = await createSqlClient(
 				<T & ISubscriptionContext>context,
 			);
+
 			const dbIterator = client.databases.listByServer(
 				rgName,
 				serverName,
@@ -77,6 +79,7 @@ export class SqlDatabaseNameStep<
 		const dbExists: boolean = this.databases.some((db) => {
 			return db.name === name;
 		});
+
 		if (dbExists) {
 			return localize(
 				"sqlDatabaseExists",

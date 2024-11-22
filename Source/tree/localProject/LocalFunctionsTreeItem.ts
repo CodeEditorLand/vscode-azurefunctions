@@ -46,6 +46,7 @@ export class LocalFunctionsTreeItem extends FunctionsTreeItemBase {
 			);
 
 			const children: AzExtTreeItem[] = [];
+
 			for (const localFunction of localFunctionsResult.functions) {
 				children.push(
 					await LocalFunctionTreeItem.create(
@@ -94,6 +95,7 @@ export class LocalFunctionsTreeItem extends FunctionsTreeItemBase {
 				});
 				// By default `GenericTreeItem` will pass itself as the args, but VS Code doesn't seem to like that so pass empty array
 				ti.commandArgs = [];
+
 				return [ti];
 			} else {
 				throw error;
@@ -133,6 +135,7 @@ export async function getFunctionFolders(
 				projectPath,
 				`*/${functionJsonFileName}`,
 			);
+
 			return funcJsonUris.map((uri) =>
 				path.basename(path.dirname(uri.fsPath)),
 			);

@@ -41,16 +41,20 @@ export class JavaTemplateProvider extends ScriptTemplateProvider {
 
 	public async getLatestTemplateVersion(): Promise<string> {
 		this.validateGradleProject();
+
 		const pomPath: string = path.join(
 			this.getProjectPath(),
 			pomXmlFileName,
 		);
+
 		const pomContents: string = (
 			await AzExtFsExtra.readFile(pomPath)
 		).toString();
+
 		const match: RegExpMatchArray | null = pomContents.match(
 			/<azure.functions.maven.plugin.version>(.*)<\/azure.functions.maven.plugin.version>/i,
 		);
+
 		if (!match) {
 			throw new Error(
 				localize(
@@ -68,22 +72,28 @@ export class JavaTemplateProvider extends ScriptTemplateProvider {
 	): Promise<ITemplates> {
 		this.validateGradleProject();
 		await mavenUtils.validateMavenInstalled(context);
+
 		const projectPath: string = this.getProjectPath();
+
 		const commandResult: string = await mavenUtils.executeMvnCommand(
 			context.telemetry.properties,
 			undefined,
 			projectPath,
 			"azure-functions:list",
 		);
+
 		const regExp: RegExp =
 			/>> templates begin <<([\S\s]+)^.+INFO.+ >> templates end <<$[\S\s]+>> bindings begin <<([\S\s]+)^.+INFO.+ >> bindings end <<$[\S\s]+>> resources begin <<([\S\s]+)^.+INFO.+ >> resources end <<$/gm;
+
 		const regExpResult: RegExpExecArray | null = regExp.exec(commandResult);
+
 		if (regExpResult && regExpResult.length > 3) {
 			this._rawTemplates = parseJson<IRawJavaTemplates>(
 				regExpResult[1],
 			).templates;
 			this._rawBindings = parseJson(regExpResult[2]);
 			this._rawResources = parseJson(regExpResult[3]);
+
 			return parseScriptTemplates(
 				this._rawResources,
 				this._rawTemplates,
@@ -116,6 +126,7 @@ export class JavaTemplateProvider extends ScriptTemplateProvider {
 			javaBuildTool,
 			this.getProjectPath(),
 		);
+
 		if (buildTool === JavaBuildTool.gradle) {
 			throw Error(
 				"Internal error: Update function template is not supported for gradle project.",

@@ -11,7 +11,9 @@ import {
 } from "vscode";
 
 const configurationsKey: string = "configurations";
+
 const launchKey: string = "launch";
+
 const versionKey: string = "version";
 export const launchVersion: string = "0.2.0";
 

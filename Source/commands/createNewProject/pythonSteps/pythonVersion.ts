@@ -18,6 +18,7 @@ export async function getPythonVersion(pyAlias: string): Promise<string> {
 		undefined /*default to cwd*/,
 		`${pyAlias} --version`,
 	);
+
 	if (result.code !== 0) {
 		throw new Error(
 			localize(
@@ -30,6 +31,7 @@ export async function getPythonVersion(pyAlias: string): Promise<string> {
 
 	const matches: RegExpMatchArray | null =
 		result.cmdOutputIncludingStderr.match(/^Python (\S*)/i);
+
 	if (matches === null || !matches[1]) {
 		throw new Error(
 			localize(
@@ -83,11 +85,13 @@ export async function getSupportedPythonVersions(
 				)
 			) {
 				const currentVersion: string | null = await localVersionTask;
+
 				if (
 					currentVersion &&
 					semver.lt(currentVersion, minFuncVersion)
 				) {
 					showVersionWarning(currentVersion);
+
 					return result;
 				}
 			} else if (
@@ -97,6 +101,7 @@ export async function getSupportedPythonVersions(
 				)
 			) {
 				showVersionWarning(funcVersionFromSetting);
+
 				return result;
 			}
 		} catch {

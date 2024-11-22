@@ -48,6 +48,7 @@ async function hasBrew(isFuncInstalled: boolean): Promise<boolean> {
 			if (isFuncInstalled) {
 				const packageName: string | undefined =
 					await tryGetInstalledBrewPackageName(version);
+
 				if (packageName) {
 					return true;
 				}
@@ -59,6 +60,7 @@ async function hasBrew(isFuncInstalled: boolean): Promise<boolean> {
 						"brew",
 						"--version",
 					);
+
 					return true;
 				} catch (error) {
 					// an error indicates no brew

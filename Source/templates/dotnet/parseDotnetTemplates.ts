@@ -53,13 +53,18 @@ interface IRawSetting {
 
 function parseDotnetSetting(rawSetting: IRawSetting): IBindingSetting {
 	let valueType: ValueType;
+
 	switch (rawSetting.DataType?.toLowerCase()) {
 		case "choice":
 			valueType = ValueType.enum;
+
 			break;
+
 		case "bool":
 			valueType = ValueType.boolean;
+
 			break;
+
 		default:
 			valueType = ValueType.string;
 	}
@@ -86,6 +91,7 @@ function parseDotnetSetting(rawSetting: IRawSetting): IBindingSetting {
 
 function parseDotnetTemplate(rawTemplate: IRawTemplate): IFunctionTemplate {
 	const userPromptedSettings: IBindingSetting[] = [];
+
 	for (const rawSetting of rawTemplate.Parameters) {
 		const setting: IBindingSetting = parseDotnetSetting(
 			<IRawSetting>rawSetting,
@@ -129,6 +135,7 @@ export async function parseDotnetTemplates(
 	version: FuncVersion,
 ): Promise<ITemplates> {
 	const functionTemplates: IFunctionTemplate[] = [];
+
 	for (const rawTemplate of rawTemplates) {
 		try {
 			functionTemplates.push(
@@ -163,6 +170,7 @@ async function copyCSharpSettingsFromJS(
 			jsContext.telemetry.properties.isActivationEvent = "true";
 
 			const templateProvider = ext.templateProvider.get(jsContext);
+
 			const jsTemplates: FunctionTemplateBase[] =
 				await templateProvider.getFunctionTemplates(
 					jsContext,
@@ -173,11 +181,13 @@ async function copyCSharpSettingsFromJS(
 					TemplateFilter.All,
 					undefined,
 				);
+
 			for (const csharpTemplate of csharpTemplates) {
 				assertTemplateIsV1(csharpTemplate);
 				csharpTemplate.templateSchemaVersion = TemplateSchemaVersion.v1;
 
 				const normalizedDotnetId = normalizeDotnetId(csharpTemplate.id);
+
 				const jsTemplate: FunctionTemplateBase | undefined =
 					jsTemplates.find(
 						(t: IFunctionTemplate) =>
@@ -189,6 +199,7 @@ async function copyCSharpSettingsFromJS(
 					csharpTemplate.name = jsTemplate.name;
 					csharpTemplate.defaultFunctionName =
 						jsTemplate.defaultFunctionName;
+
 					for (const cSharpSetting of csharpTemplate.userPromptedSettings) {
 						const jsSetting: IBindingSetting | undefined =
 							jsTemplate.userPromptedSettings.find(
@@ -196,6 +207,7 @@ async function copyCSharpSettingsFromJS(
 									normalizeName(t.name) ===
 									normalizeName(cSharpSetting.name),
 							);
+
 						if (jsSetting) {
 							cSharpSetting.resourceType = jsSetting.resourceType;
 							cSharpSetting.validateSetting =
@@ -210,12 +222,15 @@ async function copyCSharpSettingsFromJS(
 								"httpWithOpenApiName",
 								"HTTP trigger with OpenAPI",
 							);
+
 							break;
+
 						case "durablefunctionsorchestration":
 							csharpTemplate.name = localize(
 								"durableFunctionsOrchestrationName",
 								"Durable Functions Orchestration",
 							);
+
 							break;
 					}
 				}
@@ -231,6 +246,7 @@ function normalizeDotnetId(id: string): string {
 	const match: RegExpMatchArray | null = id.match(
 		/^azure\.function\.(?:c|f)sharp\.(?:isolated\.|)([a-z]+)\./i,
 	);
+
 	return normalizeName(match ? match[1] : id);
 }
 
@@ -239,6 +255,7 @@ function normalizeDotnetId(id: string): string {
  */
 function normalizeScriptId(id: string): string {
 	const match: RegExpMatchArray | null = id.match(/^([a-z]+)-/i);
+
 	return normalizeName(match ? match[1] : id);
 }
 

@@ -14,6 +14,7 @@ export class OpenFolderStep extends AzureWizardExecuteStep<IProjectWizardContext
 	public async execute(context: IProjectWizardContext): Promise<void> {
 		const openFolders: readonly WorkspaceFolder[] =
 			workspace.workspaceFolders || [];
+
 		if (
 			context.openBehavior === "AddToWorkspace" &&
 			openFolders.length === 0
@@ -23,6 +24,7 @@ export class OpenFolderStep extends AzureWizardExecuteStep<IProjectWizardContext
 		}
 
 		const uri: Uri = Uri.file(context.workspacePath);
+
 		if (context.openBehavior === "AddToWorkspace") {
 			workspace.updateWorkspaceFolders(openFolders.length, 0, {
 				uri: uri,

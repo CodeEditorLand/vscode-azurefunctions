@@ -38,10 +38,12 @@ export class RemoteFunction extends FunctionBase {
 		}
 
 		const client = await this.site.createClient(context);
+
 		if (this.config.authLevel === HttpAuthLevel.function) {
 			try {
 				const functionKeys: IFunctionKeys =
 					await client.listFunctionKeys(this.name);
+
 				return nonNullProp(functionKeys, "default");
 			} catch (error) {
 				if (parseError(error).errorType === "NotFound") {
@@ -53,6 +55,7 @@ export class RemoteFunction extends FunctionBase {
 		}
 
 		const hostKeys: HostKeys = await client.listHostKeys();
+
 		return nonNullProp(hostKeys, "masterKey");
 	}
 }

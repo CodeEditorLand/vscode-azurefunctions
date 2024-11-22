@@ -30,6 +30,7 @@ export async function copyFunctionUrl(
 	}
 
 	const triggerRequest = await node.getTriggerRequest(context);
+
 	if (triggerRequest) {
 		await vscode.env.clipboard.writeText(triggerRequest.url);
 	} else {

@@ -26,14 +26,22 @@ export class DotnetNamespaceStep extends AzureWizardPromptStep<IDotnetFunctionWi
 
 // Identifier specification: https://github.com/dotnet/csharplang/blob/master/spec/lexical-structure.md#identifiers
 const formattingCharacter: string = "\\p{Cf}";
+
 const connectingCharacter: string = "\\p{Pc}";
+
 const decimalDigitCharacter: string = "\\p{Nd}";
+
 const combiningCharacter: string = "\\p{Mn}|\\p{Mc}";
+
 const letterCharacter: string =
 	"\\p{Lu}|\\p{Ll}|\\p{Lt}|\\p{Lm}|\\p{Lo}|\\p{Nl}";
+
 const identifierPartCharacter: string = `${letterCharacter}|${decimalDigitCharacter}|${connectingCharacter}|${combiningCharacter}|${formattingCharacter}`;
+
 const identifierStartCharacter: string = `(${letterCharacter}|_)`;
+
 const identifierOrKeyword: string = `${identifierStartCharacter}(${identifierPartCharacter})*`;
+
 const identifierRegex: RegExp = XRegExp(`^${identifierOrKeyword}$`);
 // Keywords: https://github.com/dotnet/csharplang/blob/master/spec/lexical-structure.md#keywords
 const keywords: string[] = [
@@ -128,6 +136,7 @@ export function validateCSharpNamespace(
 
 	// Namespace specification: https://github.com/dotnet/csharplang/blob/master/spec/namespaces.md#namespace-declarations
 	const identifiers: string[] = value.split(".");
+
 	for (const identifier of identifiers) {
 		if (identifier === "") {
 			return localize(

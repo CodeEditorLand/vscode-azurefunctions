@@ -23,6 +23,7 @@ export function getScriptVerifiedTemplateIds(
 			"HttpTriggerWithParameters",
 			"ManualTrigger",
 		]);
+
 		return verifiedTemplateIds.map((t) => `${t}-JavaScript`);
 	} else {
 		// For JavaScript, only include triggers that require extensions in v2. v1 doesn't have the same support for 'func extensions install'
@@ -64,6 +65,7 @@ export function getScriptVerifiedTemplateIds(
 				"i",
 			),
 		];
+
 		return regExps.concat(entityRegExps);
 	}
 }

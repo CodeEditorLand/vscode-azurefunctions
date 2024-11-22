@@ -18,6 +18,7 @@ export class EnumInputStep<
 		_context: T,
 	): Promise<IAzureQuickPickItem<string>[]> {
 		const enums = nonNullProp(this.input, "enum");
+
 		return enums.map((e) => {
 			return { data: e.value, label: e.display };
 		});

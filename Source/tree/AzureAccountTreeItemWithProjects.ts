@@ -64,11 +64,13 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 					async (context: IActionContext) => {
 						context.errorHandling.suppressDisplay = true;
 						context.telemetry.suppressIfSuccessful = true;
+
 						const settings: string[] = [
 							projectLanguageSetting,
 							funcVersionSetting,
 							projectSubpathSetting,
 						];
+
 						if (
 							settings.some((s) =>
 								e.affectsConfiguration(`${ext.prefix}.${s}`),
@@ -110,6 +112,7 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 
 		for (const project of workspaceProjects.initializedProjects) {
 			hasLocalProject = true;
+
 			const treeItem: LocalProjectTreeItem = new LocalProjectTreeItem(
 				this,
 				project as LocalProjectInternal,

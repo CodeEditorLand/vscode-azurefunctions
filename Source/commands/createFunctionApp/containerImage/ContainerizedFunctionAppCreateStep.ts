@@ -56,10 +56,12 @@ export class ContainerizedFunctionAppCreateStep extends AzureWizardExecuteStep<I
 		}
 
 		const siteName: string = nonNullProp(context, "newSiteName");
+
 		const rgName: string = nonNullProp(
 			nonNullProp(context, "resourceGroup"),
 			"name",
 		);
+
 		const client: WebSiteManagementClient =
 			await createWebSiteClient(context);
 		context.site = await client.webApps.beginCreateOrUpdateAndWait(
@@ -90,6 +92,7 @@ export class ContainerizedFunctionAppCreateStep extends AzureWizardExecuteStep<I
 			context,
 			webProvider,
 		);
+
 		return {
 			name: context.newSiteName,
 			kind: "functionapp",
@@ -140,6 +143,7 @@ async function pingContainerizedFunctionApp(
 		context,
 		undefined,
 	);
+
 	const headers = createHttpHeaders({
 		"x-functions-key":
 			(

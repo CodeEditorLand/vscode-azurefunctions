@@ -34,6 +34,7 @@ const cacheKey: string = "azFuncPostFunctionCreate";
 export async function runPostFunctionCreateStepsFromCache(): Promise<void> {
 	const cachedFunc: ICachedFunction | undefined =
 		ext.context.globalState.get(cacheKey);
+
 	if (cachedFunc) {
 		try {
 			runPostFunctionCreateSteps(cachedFunc);
@@ -83,10 +84,12 @@ export abstract class FunctionCreateStepBase<
 			newFilePath,
 			isHttpTrigger: template.isHttpTrigger,
 		};
+
 		const hostFilePath: string = path.join(
 			context.projectPath,
 			hostFileName,
 		);
+
 		if (await AzExtFsExtra.pathExists(hostFilePath)) {
 			if (
 				verifyTemplateIsV1(context.functionTemplate) &&

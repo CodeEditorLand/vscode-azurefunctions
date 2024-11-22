@@ -25,6 +25,7 @@ export interface IFunction {
 	triggerBindingType: string | undefined;
 
 	getKey(context: IActionContext): Promise<string | undefined>;
+
 	getTriggerRequest(
 		context: IActionContext,
 	): Promise<FuncHostRequest | undefined>;

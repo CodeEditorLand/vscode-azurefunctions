@@ -51,14 +51,18 @@ export async function getStackPicks(
 		: (await getStacks(context)).filter(
 				(s) => !context.stackFilter || context.stackFilter === s.value,
 			);
+
 	const picks: AgentQuickPickItem<
 		IAzureQuickPickItem<FullFunctionAppStack | undefined>
 	>[] = [];
+
 	let hasEndOfLife = false;
+
 	let stackHasPicks: boolean;
 
 	for (const stack of stacks) {
 		stackHasPicks = false;
+
 		for (const majorVersion of stack.majorVersions) {
 			const minorVersions: AppStackMinorVersion<FunctionAppRuntimes>[] =
 				majorVersion.minorVersions.filter((mv) => {
@@ -76,14 +80,18 @@ export async function getStackPicks(
 
 			for (const minorVersion of minorVersions) {
 				let description: string | undefined;
+
 				const previewOs = getFlagOs(
 					minorVersion.stackSettings,
 					"isPreview",
 				);
+
 				switch (previewOs) {
 					case "All":
 						description = previewDescription;
+
 						break;
+
 					case "Linux":
 					case "Windows":
 						description = localize(
@@ -91,6 +99,7 @@ export async function getStackPicks(
 							"(Preview on {0})",
 							previewOs,
 						);
+
 						break;
 				}
 
@@ -98,10 +107,13 @@ export async function getStackPicks(
 					minorVersion.stackSettings,
 					"isEarlyAccess",
 				);
+
 				switch (earlyAccessOS) {
 					case "All":
 						description = localize("earlyAccess", "(Early Access)");
+
 						break;
+
 					case "Linux":
 					case "Windows":
 						description = localize(
@@ -109,6 +121,7 @@ export async function getStackPicks(
 							"(Early Access on {0})",
 							earlyAccessOS,
 						);
+
 						break;
 				}
 
@@ -116,10 +129,13 @@ export async function getStackPicks(
 					minorVersion.stackSettings,
 					"isDeprecated",
 				);
+
 				switch (deprecatedOS) {
 					case "All":
 						description = localize("deprecated", "(Deprecated)");
+
 						break;
+
 					case "Linux":
 					case "Windows":
 						description = localize(
@@ -127,6 +143,7 @@ export async function getStackPicks(
 							"(Deprecated on {0})",
 							deprecatedOS,
 						);
+
 						break;
 				}
 
@@ -169,6 +186,7 @@ export async function getStackPicks(
 			: getPriority(p1.data.minorVersion.stackSettings) -
 					getPriority(p2.data.minorVersion.stackSettings); // otherwise sort based on priority
 	});
+
 	if (hasEndOfLife) {
 		picks.push({
 			label: localize(
@@ -233,11 +251,13 @@ async function getStacks(
 ): Promise<FunctionAppStack[]> {
 	if (!context._stacks) {
 		let stacksArmResponse: StacksArmResponse;
+
 		try {
 			const client: ServiceClient = await createGenericClient(
 				context,
 				context,
 			);
+
 			const result: AzExtPipelineResponse = await client.sendRequest(
 				createPipelineRequest({
 					method: "GET",
@@ -278,9 +298,13 @@ async function getFlexStacks(
 	context: IFunctionAppWizardContext & { _stacks?: FunctionAppStack[] },
 ): Promise<FunctionAppStack[]> {
 	const client: ServiceClient = await createGenericClient(context, context);
+
 	const location = await LocationListStep.getLocation(context);
+
 	const flexFunctionAppStacks: FunctionAppStack[] = [];
+
 	const stacks = ["dotnet", "java", "node", "powershell", "python"];
+
 	if (!context._stacks) {
 		const getFlexStack = async (stack: string) => {
 			const result: AzExtPipelineResponse = await client.sendRequest(
@@ -300,7 +324,9 @@ async function getFlexStacks(
 					),
 				}),
 			);
+
 			const stacksArmResponse = <StacksArmResponse>result.parsedBody;
+
 			for (const stack of stacksArmResponse.value) {
 				stack.properties.majorVersions =
 					stack.properties.majorVersions.filter((mv) => {
@@ -343,6 +369,7 @@ function removeDeprecatedStacks(stacks: FunctionAppStack[]) {
 		"dotnetcore3.1",
 		"dotnet5",
 	];
+
 	for (const stack of stacks) {
 		if (stack.value === "dotnet") {
 			stack.majorVersions = stack.majorVersions.filter(
@@ -354,6 +381,7 @@ function removeDeprecatedStacks(stacks: FunctionAppStack[]) {
 
 function removeHiddenStacksAndProperties(stacks: FunctionAppStack[]): void {
 	const showHiddenStacks = getWorkspaceSetting<boolean>(hiddenStacksSetting);
+
 	for (const stack of stacks) {
 		for (const major of stack.majorVersions) {
 			for (const minor of major.minorVersions) {
@@ -389,11 +417,14 @@ export function shouldShowEolWarning(
 ): boolean {
 	const endOfLifeDate =
 		minorVersion?.stackSettings.linuxRuntimeSettings?.endOfLifeDate;
+
 	if (endOfLifeDate) {
 		const endOfLife = new Date(endOfLifeDate);
+
 		const sixMonthsFromNow = new Date(
 			new Date().setMonth(new Date().getMonth() + 6),
 		);
+
 		return endOfLife <= sixMonthsFromNow;
 	}
 	return false;

@@ -58,6 +58,7 @@ export class StorageTypePromptStep extends AzureWizardPromptStep<IFunctionWizard
 				),
 			})
 		).data;
+
 		return;
 	}
 
@@ -73,6 +74,7 @@ export class StorageTypePromptStep extends AzureWizardPromptStep<IFunctionWizard
 				ISubscriptionActionContext &
 				IEventHubsConnectionWizardContext
 		>[] = [];
+
 		const executeSteps: AzureWizardExecuteStep<
 			IFunctionWizardContext &
 				ISubscriptionActionContext &

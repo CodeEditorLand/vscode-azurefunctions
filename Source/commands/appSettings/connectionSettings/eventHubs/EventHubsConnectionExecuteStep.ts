@@ -33,6 +33,7 @@ export class EventHubsConnectionExecuteStep<
 					ConnectionKey.EventHubs,
 					context.projectPath,
 				);
+
 			if (
 				currentConnection &&
 				localEventHubsEmulatorConnectionRegExp.test(currentConnection)

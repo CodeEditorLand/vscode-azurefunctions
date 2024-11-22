@@ -23,6 +23,8 @@ export async function createSlot(
 	}
 
 	(<ISiteCreatedOptions>context).showCreatedNotification = true;
+
 	const slotNode: SlotTreeItem = await node.createChild(context);
+
 	return slotNode.fullId;
 }

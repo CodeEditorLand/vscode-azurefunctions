@@ -48,6 +48,7 @@ export abstract class FuncDebugProviderBase
 					context.telemetry.suppressIfSuccessful = true;
 
 					const result: DebugConfiguration[] = [];
+
 					if (folder) {
 						if (await isFunctionProject(folder.uri.fsPath)) {
 							result.push(this.debugConfig);
@@ -79,6 +80,7 @@ export abstract class FuncDebugProviderBase
 					folder,
 					this.getDebugConfigPort(debugConfiguration),
 				);
+
 				if (
 					hostStartTaskNameRegExp.test(
 						debugConfiguration.preLaunchTask as string,
@@ -89,6 +91,7 @@ export abstract class FuncDebugProviderBase
 
 					const preDebugResult: IPreDebugValidateResult =
 						await preDebugValidate(context, debugConfiguration);
+
 					if (!preDebugResult.shouldContinue) {
 						// Stop debugging only in this case
 						result = undefined;

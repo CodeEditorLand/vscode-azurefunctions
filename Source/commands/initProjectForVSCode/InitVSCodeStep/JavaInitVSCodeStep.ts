@@ -39,10 +39,12 @@ export class JavaInitVSCodeStep extends InitVSCodeStepBase {
 	): Promise<void> {
 		this._buildTool = nonNullProp(context, "buildTool");
 		this.settings.push({ key: javaBuildTool, value: this._buildTool });
+
 		const functionAppName: string | undefined = await getFunctionAppName(
 			context.projectPath,
 			this._buildTool,
 		);
+
 		if (!functionAppName) {
 			this._debugSubpath = "<function_build_path>";
 			void window.showWarningMessage(
@@ -102,18 +104,24 @@ export async function getFunctionAppName(
 	switch (buildTool) {
 		case JavaBuildTool.maven:
 			const pomXmlPath: string = path.join(projectPath, pomXmlFileName);
+
 			return mavenUtils.getFunctionAppNameInPom(pomXmlPath);
+
 		case JavaBuildTool.gradle:
 			const buildGradlePath: string = path.join(
 				projectPath,
 				buildGradleFileName,
 			);
+
 			const buildGradle: string = (
 				await AzExtFsExtra.readFile(buildGradlePath)
 			).toString();
+
 			const match: RegExpExecArray | null =
 				/appName\s*?=\s*?['|"](.+?)['|"]/g.exec(buildGradle);
+
 			return match ? match[1] : undefined;
+
 		default:
 			throw new Error(
 				localize(
@@ -136,8 +144,10 @@ export function getJavaDebugSubpath(
 				"azure-functions",
 				functionAppName,
 			);
+
 		case JavaBuildTool.gradle:
 			return path.posix.join("build", "azure-functions", functionAppName);
+
 		default:
 			throw new Error(
 				localize(
@@ -153,8 +163,10 @@ function getPackageCommand(buildTool: JavaBuildTool): string {
 	switch (buildTool) {
 		case JavaBuildTool.maven:
 			return "mvn clean package";
+
 		case JavaBuildTool.gradle:
 			return "gradle azureFunctionsPackage";
+
 		default:
 			throw new Error(
 				localize(

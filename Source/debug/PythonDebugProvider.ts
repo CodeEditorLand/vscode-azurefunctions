@@ -35,14 +35,17 @@ export class PythonDebugProvider extends FuncDebugProviderBase {
 
 	public async getWorkerArgValue(folder: WorkspaceFolder): Promise<string> {
 		const port: number = <number>this.getDebugPortOrPipeName(folder);
+
 		return await getPythonCommand(localhost, port);
 	}
 }
 
 async function getPythonCommand(host: string, port: number): Promise<string> {
 	const pyExtensionId: string = "ms-python.python";
+
 	const pyExtension: Extension<IPythonExtensionApi> | undefined =
 		extensions.getExtension<IPythonExtensionApi>(pyExtensionId);
+
 	if (pyExtension) {
 		if (!pyExtension.isActive) {
 			await pyExtension.activate();

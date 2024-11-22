@@ -21,11 +21,14 @@ export class NodeV4FunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 			functionSubpathSetting,
 			context.projectPath,
 		) as string;
+
 		const functionPath = path.join(context.projectPath, functionSubpath);
 		await AzExtFsExtra.ensureDir(functionPath);
 
 		const functionName = nonNullProp(context, "functionName");
+
 		const fileExt = getFileExtensionFromLanguage(context.language);
+
 		const fileName = `${functionName}${fileExt}`;
 
 		const template: IScriptFunctionTemplate = nonNullProp(

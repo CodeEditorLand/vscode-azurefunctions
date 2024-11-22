@@ -35,12 +35,15 @@ export async function notifyDeployComplete(
 		'Deployment to "{0}" completed.',
 		node.site.fullName,
 	);
+
 	const viewOutput: MessageItem = {
 		title: localize("viewOutput", "View output"),
 	};
+
 	const streamLogs: MessageItem = {
 		title: localize("streamLogs", "Stream logs"),
 	};
+
 	const uploadSettings: MessageItem = {
 		title: localize("uploadAppSettings", "Upload settings"),
 	};
@@ -49,6 +52,7 @@ export async function notifyDeployComplete(
 		const shouldCheckEventSystemTopics =
 			isFlexConsumption &&
 			(await hasRemoteEventGridBlobTrigger(context, node));
+
 		if (shouldCheckEventSystemTopics) {
 			await promptForEventGrid(context, workspaceFolder);
 		}
@@ -97,6 +101,7 @@ export async function notifyDeployComplete(
 			async (currentAttempt: number) => {
 				context.telemetry.properties.queryTriggersAttempt =
 					currentAttempt.toString();
+
 				const message: string =
 					currentAttempt === 1
 						? localize("queryingTriggers", "Querying triggers...")
@@ -122,6 +127,7 @@ export async function notifyDeployComplete(
 				"WARNING: Deployment succeeded, but failed to list http trigger urls.",
 			),
 		);
+
 		throw error;
 	}
 }
@@ -131,15 +137,19 @@ async function listHttpTriggerUrls(
 	node: SlotTreeItem,
 ): Promise<void> {
 	const children: AzExtTreeItem[] = await node.getCachedChildren(context);
+
 	const functionsNode: RemoteFunctionsTreeItem = <RemoteFunctionsTreeItem>(
 		children.find((n) => n instanceof RemoteFunctionsTreeItem)
 	);
 	await node.treeDataProvider.refresh(context, functionsNode);
 
 	const logOptions: {} = { resourceName: node.site.fullName };
+
 	let hasHttpTriggers: boolean = false;
+
 	const functions: AzExtTreeItem[] =
 		await functionsNode.getCachedChildren(context);
+
 	const anonFunctions: RemoteFunctionTreeItem[] = <RemoteFunctionTreeItem[]>(
 		functions.filter(
 			(f) =>
@@ -148,12 +158,14 @@ async function listHttpTriggerUrls(
 				f.isAnonymous,
 		)
 	);
+
 	if (anonFunctions.length > 0) {
 		hasHttpTriggers = true;
 		ext.outputChannel.appendLog(
 			localize("anonymousFunctionUrls", "HTTP Trigger Urls:"),
 			logOptions,
 		);
+
 		for (const func of anonFunctions) {
 			const triggerRequest = nonNullValue(
 				await func.getTriggerRequest(context),

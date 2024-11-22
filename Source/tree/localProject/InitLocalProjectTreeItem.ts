@@ -46,6 +46,7 @@ export class InitLocalProjectTreeItem extends LocalProjectTreeItemBase {
 			iconPath: new ThemeIcon("warning"),
 		});
 		ti.commandArgs = [this._projectPath];
+
 		return [ti];
 	}
 

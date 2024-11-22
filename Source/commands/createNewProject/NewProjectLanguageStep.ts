@@ -115,10 +115,13 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 		const options: QuickPickOptions = {
 			placeHolder: localize("selectLanguage", "Select a language"),
 		};
+
 		const result = (await context.ui.showQuickPick(languagePicks, options))
 			.data;
+
 		if (result === undefined) {
 			await openUrl("https://aka.ms/AA4ul9b");
+
 			throw new UserCancelledError("viewSampleProjects");
 		} else {
 			context.language = result.language;
@@ -128,6 +131,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 
 	public shouldPrompt(context: IProjectWizardContext): boolean {
 		this.setTemplateSchemaVersion(context);
+
 		return context.language === undefined;
 	}
 
@@ -135,10 +139,12 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 		context: IProjectWizardContext,
 	): Promise<IWizardOptions<IProjectWizardContext>> {
 		const language: ProjectLanguage = nonNullProp(context, "language");
+
 		const executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[] =
 			[];
 
 		const promptSteps: AzureWizardPromptStep<IProjectWizardContext>[] = [];
+
 		switch (language) {
 			case ProjectLanguage.JavaScript:
 				promptSteps.push(
@@ -150,7 +156,9 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 					}),
 				);
 				executeSteps.push(new JavaScriptProjectCreateStep());
+
 				break;
+
 			case ProjectLanguage.TypeScript:
 				promptSteps.push(
 					new ProgrammingModelStep({
@@ -161,14 +169,18 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 					}),
 				);
 				executeSteps.push(new TypeScriptProjectCreateStep());
+
 				break;
+
 			case ProjectLanguage.CSharp:
 			case ProjectLanguage.FSharp:
 				promptSteps.push(await DotnetRuntimeStep.createStep(context));
 				executeSteps.push(
 					await DotnetProjectCreateStep.createStep(context),
 				);
+
 				break;
+
 			case ProjectLanguage.Python:
 				promptSteps.push(
 					new ProgrammingModelStep({
@@ -179,29 +191,40 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 					}),
 				);
 				executeSteps.push(new PythonProjectCreateStep());
+
 				break;
+
 			case ProjectLanguage.PowerShell:
 				executeSteps.push(new PowerShellProjectCreateStep());
+
 				break;
+
 			case ProjectLanguage.Java:
 				await addJavaCreateProjectSteps(
 					context,
 					promptSteps,
 					executeSteps,
 				);
+
 				break;
+
 			case ProjectLanguage.Ballerina:
 				await addBallerinaCreateProjectSteps(
 					context,
 					promptSteps,
 					executeSteps,
 				);
+
 				break;
+
 			case ProjectLanguage.Custom:
 				executeSteps.push(new CustomProjectCreateStep());
+
 				break;
+
 			default:
 				executeSteps.push(new ScriptProjectCreateStep());
+
 				break;
 		}
 

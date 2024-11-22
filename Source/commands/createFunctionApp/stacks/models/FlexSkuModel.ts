@@ -7,6 +7,7 @@ export interface Sku {
 	skuCode: string;
 	instanceMemoryMB: InstanceMemoryMB[];
 	maximumInstanceCount: MaximumInstanceCount;
+
 	functionAppConfigProperties: {
 		runtime: {
 			name: string;
@@ -23,5 +24,6 @@ interface InstanceMemoryMB {
 interface MaximumInstanceCount {
 	lowestMaximumInstanceCount: number;
 	highestMaximumInstanceCount: number;
+
 	defaultValue: number;
 }

@@ -43,14 +43,17 @@ export class DotnetProjectCreateStep extends ProjectCreateStepBase {
 		context: IActionContext,
 	): Promise<DotnetProjectCreateStep> {
 		await validateDotnetInstalled(context);
+
 		return new DotnetProjectCreateStep();
 	}
 
 	public async executeCore(context: IProjectWizardContext): Promise<void> {
 		const version: FuncVersion = nonNullProp(context, "version");
+
 		const language: ProjectLanguage = nonNullProp(context, "language");
 
 		const projectName: string = path.basename(context.projectPath);
+
 		const projName: string =
 			projectName + language === ProjectLanguage.FSharp
 				? ".fsproj"
@@ -89,12 +92,16 @@ export class DotnetProjectCreateStep extends ProjectCreateStepBase {
 		}
 
 		const majorVersion: string = getMajorVersion(version);
+
 		let identity: string = workerRuntime.projectTemplateId.csharp;
+
 		if (language === ProjectLanguage.FSharp) {
 			identity = identity.replace("CSharp", "FSharp"); // they don't have FSharp in the feed yet
 		}
 		const functionsVersion: string = "v" + majorVersion;
+
 		const projTemplateKey = nonNullProp(context, "projectTemplateKey");
+
 		const args = [
 			"--identity",
 			identity,
@@ -137,7 +144,9 @@ export class DotnetProjectCreateStep extends ProjectCreateStepBase {
 			localSettingsFileName,
 			hostFileName,
 		];
+
 		const existingFiles: string[] = [];
+
 		for (const fileName of filesToCheck) {
 			if (
 				await AzExtFsExtra.pathExists(

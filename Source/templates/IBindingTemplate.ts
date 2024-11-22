@@ -14,6 +14,7 @@ export interface IBindingTemplate {
 	displayName: string;
 	isHttpTrigger: boolean;
 	isTimerTrigger: boolean;
+
 	settings: IBindingSetting[];
 }
 
@@ -23,6 +24,7 @@ export interface IBindingTemplate {
 export interface IBindingSetting {
 	resourceType: ResourceType | undefined;
 	valueType: ValueType | undefined;
+
 	defaultValue: BindingSettingValue;
 	required: boolean | undefined;
 	enums: IEnumValue[];

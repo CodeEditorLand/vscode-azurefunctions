@@ -25,12 +25,14 @@ export async function hasRemoteEventGridBlobTrigger(
 	node: SlotTreeItem,
 ): Promise<boolean> {
 	const retries = 3;
+
 	const client = await node.site.createClient(context);
 
 	const funcs = await retry<FunctionEnvelope[]>(
 		async () => {
 			// Load more currently broken https://github.com/Azure/azure-sdk-for-js/issues/20380
 			const response = await client.listFunctions();
+
 			const failedToList = localize(
 				"failedToList",
 				"Failed to list functions.",
@@ -49,6 +51,7 @@ export async function hasRemoteEventGridBlobTrigger(
 	return funcs.some((f) => {
 		const bindings = (f.config as { bindings: IBindingTemplate[] })
 			.bindings;
+
 		return bindings.some((b) => b.type === "blobTrigger");
 	});
 }
@@ -60,6 +63,7 @@ export async function promptForEventGrid(
 	const showFlexEventGridWarning = await getWorkspaceSetting(
 		"showFlexEventGridWarning",
 	);
+
 	if (!showFlexEventGridWarning) {
 		return;
 	}
@@ -68,15 +72,18 @@ export async function promptForEventGrid(
 		"eventGridWarning",
 		`Usage of an Event Grid based blob trigger requires an Event Grid subscription created on an Azure Storage v2 account. If you haven't already, you need to create a Event Grid subscription to complete your deployment.`,
 	);
+
 	const options: IAzureMessageOptions = {
 		learnMoreLink: "https://aka.ms/learnMoreEventGridSubscription",
 	};
+
 	const result = await context.ui.showWarningMessage(
 		eventGridWarning,
 		options,
 		{ title: "Close" },
 		DialogResponses.dontWarnAgain,
 	);
+
 	if (result === DialogResponses.dontWarnAgain) {
 		await updateWorkspaceSetting(
 			"showFlexEventGridWarning",

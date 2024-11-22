@@ -51,6 +51,7 @@ export abstract class AzureConnectionCreateStepBase<
 		});
 
 		const result: IConnection = await this.getConnection(context);
+
 		let appSettingKey: string = `${result.name}_${this._resourceType.toUpperCase()}`;
 		appSettingKey = appSettingKey.replace(/[^a-z0-9_\.]/gi, ""); // remove invalid chars
 		setBindingSetting(context, this._setting, appSettingKey);

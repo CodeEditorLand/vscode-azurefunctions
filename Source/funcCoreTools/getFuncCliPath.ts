@@ -20,8 +20,10 @@ export async function getFuncCliPath(
 		settingKey,
 		workspacePath,
 	);
+
 	if (valueFromSetting) {
 		context.telemetry.properties.funcCliSource = "setting";
+
 		return valueFromSetting;
 	} else {
 		return ext.defaultFuncCliPath;

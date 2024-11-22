@@ -35,17 +35,21 @@ export async function validateFuncCoreToolsInstalled(
 	workspacePath?: string,
 ): Promise<boolean> {
 	let input: MessageItem | undefined;
+
 	let installed: boolean = false;
+
 	let failedInstall: string = localize(
 		"failedInstallFuncTools",
 		"Core Tools installation has failed and will have to be installed manually.",
 	);
+
 	const install: MessageItem = { title: localize("install", "Install") };
 
 	if (hasFuncCliSetting()) {
 		// Defer to the func cli path setting instead of checking here
 		// For example, if the path is set to something like "node_modules/.bin/func", that may not exist until _after_ we run this check when the "npm install" task is run
 		context.telemetry.properties.funcCliSource = "setting";
+
 		return true;
 	}
 
@@ -67,8 +71,10 @@ export async function validateFuncCoreToolsInstalled(
 				installed = true;
 			} else {
 				const items: MessageItem[] = [];
+
 				const packageManagers: PackageManager[] =
 					await getFuncPackageManagers(false /* isFuncInstalled */);
+
 				if (packageManagers.length > 0) {
 					items.push(install);
 				} else {
@@ -80,6 +86,7 @@ export async function validateFuncCoreToolsInstalled(
 						await generateLinuxErrorMessages(
 							!!packageManagers.length /* hasPackageManager */,
 						);
+
 					if (linuxErrorMessages.noPackageManager) {
 						message += " " + linuxErrorMessages.noPackageManager;
 					}
@@ -120,14 +127,17 @@ export async function validateFuncCoreToolsInstalled(
 	// validate that Func Tools was installed only if user confirmed
 	if (input === install && !installed) {
 		const buttons: MessageItem[] = [];
+
 		const copyCommand: MessageItem = {
 			title: localize("copyCommand", "Copy command"),
 		};
+
 		if (os.platform() === "linux" && lastCoreToolsInstallCommand.length) {
 			buttons.push(copyCommand);
 		}
 
 		buttons.push(DialogResponses.learnMore);
+
 		const result = await context.ui.showWarningMessage(
 			failedInstall,
 			...buttons,
@@ -164,6 +174,7 @@ export async function funcToolsInstalled(
 			funcCliPath,
 			"--version",
 		);
+
 		return true;
 	} catch (error) {
 		return false;
@@ -174,8 +185,10 @@ export function getInstallUrl(): string {
 	switch (process.platform) {
 		case "linux":
 			return "https://aka.ms/AAb9zn8";
+
 		case "darwin":
 			return "https://aka.ms/AAb9zn6";
+
 		default:
 			return "https://aka.ms/Dqur4e";
 	}

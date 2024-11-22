@@ -93,6 +93,7 @@ export class InitVSCodeLanguageStep extends AzureWizardPromptStep<IProjectWizard
 				"Select your project's language",
 			),
 		};
+
 		const option = await context.ui.showQuickPick(languagePicks, options);
 		context.language = option.data.language;
 		context.languageModel = option.data.model;
@@ -107,8 +108,10 @@ export class InitVSCodeLanguageStep extends AzureWizardPromptStep<IProjectWizard
 	): Promise<IWizardOptions<IProjectWizardContext>> {
 		const executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[] =
 			[];
+
 		const promptSteps: AzureWizardPromptStep<IProjectWizardContext>[] = [];
 		await addInitVSCodeSteps(context, promptSteps, executeSteps);
+
 		return { promptSteps, executeSteps };
 	}
 }
@@ -121,32 +124,49 @@ export async function addInitVSCodeSteps(
 	switch (context.language) {
 		case ProjectLanguage.JavaScript:
 			executeSteps.push(new JavaScriptInitVSCodeStep());
+
 			break;
+
 		case ProjectLanguage.TypeScript:
 			executeSteps.push(new TypeScriptInitVSCodeStep());
+
 			break;
+
 		case ProjectLanguage.CSharp:
 		case ProjectLanguage.FSharp:
 			executeSteps.push(new DotnetInitVSCodeStep());
+
 			break;
+
 		case ProjectLanguage.Python:
 			await addPythonInitVSCodeSteps(context, promptSteps, executeSteps);
+
 			break;
+
 		case ProjectLanguage.PowerShell:
 			executeSteps.push(new PowerShellInitVSCodeStep());
+
 			break;
+
 		case ProjectLanguage.Java:
 			await addJavaInitVSCodeSteps(context, promptSteps, executeSteps);
+
 			break;
+
 		case ProjectLanguage.CSharpScript:
 		case ProjectLanguage.FSharpScript:
 			executeSteps.push(new DotnetScriptInitVSCodeStep());
+
 			break;
+
 		case ProjectLanguage.Ballerina:
 			executeSteps.push(new BallerinaInitVSCodeStep());
+
 			break;
+
 		default:
 			executeSteps.push(new ScriptInitVSCodeStep());
+
 			break;
 	}
 }

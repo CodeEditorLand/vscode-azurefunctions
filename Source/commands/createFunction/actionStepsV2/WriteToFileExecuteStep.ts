@@ -18,6 +18,7 @@ export class WriteToFileExecuteStep<
 	public async executeAction(context: T): Promise<void> {
 		context.newFilePath = await this.getFilePath(context);
 		await this.writeToFile(context, context.newFilePath);
+
 		if (!isDocumentOpened(Uri.file(context.newFilePath))) {
 			await window.showTextDocument(
 				await workspace.openTextDocument(Uri.file(context.newFilePath)),
@@ -27,6 +28,7 @@ export class WriteToFileExecuteStep<
 
 	protected async writeToFile(context: T, filePath: string): Promise<void> {
 		const sourceKey = nonNullProp(this.action, "source");
+
 		const source = context[sourceKey] as string;
 
 		await AzExtFsExtra.writeFile(filePath, source);
@@ -35,6 +37,7 @@ export class WriteToFileExecuteStep<
 	protected async getFilePath(context: T): Promise<string> {
 		// sometimes this has the file extension, sometimes it doesn't
 		const filePathKey = nonNullProp(this.action, "filePath").split(".")[0];
+
 		const filePathValue: string | undefined = context[filePathKey] as
 			| string
 			| undefined;
@@ -43,10 +46,12 @@ export class WriteToFileExecuteStep<
 			throw new Error();
 		}
 		const fileExtension = getFileExtensionFromLanguage(context.language);
+
 		const fullFilePath: string = path.join(
 			context.projectPath,
 			`${filePathValue}${fileExtension ?? ""}`,
 		);
+
 		if (!(await AzExtFsExtra.pathExists(fullFilePath))) {
 			await AzExtFsExtra.ensureFile(fullFilePath);
 		}

@@ -67,12 +67,15 @@ export async function preDebugValidate(
 	const context: IPreDebugContext = Object.assign(actionContext, {
 		action: CodeAction.Debug,
 	});
+
 	const workspace: vscode.WorkspaceFolder = getMatchingWorkspace(debugConfig);
+
 	let shouldContinue: boolean;
 	context.telemetry.properties.debugType = debugConfig.type;
 
 	try {
 		context.telemetry.properties.lastValidateStep = "funcInstalled";
+
 		const message: string = localize(
 			"installFuncTools",
 			"You must have the Azure Functions Core Tools installed to debug your local functions.",
@@ -95,11 +98,13 @@ export async function preDebugValidate(
 					projectLanguageSetting,
 					context.projectPath,
 				);
+
 				const projectLanguageModel: number | undefined =
 					getWorkspaceSetting(
 						projectLanguageModelSetting,
 						context.projectPath,
 					);
+
 				const durableStorageType: DurableBackendValues | undefined =
 					await durableUtils.getStorageTypeFromWorkspace(
 						projectLanguage,
@@ -134,7 +139,9 @@ export async function preDebugValidate(
 							context,
 							context.projectPath,
 						);
+
 						break;
+
 					case DurableBackend.SQL:
 						context.telemetry.properties.lastValidateStep =
 							"sqlDbConnection";
@@ -142,7 +149,9 @@ export async function preDebugValidate(
 							context,
 							context.projectPath,
 						);
+
 						break;
+
 					case DurableBackend.Storage:
 					default:
 				}
@@ -167,6 +176,7 @@ export async function preDebugValidate(
 		}
 	} catch (error) {
 		const pe = parseError(error);
+
 		if (pe.isUserCancelledError) {
 			shouldContinue = false;
 		} else {
@@ -193,6 +203,7 @@ export function canValidateAzureWebJobStorageOnDebug(
 		case ProjectLanguage.Java:
 			// We know if we need `AzureWebJobStorage` based on the function.json files, but those files don't exist until after a build for languages that need to be compiled
 			return false;
+
 		default:
 			return true;
 	}
@@ -206,6 +217,7 @@ function getMatchingWorkspace(
 			try {
 				const configs: vscode.DebugConfiguration[] =
 					getDebugConfigs(workspace);
+
 				if (configs.some((c) => isDebugConfigEqual(c, debugConfig))) {
 					return workspace;
 				}
@@ -261,12 +273,14 @@ async function validateFunctionVersion(
 				version,
 				expectedVersionRange,
 			);
+
 			const debugAnyway: vscode.MessageItem = {
 				title: localize(
 					"debugWithInvalidFunctionVersionAnyway",
 					"Debug anyway",
 				),
 			};
+
 			const result: vscode.MessageItem =
 				await context.ui.showWarningMessage(
 					message,
@@ -276,6 +290,7 @@ async function validateFunctionVersion(
 					},
 					debugAnyway,
 				);
+
 			return result === debugAnyway;
 		}
 	}
@@ -297,6 +312,7 @@ async function validateWorkerRuntime(
 			projectLanguage,
 			projectPath,
 		);
+
 	if (runtime) {
 		// Not worth handling mismatched runtimes since it's so unlikely
 		await setLocalAppSetting(
@@ -327,6 +343,7 @@ async function validateAzureWebJobsStorage(
 		context,
 		projectPath,
 	);
+
 	const functions: ParsedFunctionJson[] = await Promise.all(
 		functionFolders.map(async (ff) => {
 			const functionJsonPath: string = path.join(
@@ -334,6 +351,7 @@ async function validateAzureWebJobsStorage(
 				ff,
 				functionJsonFileName,
 			);
+
 			return new ParsedFunctionJson(
 				await AzExtFsExtra.readJSON(functionJsonPath),
 			);
@@ -367,6 +385,7 @@ async function validateEmulatorIsRunning(
 			ConnectionKey.Storage,
 			projectPath,
 		);
+
 	if (
 		azureWebJobsStorage &&
 		azureWebJobsStorage.toLowerCase() ===
@@ -385,13 +404,16 @@ async function validateEmulatorIsRunning(
 				ConnectionKey.Storage,
 				localSettingsFileName,
 			);
+
 			const learnMoreLink: string =
 				process.platform === "win32"
 					? "https://aka.ms/AA4ym56"
 					: "https://aka.ms/AA4yef8";
+
 			const debugAnyway: vscode.MessageItem = {
 				title: localize("debugAnyway", "Debug anyway"),
 			};
+
 			const result: vscode.MessageItem =
 				await context.ui.showWarningMessage(
 					message,
@@ -402,6 +424,7 @@ async function validateEmulatorIsRunning(
 					},
 					debugAnyway,
 				);
+
 			return result === debugAnyway;
 		}
 	}

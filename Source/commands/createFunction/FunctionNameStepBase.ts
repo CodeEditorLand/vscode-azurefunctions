@@ -57,10 +57,12 @@ export abstract class FunctionNameStepBase<
 		fileExtension?: string,
 	): Promise<string | undefined> {
 		let count: number = 1;
+
 		const maxCount: number = 1024;
 
 		while (count < maxCount) {
 			const fileName: string = defaultValue + count.toString();
+
 			if (
 				!(await AzExtFsExtra.pathExists(
 					path.join(

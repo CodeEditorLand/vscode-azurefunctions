@@ -35,6 +35,7 @@ export class LocalFunctionTreeItem extends FunctionTreeItemBase {
 			localFunction,
 		);
 		await ti.initAsync(context);
+
 		return ti;
 	}
 }

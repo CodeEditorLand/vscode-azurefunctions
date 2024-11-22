@@ -36,6 +36,7 @@ export class ProgrammingModelStep extends AzureWizardPromptStep<IProjectWizardCo
 			const defaultModel = modelsPick.find(
 				(p) => p.data === this._options.defaultModel,
 			);
+
 			if (defaultModel) {
 				defaultModel.description = recommendedDescription;
 			}
@@ -49,6 +50,7 @@ export class ProgrammingModelStep extends AzureWizardPromptStep<IProjectWizardCo
 			description: "",
 			data: undefined,
 		};
+
 		if (this._options.learnMoreLink) {
 			modelsPick.push(learnMoreQp);
 		}
@@ -64,8 +66,10 @@ export class ProgrammingModelStep extends AzureWizardPromptStep<IProjectWizardCo
 		};
 
 		let result: IAzureQuickPickItem<number | undefined>;
+
 		do {
 			result = await context.ui.showQuickPick(modelsPick, options);
+
 			if (result === learnMoreQp) {
 				await openUrl(nonNullValue(this._options.learnMoreLink));
 			}
@@ -105,6 +109,7 @@ export class ProgrammingModelStep extends AzureWizardPromptStep<IProjectWizardCo
 
 interface ProgrammingModelStepOptions {
 	models: IAzureQuickPickItem<number | undefined>[];
+
 	defaultModel?: number;
 	learnMoreLink?: string;
 	isProjectWizard?: boolean;

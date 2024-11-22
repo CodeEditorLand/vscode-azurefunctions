@@ -35,6 +35,7 @@ async function updateDisabledState(
 		const expectedContextValue: RegExp = new RegExp(
 			`Function;.*;${isDisabled ? "Enabled" : "Disabled"};`,
 		);
+
 		const noItemFoundErrorMessage: string = isDisabled
 			? localize("noEnabledFuncs", "No enabled functions found.")
 			: localize("noDisabledFuncs", "No disabled functions found.");
@@ -48,6 +49,7 @@ async function updateDisabledState(
 	}
 
 	const version: FuncVersion = await node.parent.parent.getVersion(context);
+
 	if (version === FuncVersion.v1) {
 		throw new Error(
 			localize(

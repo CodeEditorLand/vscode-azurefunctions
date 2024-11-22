@@ -23,6 +23,7 @@ export class BindingListStep extends AzureWizardPromptStep<IBindingWizardContext
 
 	public async prompt(context: IBindingWizardContext): Promise<void> {
 		const direction: string = nonNullProp(context, "bindingDirection");
+
 		const placeHolder: string = localize(
 			"selectBinding",
 			'Select binding with direction "{0}"',
@@ -44,10 +45,12 @@ export class BindingListStep extends AzureWizardPromptStep<IBindingWizardContext
 		context: IBindingWizardContext,
 	): Promise<IWizardOptions<IBindingWizardContext> | undefined> {
 		const binding: IBindingTemplate | undefined = context.bindingTemplate;
+
 		if (binding) {
 			const promptSteps: AzureWizardPromptStep<IBindingWizardContext>[] =
 				[];
 			addBindingSettingSteps(binding.settings, promptSteps);
+
 			return { promptSteps };
 		} else {
 			return undefined;
@@ -59,8 +62,11 @@ export class BindingListStep extends AzureWizardPromptStep<IBindingWizardContext
 		direction: string,
 	): Promise<IAzureQuickPickItem<IBindingTemplate>[]> {
 		const language: ProjectLanguage = nonNullProp(context, "language");
+
 		const version: FuncVersion = nonNullProp(context, "version");
+
 		const templateProvider = ext.templateProvider.get(context);
+
 		const templates: IBindingTemplate[] =
 			await templateProvider.getBindingTemplates(
 				context,
@@ -69,6 +75,7 @@ export class BindingListStep extends AzureWizardPromptStep<IBindingWizardContext
 				undefined,
 				version,
 			);
+
 		return templates
 			.filter(
 				(b) => b.direction.toLowerCase() === direction.toLowerCase(),

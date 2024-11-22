@@ -64,6 +64,7 @@ export class NetheriteConfigureHostStep<
 
 		const durableTask =
 			(hostJson.extensions?.durableTask as INetheriteTaskJson) ?? {};
+
 		const existingHubName: string | undefined = durableTask?.hubName;
 
 		hostJson.extensions ??= {};

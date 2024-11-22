@@ -19,6 +19,7 @@ export interface IFunctionWizardContext
 	extends Partial<ISubscriptionContext>,
 		IProjectWizardContext {
 	functionTemplate?: FunctionTemplateBase;
+
 	functionName?: string;
 
 	// Durable Functions
@@ -46,5 +47,6 @@ export function getBindingSetting(
 	setting: IBindingSetting | ParsedInput,
 ): BindingSettingValue {
 	const value = <BindingSettingValue>context[setting.assignTo.toLowerCase()];
+
 	return value === undefined && setting.required ? "" : value;
 }

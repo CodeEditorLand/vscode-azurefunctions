@@ -16,8 +16,10 @@ export class GetTemplateFileContentExecuteStep<
 	public async executeAction(context: T): Promise<void> {
 		const filePath = nonNullProp(this.action, "filePath");
 		assertTemplateIsV2(context.functionTemplate);
+
 		let source: string | undefined =
 			context.functionTemplate.files[filePath];
+
 		if (!source) {
 			throw new Error(
 				localize(
@@ -35,6 +37,7 @@ export class GetTemplateFileContentExecuteStep<
 		const assignToTokens = Object.keys(context).filter((k) =>
 			k.startsWith("$("),
 		);
+
 		for (const token of assignToTokens) {
 			source = source.replace(
 				new RegExp(this.escapeRegExp(token), "gi"),

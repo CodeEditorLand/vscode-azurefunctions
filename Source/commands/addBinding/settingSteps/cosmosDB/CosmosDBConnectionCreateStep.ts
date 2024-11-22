@@ -29,10 +29,12 @@ export class CosmosDBConnectionCreateStep extends AzureConnectionCreateStepBase<
 			context,
 			"databaseAccount",
 		);
+
 		const name: string = nonNullProp(databaseAccount, "name");
 
 		const client: CosmosDBManagementClient =
 			await createCosmosDBClient(context);
+
 		const resourceGroup: string = getResourceGroupFromId(
 			nonNullProp(databaseAccount, "id"),
 		);
@@ -40,6 +42,7 @@ export class CosmosDBConnectionCreateStep extends AzureConnectionCreateStepBase<
 		// (The runtime currently only handles Cosmos DB connection strings _not_ mongo connection strings)
 		const keys: DatabaseAccountListKeysResult =
 			await client.databaseAccounts.listKeys(resourceGroup, name);
+
 		return {
 			name: name,
 			connectionString: `AccountEndpoint=${nonNullProp(databaseAccount, "documentEndpoint")};AccountKey=${nonNullProp(keys, "primaryMasterKey")};`,

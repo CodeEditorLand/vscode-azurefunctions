@@ -16,7 +16,9 @@ import {
 import { createFunctionApp } from "../commands/createFunctionApp/createFunctionApp";
 
 const createFunctionAppCommandName = "createFunctionApp";
+
 const createFunctionProjectCommandName = "createFunctionProject";
+
 const deployToFunctionAppCommandName = "deployToFunctionApp";
 
 export async function getCommands(): Promise<
@@ -85,6 +87,7 @@ export async function runWizardCommandWithInputs(
 					context,
 					inputsQueue,
 				);
+
 				return await createFunctionApp({
 					...context,
 					ui: azureUserInput,
@@ -125,6 +128,7 @@ function getLearnBenchmarkConfigs(): AgentBenchmarkConfig[] {
 
 function getCreateFunctionAppBenchmarkConfigs(): AgentBenchmarkConfig[] {
 	const createFunctionAppBenchmarkName = "Create Function App";
+
 	return [
 		{
 			name: createFunctionAppBenchmarkName,
@@ -182,6 +186,7 @@ function getCreateFunctionAppBenchmarkConfigs(): AgentBenchmarkConfig[] {
 
 function getCreateFunctionProjectBenchmarkConfigs(): AgentBenchmarkConfig[] {
 	const createFunctionProjectBenchmarkName = "Create Function Project";
+
 	return [
 		{
 			name: createFunctionProjectBenchmarkName,
@@ -211,6 +216,7 @@ function getCreateFunctionProjectBenchmarkConfigs(): AgentBenchmarkConfig[] {
 
 function getDeployToFunctionAppBenchmarkConfigs(): AgentBenchmarkConfig[] {
 	const deployToFunctionAppBenchmarkName = "Deploy to Function App";
+
 	return [
 		{
 			name: deployToFunctionAppBenchmarkName,

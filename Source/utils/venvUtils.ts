@@ -31,6 +31,7 @@ export namespace venvUtils {
 		venvName ??= getWorkspaceSetting(pythonVenvSetting) || ".venv";
 
 		const venvPath: string = path.join(projectPath, <string>venvName);
+
 		if (!(await AzExtFsExtra.pathExists(venvPath))) {
 			return;
 		}
@@ -39,6 +40,7 @@ export namespace venvUtils {
 			projectPath,
 			requirementsFileName,
 		);
+
 		if (await AzExtFsExtra.pathExists(requirementsPath)) {
 			try {
 				// Attempt to install packages so that users get Intellisense right away
@@ -65,10 +67,12 @@ export namespace venvUtils {
 		folderPath: string,
 	): string {
 		const terminal: Terminal = getTerminal(process.platform);
+
 		const venvName: string | undefined = getWorkspaceSetting<string>(
 			pythonVenvSetting,
 			folderPath,
 		);
+
 		if (venvName) {
 			return joinCommands(
 				terminal,
@@ -86,12 +90,14 @@ export namespace venvUtils {
 		platform: NodeJS.Platform,
 	): string {
 		const terminal: Terminal = getTerminal(platform);
+
 		const pythonPath: string = getVenvPath(
 			venvName,
 			"python",
 			platform,
 			getPathJoin(terminal),
 		);
+
 		return `${pythonPath} -m ${command}`;
 	}
 
@@ -116,6 +122,7 @@ export namespace venvUtils {
 		rootFolder: string,
 	): Promise<boolean> {
 		const venvPath: string = path.join(rootFolder, venvName);
+
 		if (await AzExtFsExtra.pathExists(venvPath)) {
 			if (await AzExtFsExtra.isDirectory(venvPath)) {
 				const venvActivatePath: string = getVenvPath(
@@ -124,6 +131,7 @@ export namespace venvUtils {
 					process.platform,
 					path.join,
 				);
+
 				if (
 					await AzExtFsExtra.pathExists(
 						path.join(rootFolder, venvActivatePath),
@@ -161,9 +169,11 @@ export namespace venvUtils {
 			platform,
 			getPathJoin(terminal),
 		);
+
 		switch (terminal) {
 			case Terminal.bash:
 				return `. ${venvActivatePath}`;
+
 			default:
 				return venvActivatePath;
 		}
@@ -176,7 +186,9 @@ export namespace venvUtils {
 		pathJoin: (...p: string[]) => string,
 	): string {
 		const middleFs: string = platform === "win32" ? "Scripts" : "bin";
+
 		const paths: string[] = [".", venvName, middleFs, lastFs];
+
 		return pathJoin(...paths);
 	}
 
@@ -184,6 +196,7 @@ export namespace venvUtils {
 		switch (terminal) {
 			case Terminal.bash:
 				return path.posix.join;
+
 			default:
 				return path.win32.join;
 		}
@@ -193,6 +206,7 @@ export namespace venvUtils {
 		switch (terminal) {
 			case Terminal.powerShell:
 				return commands.join(" ; ");
+
 			default:
 				return commands.join(" && "); // bash and cmd
 		}

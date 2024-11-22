@@ -16,6 +16,7 @@ export function getRemoteDebugLanguage(
 	//   If the Function App is running on a Linux App Service plan, it will contain Docker registry information, e.g. "DOCKER|repo.azurecr.io/image:tag"
 	//      or it will contain language information, e.g. "Node|14"
 	const isNotConsumption: boolean = appServicePlan?.toLowerCase() !== "y";
+
 	if (isNotConsumption) {
 		if (
 			siteConfig.linuxFxVersion &&

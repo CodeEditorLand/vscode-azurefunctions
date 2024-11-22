@@ -29,12 +29,14 @@ export async function validateStorageConnection(
 			ConnectionKey.Storage,
 			projectPath,
 		);
+
 	const currentStorageIdentityConnection: string | undefined =
 		await getLocalSettingsConnectionString(
 			context,
 			ConnectionKey.StorageIdentity,
 			projectPath,
 		);
+
 	if (currentStorageConnection || currentStorageIdentityConnection) {
 		// Found a valid connection in debug mode.  Skip the wizard.
 		return;
@@ -44,6 +46,7 @@ export async function validateStorageConnection(
 		context,
 		{ projectPath },
 	);
+
 	const wizard: AzureWizard<IAzureWebJobsStorageWizardContext> =
 		new AzureWizard(wizardContext, {
 			promptSteps: [new AzureWebJobsStoragePromptStep(options)],

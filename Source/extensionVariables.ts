@@ -55,26 +55,37 @@ class ActionVariable<T> {
  */
 export namespace ext {
 	export let context: ExtensionContext;
+
 	export let azureAccountTreeItem: AzureAccountTreeItemWithProjects;
+
 	export let outputChannel: IAzExtOutputChannel;
 	// eslint-disable-next-line prefer-const
 	export let defaultFuncCliPath: string = func;
+
 	export let ignoreBundle: boolean | undefined;
+
 	export const prefix: string = "azureFunctions";
+
 	export let experimentationService: IExperimentationServiceAdapter;
+
 	export const templateProvider = new ActionVariable<CentralTemplateProvider>(
 		"_centralTemplateProvider",
 	);
+
 	export let rgApi: AzureHostExtensionApi;
+
 	export let eventGridProvider: EventGridCodeLensProvider;
+
 	export let currentExecutingFunctionNode:
 		| FunctionTreeItemBase
 		| IFunction
 		| undefined;
+
 	export const fileToFunctionNodeMap: Map<
 		string,
 		FunctionTreeItemBase | IFunction
 	> = new Map();
+
 	export let isExecutingFunction: boolean | undefined;
 }
 

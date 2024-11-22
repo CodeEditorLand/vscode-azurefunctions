@@ -34,9 +34,13 @@ export namespace validateUtils {
 
 	export function meetsBasePasswordStrength(password: string): boolean {
 		const lowerCaseAlpha = /[a-z]/;
+
 		const upperCaseAlpha = /[A-Z]/;
+
 		const numeric = /[0-9]/;
+
 		const symbols = /#?!@$%^&*-/;
+
 		let strengthCoefficient: number = 0;
 
 		// Must include at least 3 of the 4 character groups

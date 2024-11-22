@@ -39,20 +39,25 @@ export async function verifyVSCodeConfigOnActivate(
 	if (folders) {
 		for (const folder of folders) {
 			const workspacePath: string = folder.uri.fsPath;
+
 			const projectPath: string | undefined =
 				await tryGetFunctionProjectRoot(context, folder, "prompt");
+
 			if (projectPath) {
 				context.telemetry.suppressIfSuccessful = false;
 
 				const language: ProjectLanguage | undefined =
 					getWorkspaceSetting(projectLanguageSetting, projectPath);
+
 				const languageModel = getWorkspaceSetting<number>(
 					projectLanguageModelSetting,
 					projectPath,
 				);
+
 				const version: FuncVersion | undefined = tryParseFuncVersion(
 					getWorkspaceSetting(funcVersionSetting, projectPath),
 				);
+
 				if (language !== undefined && version !== undefined) {
 					// Don't wait
 					void callWithTelemetryAndErrorHandling(
@@ -62,6 +67,7 @@ export async function verifyVSCodeConfigOnActivate(
 								"true";
 							templatesContext.errorHandling.suppressDisplay =
 								true;
+
 							const templateProvider =
 								ext.templateProvider.get(templatesContext);
 							await templateProvider.getFunctionTemplates(
@@ -77,6 +83,7 @@ export async function verifyVSCodeConfigOnActivate(
 					);
 
 					let isDotnet: boolean = false;
+
 					const projectLanguage: string | undefined =
 						getWorkspaceSetting(
 							projectLanguageSetting,
@@ -84,6 +91,7 @@ export async function verifyVSCodeConfigOnActivate(
 						);
 					context.telemetry.properties.projectLanguage =
 						projectLanguage;
+
 					switch (projectLanguage) {
 						case ProjectLanguage.Python:
 							await verifyPythonVenv(
@@ -91,7 +99,9 @@ export async function verifyVSCodeConfigOnActivate(
 								context,
 								version,
 							);
+
 							break;
+
 						case ProjectLanguage.CSharp:
 						case ProjectLanguage.FSharp:
 							isDotnet = true;
@@ -101,7 +111,9 @@ export async function verifyVSCodeConfigOnActivate(
 								projectPath,
 								context,
 							);
+
 							break;
+
 						default:
 					}
 
@@ -125,21 +137,25 @@ async function promptToInitializeProject(
 	context: IActionContext,
 ): Promise<void> {
 	const settingKey: string = "showProjectWarning";
+
 	if (getWorkspaceSetting<boolean>(settingKey)) {
 		context.telemetry.properties.verifyConfigPrompt = "initProject";
 
 		const learnMoreLink: string = "https://aka.ms/azFuncProject";
+
 		const message: string = localize(
 			"uninitializedWarning",
 			'Detected an Azure Functions Project in folder "{0}" that may have been created outside of VS Code. Initialize for optimal use with VS Code?',
 			path.basename(workspacePath),
 		);
+
 		const result: vscode.MessageItem = await context.ui.showWarningMessage(
 			message,
 			{ learnMoreLink },
 			DialogResponses.yes,
 			DialogResponses.dontWarnAgain,
 		);
+
 		if (result === DialogResponses.dontWarnAgain) {
 			context.telemetry.properties.verifyConfigResult = "dontWarnAgain";
 			await updateGlobalSetting(settingKey, false);

@@ -15,10 +15,12 @@ export async function tryGetInstalledBrewPackageName(
 	version: FuncVersion,
 ): Promise<string | undefined> {
 	const brewPackageName: string = getBrewPackageName(version);
+
 	if (await isBrewPackageInstalled(brewPackageName)) {
 		return brewPackageName;
 	} else {
 		let oldPackageName: string | undefined;
+
 		if (version === FuncVersion.v2) {
 			oldPackageName = funcPackageName;
 		} else if (version === FuncVersion.v3) {
@@ -42,6 +44,7 @@ async function isBrewPackageInstalled(packageName: string): Promise<boolean> {
 			"ls",
 			packageName,
 		);
+
 		return true;
 	} catch (error) {
 		return false;

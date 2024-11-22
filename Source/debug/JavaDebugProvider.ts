@@ -28,6 +28,7 @@ export class JavaDebugProvider extends FuncDebugProviderBase {
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async getWorkerArgValue(folder: WorkspaceFolder): Promise<string> {
 		const port: string | number = this.getDebugPortOrPipeName(folder);
+
 		return `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${port}`;
 	}
 }

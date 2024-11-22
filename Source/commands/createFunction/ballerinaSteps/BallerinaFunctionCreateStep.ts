@@ -20,6 +20,7 @@ export class BallerinaFunctionCreateStep extends FunctionCreateStepBase<IBalleri
 		await AzExtFsExtra.ensureDir(functionPath);
 
 		const functionName = nonNullProp(context, "functionName");
+
 		const fileName = `${functionName}.bal`;
 
 		const template: IBallerinaFunctionTemplate = nonNullProp(

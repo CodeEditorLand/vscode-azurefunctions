@@ -38,6 +38,7 @@ export interface ParsedAction {
 	type: ActionType;
 	assignTo?: string;
 	filePath?: string;
+
 	continueOnError?: boolean;
 	errorText?: string;
 	source?: string;
@@ -65,6 +66,7 @@ export enum JobType {
 
 export interface RawInput {
 	assignTo: string;
+
 	defaultValue: string;
 	paramId: string;
 	required: boolean;
@@ -106,9 +108,12 @@ export function parseScriptTemplates(
 		rawBindings,
 		resources,
 	);
+
 	const templates: FunctionV2Template[] = [];
+
 	for (const templateV2 of rawTemplates) {
 		const parsedJobs: ParsedJob[] = [];
+
 		for (const job of templateV2.jobs) {
 			const parsedInputs: ParsedInput[] = [];
 			job.inputs.forEach((input) => {
@@ -121,10 +126,12 @@ export function parseScriptTemplates(
 			});
 
 			const parsedActions: ParsedAction[] = [];
+
 			for (const action of job.actions) {
 				const parsedAction = templateV2.actions.find(
 					(a) => a.name.toLowerCase() === action.toLowerCase(),
 				);
+
 				if (parsedAction) {
 					parsedActions.push(parsedAction);
 				}
@@ -136,6 +143,7 @@ export function parseScriptTemplates(
 		const isHttpTrigger = !!templateV2.id
 			?.toLowerCase()
 			.includes("httptrigger-");
+
 		const isTimerTrigger = !!templateV2.id
 			?.toLowerCase()
 			.includes("timertrigger-");
@@ -159,11 +167,14 @@ export function parseUserPrompts(
 	resources: Resources,
 ): RawUserPrompt[] {
 	const userPrompts: RawUserPrompt[] = [];
+
 	for (const rawUserPrompt of rawUserPrompts) {
 		const userPrompt: RawUserPrompt = rawUserPrompt as RawUserPrompt;
+
 		for (const key of Object.keys(rawUserPrompt)) {
 			// all of the properties in the rawResources are in the format of "param_name" but the keys in the rawUserPrompt are in the format of "param-name"
 			const paramName = userPrompt[key] as unknown;
+
 			if (typeof paramName === "string" && paramName.startsWith("$")) {
 				userPrompt[key] =
 					getResourceValue(resources, paramName, true) || paramName;
@@ -174,6 +185,7 @@ export function parseUserPrompts(
 				const validators: UserPromptValidator[] = rawUserPrompt[
 					key
 				] as UserPromptValidator[];
+
 				for (const validator of validators) {
 					// there are a few edge cases with tokens where the format is [variables('param_name')] instead of $param_name
 					const matches: RegExpMatchArray | null =

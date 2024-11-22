@@ -21,6 +21,7 @@ export enum FuncVersion {
 
 export const latestGAVersion: FuncVersion = FuncVersion.v4;
 export const funcVersionLink: string = "https://aka.ms/AA1tpij";
+
 const funcRuntimeWarningLabel: string = localize(
 	"runtimeWarning",
 	`$(extensions-warning-message) Azure Functions runtimes v2 and v3 have reached the end of life.`,
@@ -31,6 +32,7 @@ export async function promptForFuncVersion(
 	message?: string,
 ): Promise<FuncVersion> {
 	const recommended: string = localize("recommended", "(Recommended)");
+
 	let picks: IAzureQuickPickItem<FuncVersion | undefined>[] = [
 		{
 			label: "Azure Functions v4",
@@ -79,6 +81,7 @@ export async function promptForFuncVersion(
 		const version: FuncVersion | undefined = (
 			await context.ui.showQuickPick(picks, options)
 		).data;
+
 		if (version === undefined) {
 			await openUrl(funcVersionLink);
 		} else {
@@ -92,6 +95,7 @@ export function tryParseFuncVersion(
 ): FuncVersion | undefined {
 	if (data) {
 		const majorVersion: string | undefined = tryGetMajorVersion(data);
+
 		if (majorVersion) {
 			return Object.values(FuncVersion).find(
 				(v) => v === "~" + majorVersion,
@@ -108,6 +112,7 @@ function osSupportsVersion(version: FuncVersion | undefined): boolean {
 
 export function getMajorVersion(data: string): string {
 	const majorVersion: string | undefined = tryGetMajorVersion(data);
+
 	if (!majorVersion) {
 		throw new Error(
 			localize("invalidVersion", 'Invalid version "{0}".', data),
@@ -118,5 +123,6 @@ export function getMajorVersion(data: string): string {
 
 function tryGetMajorVersion(data: string): string | undefined {
 	const match: RegExpMatchArray | null = data.match(/^[~v]?([0-9]+)/i);
+
 	return match ? match[1] : undefined;
 }

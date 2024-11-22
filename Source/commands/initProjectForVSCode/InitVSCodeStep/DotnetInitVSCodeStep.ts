@@ -45,6 +45,7 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 	protected getRecommendedExtensions(language: ProjectLanguage): string[] {
 		// The csharp extension is really a 'dotnet' extension because it provides debugging for both
 		const recs: string[] = ["ms-dotnettools.csharp"];
+
 		if (language === ProjectLanguage.FSharp) {
 			recs.push("ionide.ionide-fsharp");
 		}
@@ -57,17 +58,22 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 	 */
 	protected async executeCore(context: IProjectWizardContext): Promise<void> {
 		const projectPath: string = context.projectPath;
+
 		const language: ProjectLanguage = nonNullProp(context, "language");
 
 		let projFile: dotnetUtils.ProjectFile;
+
 		const projFiles: dotnetUtils.ProjectFile[] =
 			await dotnetUtils.getProjFiles(context, language, projectPath);
+
 		const fileExt: string =
 			language === ProjectLanguage.FSharp ? "fsproj" : "csproj";
+
 		if (projFiles.length === 1) {
 			projFile = projFiles[0];
 		} else if (projFiles.length === 0) {
 			context.errorHandling.suppressReportIssue = true;
+
 			throw new Error(
 				localize(
 					"projNotFound",
@@ -78,6 +84,7 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 			);
 		} else {
 			context.errorHandling.suppressReportIssue = true;
+
 			throw new Error(
 				localize(
 					"projNotFound",
@@ -98,11 +105,13 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 
 		if (context.version === FuncVersion.v1) {
 			const settingKey: string = "show64BitWarning";
+
 			if (getWorkspaceSetting<boolean>(settingKey)) {
 				const message: string = localize(
 					"64BitWarning",
 					"In order to debug .NET Framework functions in VS Code, you must install a 64-bit version of the Azure Functions Core Tools.",
 				);
+
 				try {
 					const result: MessageItem =
 						await context.ui.showWarningMessage(
@@ -111,6 +120,7 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 							DialogResponses.learnMore,
 							DialogResponses.dontWarnAgain,
 						);
+
 					if (result === DialogResponses.learnMore) {
 						await openUrl("https://aka.ms/azFunc64bit");
 					} else if (result === DialogResponses.dontWarnAgain) {
@@ -139,10 +149,13 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 			"/property:GenerateFullPaths=true",
 			"/consoleloggerparameters:NoSummary",
 		];
+
 		const releaseArgs: string[] = ["--configuration", "Release"];
 
 		const buildLabel = convertToFunctionsTaskLabel("build");
+
 		const cleanLabel = convertToFunctionsTaskLabel("clean");
+
 		const cleanReleaseLabel = convertToFunctionsTaskLabel("clean release");
 
 		return [

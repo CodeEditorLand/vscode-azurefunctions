@@ -37,9 +37,11 @@ export class NetheriteEventHubNameStep<
 			const client: EventHubManagementClient = await createEventHubClient(
 				<T & ISubscriptionContext>context,
 			);
+
 			const rgName: string = getResourceGroupFromId(
 				nonNullValue(context.eventHubsNamespace.id),
 			);
+
 			const ehNamespaceName: string = nonNullValue(
 				context.eventHubsNamespace.name,
 			);
@@ -80,6 +82,7 @@ export class NetheriteEventHubNameStep<
 		const isNameAvailable: boolean = !this.eventHubs.some(
 			(eh) => eh.name === name,
 		);
+
 		if (!isNameAvailable) {
 			return localize(
 				"eventHubExists",

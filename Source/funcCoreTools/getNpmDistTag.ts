@@ -29,18 +29,22 @@ export async function getNpmDistTag(
 		method: "GET",
 		url: npmRegistryUri,
 	});
+
 	const packageMetadata: IPackageMetadata = <IPackageMetadata>(
 		response.parsedBody
 	);
+
 	const majorVersion: string = getMajorVersion(version);
 
 	const validVersions: string[] = Object.keys(
 		packageMetadata.versions,
 	).filter((v: string) => !!semver.valid(v));
+
 	const maxVersion: string | null = semver.maxSatisfying(
 		validVersions,
 		majorVersion,
 	);
+
 	if (!maxVersion) {
 		throw new Error(
 			localize(

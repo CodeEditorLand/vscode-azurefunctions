@@ -46,6 +46,7 @@ export class JavaVersionStep extends AzureWizardPromptStep<IJavaProjectWizardCon
 	public async prompt(context: IJavaProjectWizardContext): Promise<void> {
 		const picks: IAzureQuickPickItem<string>[] =
 			await this.getPicks(context);
+
 		const placeHolder: string = localize(
 			"selectJavaVersion",
 			"Select a version of Java",
@@ -59,7 +60,9 @@ export class JavaVersionStep extends AzureWizardPromptStep<IJavaProjectWizardCon
 		context: IJavaProjectWizardContext,
 	): Promise<IAzureQuickPickItem<string>[]> {
 		const javaVersion: number = await getJavaVersion();
+
 		const result: IAzureQuickPickItem<string>[] = [];
+
 		for (const version of versionInfo) {
 			if (
 				(await hasMinFuncCliVersion(

@@ -40,10 +40,12 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 
 			const showMultiCoreToolsWarningKey: string =
 				"showMultiCoreToolsWarning";
+
 			const showMultiCoreToolsWarning: boolean =
 				!!getWorkspaceSetting<boolean>(showMultiCoreToolsWarningKey);
 
 			const showCoreToolsWarningKey: string = "showCoreToolsWarning";
+
 			const showCoreToolsWarning: boolean =
 				!!getWorkspaceSetting<boolean>(showCoreToolsWarningKey);
 
@@ -52,7 +54,9 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 
 				const packageManagers: PackageManager[] =
 					await getFuncPackageManagers(true /* isFuncInstalled */);
+
 				let packageManager: PackageManager;
+
 				if (packageManagers.length === 0) {
 					return;
 				} else if (packageManagers.length === 1) {
@@ -61,23 +65,27 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 						packageManager;
 				} else {
 					context.telemetry.properties.multiFunc = "true";
+
 					if (showMultiCoreToolsWarning) {
 						const message: string = localize(
 							"multipleInstalls",
 							"Detected multiple installs of the func cli.",
 						);
+
 						const selectUninstall: vscode.MessageItem = {
 							title: localize(
 								"selectUninstall",
 								"Select version to uninstall",
 							),
 						};
+
 						const result: vscode.MessageItem =
 							await context.ui.showWarningMessage(
 								message,
 								selectUninstall,
 								DialogResponses.dontWarnAgain,
 							);
+
 						if (result === selectUninstall) {
 							await uninstallFuncCoreTools(
 								context,
@@ -97,6 +105,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 				if (showCoreToolsWarning) {
 					const localVersion: string | null =
 						await getLocalFuncCoreToolsVersion(context, undefined);
+
 					if (!localVersion) {
 						return;
 					}
@@ -104,6 +113,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 
 					const versionFromSetting: FuncVersion | undefined =
 						tryParseFuncVersion(localVersion);
+
 					if (versionFromSetting === undefined) {
 						return;
 					}
@@ -114,6 +124,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 							versionFromSetting,
 							context,
 						);
+
 					if (!newestVersion) {
 						return;
 					}
@@ -124,6 +135,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 						semver.gt(newestVersion, localVersion)
 					) {
 						context.telemetry.properties.outOfDateFunc = "true";
+
 						const message: string = localize(
 							"outdatedFunctionRuntime",
 							"Update your Azure Functions Core Tools ({0}) to the latest ({1}) for the best experience.",
@@ -132,6 +144,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 						);
 
 						const update: vscode.MessageItem = { title: "Update" };
+
 						let result: vscode.MessageItem;
 
 						do {
@@ -148,6 +161,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 											DialogResponses.learnMore,
 											DialogResponses.dontWarnAgain,
 										);
+
 							if (result === DialogResponses.learnMore) {
 								await openUrl("https://aka.ms/azFuncOutdated");
 							} else if (result === update) {
@@ -180,15 +194,20 @@ async function getNewestFunctionRuntimeVersion(
 	try {
 		if (packageManager === PackageManager.brew) {
 			const packageName: string = getBrewPackageName(versionFromSetting);
+
 			const url: string = `https://raw.githubusercontent.com/Azure/homebrew-functions/master/Formula/${packageName}.rb`;
+
 			const response = await requestUtils.sendRequestWithExtTimeout(
 				context,
 				{ method: "GET", url },
 			);
+
 			const brewInfo: string = nonNullProp(response, "bodyAsText");
+
 			const matches: RegExpMatchArray | null = brewInfo.match(
 				/version\s+["']([^"']+)["']/i,
 			);
+
 			if (matches && matches.length > 1) {
 				return matches[1];
 			}
