@@ -15,6 +15,7 @@ import { localize } from "../localize";
 import { FuncDebugProviderBase } from "./FuncDebugProviderBase";
 
 export const defaultPythonDebugHost: string = "localhost";
+
 export const defaultPythonDebugPort: number = 9091;
 
 export const pythonDebugConfig: DebugConfiguration = {

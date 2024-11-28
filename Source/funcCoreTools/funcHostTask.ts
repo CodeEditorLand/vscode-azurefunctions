@@ -121,6 +121,7 @@ export const runningFuncTaskMap: RunningFunctionTaskMap =
 const funcTaskStartedEmitter = new vscode.EventEmitter<
 	vscode.WorkspaceFolder | vscode.TaskScope
 >();
+
 export const onFuncTaskStarted = funcTaskStartedEmitter.event;
 
 export const buildPathToWorkspaceFolderMap = new Map<

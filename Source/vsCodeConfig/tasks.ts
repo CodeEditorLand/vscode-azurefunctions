@@ -13,6 +13,7 @@ import {
 const tasksKey: string = "tasks";
 
 const versionKey: string = "version";
+
 export const tasksVersion: string = "2.0.0";
 
 export function getTasks(folder: WorkspaceFolder): ITask[] {

@@ -20,6 +20,7 @@ export enum FuncVersion {
 }
 
 export const latestGAVersion: FuncVersion = FuncVersion.v4;
+
 export const funcVersionLink: string = "https://aka.ms/AA1tpij";
 
 const funcRuntimeWarningLabel: string = localize(

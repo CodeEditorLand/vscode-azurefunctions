@@ -14,8 +14,11 @@ import { type IJavaProjectWizardContext } from "./IJavaProjectWizardContext";
 import { getJavaVersion } from "./JavaVersions";
 
 export const java8: string = "8";
+
 export const java11: string = "11";
+
 export const java17: string = "17";
+
 export const java21: string = "21";
 
 type javaVersionInfo = {

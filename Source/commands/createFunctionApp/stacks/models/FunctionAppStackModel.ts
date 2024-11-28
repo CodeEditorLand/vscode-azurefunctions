@@ -18,6 +18,7 @@ export type FunctionAppStack = AppStack<
 	FunctionAppRuntimes,
 	FunctionAppStackValue
 >;
+
 export type FunctionAppStackValue =
 	| "dotnet"
 	| "java"

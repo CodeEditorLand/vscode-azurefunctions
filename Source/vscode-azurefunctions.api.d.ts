@@ -110,6 +110,7 @@ export type ProjectLanguage =
 	| "Python"
 	| "PowerShell"
 	| "Java";
+
 export type ProjectVersion = "~1" | "~2" | "~3" | "~4";
 
 export interface IAppSettingsClient {

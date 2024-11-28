@@ -43,6 +43,7 @@ import {
 import { getWorkspaceSetting } from "../vsCodeConfig/settings";
 
 const funcTaskReadyEmitter = new vscode.EventEmitter<vscode.WorkspaceFolder>();
+
 export const onDotnetFuncTaskReady = funcTaskReadyEmitter.event;
 
 export async function startFuncProcessFromApi(

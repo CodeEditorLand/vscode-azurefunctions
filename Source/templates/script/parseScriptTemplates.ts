@@ -123,11 +123,13 @@ export function getResourceValue(
 	data: string,
 	dontThrow: true,
 ): string | undefined;
+
 export function getResourceValue(
 	resources: IResources,
 	data: string,
 	dontThrow?: false,
 ): string;
+
 export function getResourceValue(
 	resources: IResources,
 	data: string,

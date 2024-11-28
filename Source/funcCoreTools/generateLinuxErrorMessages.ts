@@ -13,6 +13,7 @@ export interface ILinuxErrorMessages {
 }
 
 const linuxDistroTagKeys = ["ID", "NAME", "PRETTY_NAME", "VERSION"] as const;
+
 export type LinuxDistroTag = Partial<
 	Record<(typeof linuxDistroTagKeys)[number], string>
 >;

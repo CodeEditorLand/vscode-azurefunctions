@@ -22,6 +22,7 @@ import { createWebSiteClient } from "./utils/azureClients";
 
 // TODO: this is temporary until the new SDK with api-version=2023-12-01 is available
 type Site20231201 = Site & { isFlex?: boolean };
+
 export class FunctionAppResolver implements AppResourceResolver {
 	private siteCacheLastUpdated = 0;
 	private siteCache: Map<string, Site20231201> = new Map<

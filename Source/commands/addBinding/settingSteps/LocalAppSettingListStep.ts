@@ -50,6 +50,7 @@ const hideHiddenValuesItem = {
 	label: localize("hideHiddenValues", "$(eye-closed) Hide hidden values"),
 	data: "hiddenValues",
 };
+
 export class LocalAppSettingListStep extends BindingSettingStepBase {
 	private _showHiddenValues: boolean = false;
 	public async promptCore(

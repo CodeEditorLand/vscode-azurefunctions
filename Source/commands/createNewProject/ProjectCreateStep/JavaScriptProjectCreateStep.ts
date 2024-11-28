@@ -21,6 +21,7 @@ import { type IProjectWizardContext } from "../IProjectWizardContext";
 import { ScriptProjectCreateStep } from "./ScriptProjectCreateStep";
 
 export const azureFunctionsDependency: string = "@azure/functions";
+
 export const azureFunctionsDependencyVersion: string = "^4.0.0";
 
 export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
