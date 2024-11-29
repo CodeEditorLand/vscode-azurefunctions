@@ -34,9 +34,11 @@ export async function promptToReinitializeProject(
 
 		if (result === DialogResponses.dontWarnAgain) {
 			context.telemetry.properties.verifyConfigResult = "dontWarnAgain";
+
 			await updateWorkspaceSetting(settingKey, false, fsPath);
 		} else {
 			context.telemetry.properties.verifyConfigResult = "update";
+
 			await initProjectForVSCode(context, fsPath);
 		}
 	} else {

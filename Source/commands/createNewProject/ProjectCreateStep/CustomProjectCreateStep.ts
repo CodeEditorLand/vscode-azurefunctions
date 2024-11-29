@@ -12,6 +12,7 @@ export class CustomProjectCreateStep extends ScriptProjectCreateStep {
 		context: IProjectWizardContext,
 	): Promise<IHostJsonV2> {
 		const hostJson: IHostJsonV2 = await super.getHostContent(context);
+
 		hostJson.customHandler = {
 			description: {
 				defaultExecutablePath: "",

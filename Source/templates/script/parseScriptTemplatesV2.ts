@@ -23,34 +23,53 @@ export interface Resources {
 
 export interface RawTemplateV2 {
 	actions: ParsedAction[];
+
 	author?: string;
+
 	name: string;
+
 	id: string;
+
 	description: string;
+
 	programmingModel: string;
+
 	language: ProjectLanguage;
+
 	jobs: RawJob[];
+
 	files: { [filename: string]: string };
 }
 
 export interface ParsedAction {
 	name: string;
+
 	type: ActionType;
+
 	assignTo?: string;
+
 	filePath?: string;
 
 	continueOnError?: boolean;
+
 	errorText?: string;
+
 	source?: string;
+
 	createIfNotExists?: boolean;
+
 	replaceTokens?: boolean;
 }
 
 interface RawJob {
 	actions: string[];
+
 	condition: { name: string; expectedValue: string };
+
 	inputs: RawInput[];
+
 	name: string;
+
 	type: JobType;
 }
 
@@ -68,27 +87,39 @@ export interface RawInput {
 	assignTo: string;
 
 	defaultValue: string;
+
 	paramId: string;
+
 	required: boolean;
 }
 
 interface RawUserPrompt {
 	id: string;
+
 	name: string;
+
 	label: string;
+
 	help?: string;
+
 	validators?: UserPromptValidator[];
+
 	value: "string" | "enum" | "boolean";
+
 	enum?: {
 		value: string;
+
 		display: string;
 	}[];
+
 	resource?: ResourceType;
+
 	placeHolder?: string;
 }
 
 type UserPromptValidator = {
 	expression: string;
+
 	errorText: string;
 };
 
@@ -96,6 +127,7 @@ export interface ParsedInput extends RawUserPrompt, RawInput {}
 
 export interface ParsedJob extends RawJob {
 	parsedInputs: ParsedInput[];
+
 	parsedActions: ParsedAction[];
 }
 
@@ -116,12 +148,14 @@ export function parseScriptTemplates(
 
 		for (const job of templateV2.jobs) {
 			const parsedInputs: ParsedInput[] = [];
+
 			job.inputs.forEach((input) => {
 				const userPrompt = userPrompts.find(
 					(up) =>
 						up.id.toLocaleLowerCase() ===
 						input.paramId.toLocaleLowerCase(),
 				);
+
 				parsedInputs.push(Object.assign(input, userPrompt));
 			});
 
@@ -136,10 +170,12 @@ export function parseScriptTemplates(
 					parsedActions.push(parsedAction);
 				}
 			}
+
 			parsedJobs.push(
 				Object.assign(job, { parsedInputs, parsedActions }),
 			);
 		}
+
 		const isHttpTrigger = !!templateV2.id
 			?.toLowerCase()
 			.includes("httptrigger-");
@@ -207,5 +243,6 @@ export function parseUserPrompts(
 
 		userPrompts.push(userPrompt);
 	}
+
 	return userPrompts;
 }

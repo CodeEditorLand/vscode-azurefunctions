@@ -38,17 +38,25 @@ import { type ISetConnectionSettingContext } from "../appSettings/connectionSett
  */
 type VerifyAppSettingBooleans = {
 	doRemoteBuild: boolean | undefined;
+
 	isConsumption: boolean;
 };
 
 export async function verifyAppSettings(options: {
 	context: IActionContext;
+
 	node: SlotTreeItem;
+
 	projectPath: string | undefined;
+
 	version: FuncVersion;
+
 	language: ProjectLanguage;
+
 	languageModel: number | undefined;
+
 	bools: VerifyAppSettingBooleans;
+
 	durableStorageType: DurableBackendValues | undefined;
 }): Promise<void> {
 	const {
@@ -69,6 +77,7 @@ export async function verifyAppSettings(options: {
 	if (appSettings.properties) {
 		const remoteRuntime: string | undefined =
 			appSettings.properties[workerRuntimeKey];
+
 		await verifyVersionAndLanguage(
 			context,
 			projectPath,
@@ -88,6 +97,7 @@ export async function verifyAppSettings(options: {
 				appSettings.properties,
 				bools,
 			);
+
 			updateAppSettings ||= remoteBuildSettingsChanged;
 		} else {
 			updateAppSettings ||= verifyRunFromPackage(
@@ -103,6 +113,7 @@ export async function verifyAppSettings(options: {
 				durableStorageType,
 				appSettings.properties,
 			);
+
 		updateAppSettings ||= updatedRemoteConnection;
 
 		if (updateAppSettings) {
@@ -136,6 +147,7 @@ export async function verifyAndUpdateAppConnectionStrings(
 					ConnectionKey.EventHubs,
 					context[ConnectionKey.EventHubs],
 				);
+
 			didUpdate ||= updatedNetheriteConnection;
 
 			break;
@@ -148,6 +160,7 @@ export async function verifyAndUpdateAppConnectionStrings(
 					ConnectionKey.SQL,
 					context[ConnectionKey.SQL],
 				);
+
 			didUpdate ||= updatedSqlDbConnection;
 
 			break;
@@ -162,6 +175,7 @@ export async function verifyAndUpdateAppConnectionStrings(
 		ConnectionKey.Storage,
 		context[ConnectionKey.Storage],
 	);
+
 	didUpdate ||= updatedStorageConnection;
 
 	return didUpdate;
@@ -175,6 +189,7 @@ export function updateConnectionStringIfNeeded(
 ): boolean {
 	if (newValue) {
 		remoteProperties[propertyName] = newValue;
+
 		context.telemetry.properties[`update${propertyName}`] = "true";
 
 		return true;
@@ -201,6 +216,7 @@ export async function verifyVersionAndLanguage(
 
 	// Since these are coming from the user's app settings we want to be a bit careful and only track if it's in an expected format
 	context.telemetry.properties.remoteVersion = azureVersion || "Unknown";
+
 	context.telemetry.properties.remoteRuntimeV2 = isKnownWorkerRuntime(
 		azureWorkerRuntime,
 	)
@@ -234,6 +250,7 @@ export async function verifyVersionAndLanguage(
 			const updateAndDeploy = {
 				title: localize("updateAndDeploy", "Update and Deploy"),
 			};
+
 			await context.ui.showWarningMessage(
 				`${incompatibleRuntime} The remote runtime version needs to be updated in order for this project to deploy successfully.`,
 				{ modal: true, stepName: "incompatibleDotnetRuntime" },
@@ -282,6 +299,7 @@ function verifyRunFromPackage(
 
 	if (shouldAddSetting) {
 		remoteProperties[runFromPackageKey] = "1";
+
 		ext.outputChannel.appendLog(
 			localize(
 				"addedRunFromPackage",
@@ -323,6 +341,7 @@ function verifyLinuxRemoteBuildSettings(
 				keysToRemove.push(key);
 			} else if (remoteProperties[key] !== value) {
 				remoteProperties[key] = value;
+
 				hasChanged = true;
 			}
 		}
@@ -331,6 +350,7 @@ function verifyLinuxRemoteBuildSettings(
 	for (const key of keysToRemove) {
 		if (remoteProperties[key]) {
 			delete remoteProperties[key];
+
 			hasChanged = true;
 		}
 	}
@@ -354,6 +374,7 @@ async function verifyAppSettingsPropagated(
 		async (attempt: number) => {
 			context.telemetry.measurements.verifyAppSettingsPropagatedAttempt =
 				attempt;
+
 			ext.outputChannel.appendLog(
 				localize(
 					"verifyAppSettings",

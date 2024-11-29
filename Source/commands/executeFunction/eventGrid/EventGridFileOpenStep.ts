@@ -27,6 +27,7 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 		context: EventGridExecuteFunctionContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -41,6 +42,7 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 			"downloadingSample",
 			"Downloading sample request...",
 		);
+
 		progress.report({ message: downloadingMsg });
 
 		const selectedFileContent = await feedUtils.getJsonFeed(
@@ -53,6 +55,7 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 			"openingFile",
 			"Opening file...",
 		);
+
 		progress.report({ message: openingFileMsg });
 
 		const tempFilePath: string = await createTempSampleFile(
@@ -63,13 +66,16 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 
 		const document: vscode.TextDocument =
 			await vscode.workspace.openTextDocument(tempFilePath);
+
 		await vscode.window.showTextDocument(document, {
 			preview: false,
 		});
+
 		ext.fileToFunctionNodeMap.set(
 			document.fileName,
 			nonNullProp(ext, "currentExecutingFunctionNode"),
 		);
+
 		context.fileOpened = true;
 
 		// Request will be sent when the user clicks on the button or on the codelens link
@@ -79,7 +85,9 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 				"modifyFile",
 				"You can modify the file and then click the 'Save and execute' button to send the request.",
 			);
+
 			void vscode.window.showInformationMessage(doneMsg);
+
 			await ext.context.workspaceState.update(
 				"didShowEventGridFileOpenMsg",
 				true,
@@ -88,6 +96,7 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 
 		// Set a listener to track whether the file was modified before the request is sent
 		let modifiedListenerDisposable: vscode.Disposable;
+
 		void new Promise<void>((resolve, reject) => {
 			modifiedListenerDisposable =
 				vscode.workspace.onDidChangeTextDocument(async (event) => {
@@ -103,9 +112,11 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 										"true";
 								},
 							);
+
 							resolve();
 						} catch (error) {
 							context.errorHandling.suppressDisplay = true;
+
 							reject(error);
 						} finally {
 							modifiedListenerDisposable.dispose();
@@ -124,10 +135,13 @@ export class EventGridFileOpenStep extends AzureWizardExecuteStep<EventGridExecu
 								ext.fileToFunctionNodeMap.delete(
 									document.fileName,
 								);
+
 								await AzExtFsExtra.deleteResource(tempFilePath);
+
 								resolve();
 							} catch (error) {
 								context.errorHandling.suppressDisplay = true;
+
 								reject(error);
 							} finally {
 								closedListenerDisposable.dispose();

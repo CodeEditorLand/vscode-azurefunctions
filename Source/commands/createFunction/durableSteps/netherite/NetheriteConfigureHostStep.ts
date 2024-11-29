@@ -40,6 +40,7 @@ export class NetheriteConfigureHostStep<
 				'Unable to find and configure "{0}" in your project root. You may need to configure your Netherite event hub settings manually.',
 				hostFileName,
 			);
+
 			ext.outputChannel.appendLog(message);
 
 			const notification: string = localize(
@@ -47,6 +48,7 @@ export class NetheriteConfigureHostStep<
 				'Failed to configure your "{0}".',
 				hostFileName,
 			);
+
 			void context.ui
 				.showWarningMessage(notification, { title: viewOutput })
 				.then((result) => {
@@ -68,6 +70,7 @@ export class NetheriteConfigureHostStep<
 		const existingHubName: string | undefined = durableTask?.hubName;
 
 		hostJson.extensions ??= {};
+
 		hostJson.extensions.durableTask =
 			durableUtils.getDefaultNetheriteTaskConfig(
 				nonNullValue(context.newEventHubName || existingHubName),

@@ -19,6 +19,7 @@ export async function startFunctionApp(
 	}
 
 	const client: SiteClient = await node.site.createClient(context);
+
 	await node.runWithTemporaryDescription(
 		context,
 		localize("starting", "Starting..."),

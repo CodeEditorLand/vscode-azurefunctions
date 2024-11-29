@@ -20,10 +20,15 @@ export enum TemplateCategory {
  */
 export interface IFunctionTemplate extends FunctionTemplateBase {
 	defaultFunctionName: string;
+
 	isSqlBindingTemplate: boolean;
+
 	userPromptedSettings: IBindingSetting[];
+
 	categories: TemplateCategory[];
+
 	categoryStyle?: string;
+
 	isDynamicConcurrent: boolean;
 
 	// a defined triggerType means that the template is part of Node V4 programming model
@@ -45,9 +50,14 @@ export interface FunctionV2Template
  */
 export interface FunctionTemplateBase {
 	id: string;
+
 	name: string;
+
 	language: ProjectLanguage;
+
 	isHttpTrigger: boolean;
+
 	isTimerTrigger: boolean;
+
 	templateSchemaVersion: TemplateSchemaVersion;
 }

@@ -23,6 +23,7 @@ import { type IFunction } from "./workspace/LocalFunction";
  */
 class ActionVariable<T> {
 	private _extensionVariable: T | undefined;
+
 	private _key: string;
 
 	public constructor(key: string) {

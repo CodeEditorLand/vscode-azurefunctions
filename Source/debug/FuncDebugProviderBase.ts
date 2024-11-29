@@ -25,7 +25,9 @@ export abstract class FuncDebugProviderBase
 	implements DebugConfigurationProvider
 {
 	public abstract workerArgKey: string;
+
 	protected abstract defaultPortOrPipeName: number | string;
+
 	protected abstract debugConfig: DebugConfiguration;
 
 	private readonly _debugPorts = new Map<
@@ -44,7 +46,9 @@ export abstract class FuncDebugProviderBase
 				"provideDebugConfigurations",
 				async (context: IActionContext) => {
 					context.telemetry.properties.isActivationEvent = "true";
+
 					context.errorHandling.suppressDisplay = true;
+
 					context.telemetry.suppressIfSuccessful = true;
 
 					const result: DebugConfiguration[] = [];
@@ -73,7 +77,9 @@ export abstract class FuncDebugProviderBase
 			"resolveDebugConfiguration",
 			async (context: IActionContext) => {
 				context.telemetry.properties.isActivationEvent = "true";
+
 				context.errorHandling.suppressDisplay = true;
+
 				context.telemetry.suppressIfSuccessful = true;
 
 				this._debugPorts.set(
@@ -87,6 +93,7 @@ export abstract class FuncDebugProviderBase
 					)
 				) {
 					context.telemetry.properties.isActivationEvent = "false";
+
 					context.telemetry.suppressIfSuccessful = false;
 
 					const preDebugResult: IPreDebugValidateResult =

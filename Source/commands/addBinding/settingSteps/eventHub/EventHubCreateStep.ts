@@ -20,6 +20,7 @@ import { type IEventHubWizardContext } from "./IEventHubWizardContext";
 export class EventHubCreateStep extends AzureWizardExecuteStep<IEventHubWizardContext> {
 	// EventHubsNamespaceCreateStep has a priority number of 190, so has to be after that
 	public priority: number = 191;
+
 	public async execute(context: IEventHubWizardContext): Promise<void> {
 		const namespaceName: string = nonNullValueAndProp(
 			context.eventHubsNamespace,
@@ -52,7 +53,9 @@ export class EventHubCreateStep extends AzureWizardExecuteStep<IEventHubWizardCo
 					namespaceName,
 				),
 			);
+
 		context.authRule = namespaceRules[0];
+
 		context.isNamespaceAuthRule = true;
 	}
 

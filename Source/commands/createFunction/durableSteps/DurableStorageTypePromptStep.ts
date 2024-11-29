@@ -25,6 +25,7 @@ export class DurableStorageTypePromptStep<
 		[key: string]: string | undefined;
 	}) {
 		super();
+
 		this._functionSettings = functionSettings || {};
 	}
 
@@ -79,6 +80,7 @@ export class DurableStorageTypePromptStep<
 				await openUrl("https://aka.ms/durable-storage-providers");
 			}
 		}
+
 		context.newDurableStorageType = pick;
 	}
 

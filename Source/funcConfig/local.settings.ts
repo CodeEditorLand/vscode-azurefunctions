@@ -18,8 +18,11 @@ import { parseJson } from "../utils/parseJson";
 
 export interface ILocalSettingsJson {
 	IsEncrypted?: boolean;
+
 	Values?: { [key: string]: string };
+
 	Host?: { [key: string]: string };
+
 	ConnectionStrings?: { [key: string]: string };
 }
 
@@ -102,6 +105,7 @@ export async function setLocalAppSetting(
 	}
 
 	settings.Values[key] = value;
+
 	await AzExtFsExtra.writeJSON(localSettingsPath, settings);
 }
 

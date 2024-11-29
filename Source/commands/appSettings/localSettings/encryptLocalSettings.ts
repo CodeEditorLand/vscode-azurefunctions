@@ -24,7 +24,9 @@ export async function encryptLocalSettings(
 	const localSettingsPath: string = uri
 		? uri.fsPath
 		: await getLocalSettingsFile(context, message);
+
 	ext.outputChannel.show(true);
+
 	await cpUtils.executeCommand(
 		ext.outputChannel,
 		path.dirname(localSettingsPath),

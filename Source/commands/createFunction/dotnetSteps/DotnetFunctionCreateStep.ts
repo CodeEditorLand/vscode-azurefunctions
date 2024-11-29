@@ -43,15 +43,19 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 			context,
 			"functionTemplate",
 		);
+
 		assertTemplateIsV1(template);
 
 		const functionName: string = nonNullProp(context, "functionName");
 
 		const args: string[] = [];
+
 		args.push("--arg:name");
+
 		args.push(cpUtils.wrapArgInQuotes(functionName));
 
 		args.push("--arg:namespace");
+
 		args.push(cpUtils.wrapArgInQuotes(nonNullProp(context, "namespace")));
 
 		for (const setting of template.userPromptedSettings) {
@@ -59,6 +63,7 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 			// NOTE: Explicitly checking against undefined. Empty string is a valid value
 			if (value !== undefined) {
 				args.push(`--arg:${setting.name}`);
+
 				args.push(cpUtils.wrapArgInQuotes(value));
 			}
 		}
@@ -69,6 +74,7 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 
 		if (!projectTemplateKey) {
 			const templateProvider = ext.templateProvider.get(context);
+
 			projectTemplateKey = await templateProvider.getProjectTemplateKey(
 				context,
 				context.projectPath,
@@ -78,6 +84,7 @@ export class DotnetFunctionCreateStep extends FunctionCreateStepBase<IDotnetFunc
 				undefined,
 			);
 		}
+
 		await executeDotnetTemplateCommand(
 			context,
 			version,

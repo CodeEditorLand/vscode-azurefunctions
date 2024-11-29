@@ -44,6 +44,7 @@ export class NodeV4FunctionNameStep extends FunctionNameStepBase<IScriptFunction
 			functionSubpathSetting,
 			context.projectPath,
 		) as string;
+
 		name = `${name}${getFileExtensionFromLanguage(context.language)}`;
 
 		if (

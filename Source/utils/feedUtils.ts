@@ -12,6 +12,7 @@ import { requestUtils } from "./requestUtils";
 export namespace feedUtils {
 	interface ICachedFeed {
 		data: {};
+
 		nextRefreshTime: number;
 	}
 
@@ -41,6 +42,7 @@ export namespace feedUtils {
 				data: parseJson(nonNullProp(response, "bodyAsText")),
 				nextRefreshTime: Date.now() + 10 * 60 * 1000,
 			};
+
 			cachedFeeds.set(url, cachedFeed);
 		}
 

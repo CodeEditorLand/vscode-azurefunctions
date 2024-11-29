@@ -40,7 +40,9 @@ export class ContainerizedFunctionAppCreateStep extends AzureWizardExecuteStep<I
 			'Creating new function app "{0}"...',
 			context.newSiteName,
 		);
+
 		ext.outputChannel.appendLog(message);
+
 		progress.report({ message });
 
 		if (
@@ -64,11 +66,13 @@ export class ContainerizedFunctionAppCreateStep extends AzureWizardExecuteStep<I
 
 		const client: WebSiteManagementClient =
 			await createWebSiteClient(context);
+
 		context.site = await client.webApps.beginCreateOrUpdateAndWait(
 			rgName,
 			siteName,
 			await this.getNewSite(context),
 		);
+
 		context.activityResult = context.site as AppResource;
 
 		const containerSite = Object.assign(context.site, {
@@ -78,6 +82,7 @@ export class ContainerizedFunctionAppCreateStep extends AzureWizardExecuteStep<I
 		});
 
 		await pingContainerizedFunctionApp(context, client, context.site);
+
 		showSiteCreated(containerSite, context);
 	}
 

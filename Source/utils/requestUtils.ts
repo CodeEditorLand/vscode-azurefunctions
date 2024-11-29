@@ -84,6 +84,7 @@ export namespace requestUtils {
 				? { method: "GET", url: requestOptionsOrUrl }
 				: requestOptionsOrUrl,
 		);
+
 		request.streamResponseStatusCodes = new Set([Number.POSITIVE_INFINITY]);
 
 		const client: ServiceClient = await createGenericClient(
@@ -98,6 +99,7 @@ export namespace requestUtils {
 			response,
 			"readableStreamBody",
 		);
+
 		await new Promise((resolve, reject): void => {
 			stream.pipe(
 				fse
@@ -119,6 +121,7 @@ export namespace requestUtils {
 				data[key] as string | null | undefined,
 			);
 		}
+
 		return result;
 	}
 

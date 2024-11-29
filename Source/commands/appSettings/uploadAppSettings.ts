@@ -51,6 +51,7 @@ export async function uploadAppSettings(
 
 	const client: IAppSettingsClient =
 		await node.clientProvider.createClient(context);
+
 	await node.runWithTemporaryDescription(
 		context,
 		localize("uploading", "Uploading..."),
@@ -117,14 +118,17 @@ export async function uploadAppSettingsInternal(
 			localStorageEmulatorConnectionString
 		) {
 			delete localSettings.Values?.[ConnectionKey.Storage];
+
 			excludedAppSettings.push(ConnectionKey.Storage);
 		}
+
 		if (
 			localEventHubsEmulatorConnectionRegExp.test(
 				localSettings.Values[ConnectionKey.EventHubs],
 			)
 		) {
 			delete localSettings.Values?.[ConnectionKey.EventHubs];
+
 			excludedAppSettings.push(ConnectionKey.EventHubs);
 		}
 
@@ -139,6 +143,7 @@ export async function uploadAppSettingsInternal(
 					)
 				) {
 					delete localSettings.Values?.[settingName];
+
 					excludedAppSettings.push(settingName);
 				}
 			});
@@ -148,9 +153,11 @@ export async function uploadAppSettingsInternal(
 			"uploadingSettings",
 			"Uploading settings...",
 		);
+
 		ext.outputChannel.appendLog(uploadSettings, {
 			resourceName: client.fullName,
 		});
+
 		await confirmOverwriteSettings(
 			context,
 			localSettings.Values,
@@ -165,6 +172,7 @@ export async function uploadAppSettingsInternal(
 					"Excluded the following settings:",
 				),
 			);
+
 			excludedAppSettings.forEach((key) =>
 				ext.outputChannel.appendLine(`- ${key}`),
 			);

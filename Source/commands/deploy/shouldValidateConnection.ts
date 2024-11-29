@@ -10,6 +10,7 @@ import { getEventHubName } from "../appSettings/connectionSettings/eventHubs/val
 
 export interface IShouldValidateConnection {
 	shouldValidateEventHubs: boolean;
+
 	shouldValidateSqlDb: boolean;
 }
 

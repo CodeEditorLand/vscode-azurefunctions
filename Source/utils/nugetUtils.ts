@@ -63,8 +63,11 @@ export namespace nugetUtils {
 
 	interface IVersionRange {
 		minVersion: string;
+
 		includeMinVersion: boolean;
+
 		maxVersion: string | undefined;
+
 		includeMaxVersion: boolean | undefined;
 	}
 
@@ -140,6 +143,7 @@ export namespace nugetUtils {
 
 			// If there is only one part, use it for both min and max
 			minVersion = parts[0];
+
 			maxVersion = parts.length === 2 ? parts[1] : parts[0];
 		} else {
 			if (value.includes(wildcard)) {
@@ -148,6 +152,7 @@ export namespace nugetUtils {
 			} else {
 				// Otherwise, it denotes the minimum version (inclusive)
 				includeMinVersion = true;
+
 				minVersion = value;
 			}
 		}
@@ -195,8 +200,10 @@ export namespace nugetUtils {
 
 			while (count < 2) {
 				version += ".0";
+
 				count += 1;
 			}
+
 			return version;
 		}
 	}

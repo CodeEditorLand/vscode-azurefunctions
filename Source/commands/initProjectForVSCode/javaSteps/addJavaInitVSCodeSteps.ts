@@ -33,5 +33,6 @@ export async function addJavaInitVSCodeSteps(
 			context.buildTool = JavaBuildTool.gradle;
 		}
 	}
+
 	executeSteps.push(new JavaInitVSCodeStep());
 }

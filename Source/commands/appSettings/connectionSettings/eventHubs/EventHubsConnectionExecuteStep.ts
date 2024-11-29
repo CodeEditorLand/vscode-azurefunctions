@@ -21,6 +21,7 @@ export class EventHubsConnectionExecuteStep<
 	T extends IEventHubsConnectionWizardContext,
 > extends SetConnectionSettingStepBase<T> {
 	public priority: number = 240;
+
 	public debugDeploySetting: ConnectionKeyValues = ConnectionKey.EventHubs;
 
 	public async execute(context: T): Promise<void> {
@@ -40,6 +41,7 @@ export class EventHubsConnectionExecuteStep<
 			) {
 				return;
 			}
+
 			value = localEventHubsEmulatorConnectionStringDefault;
 		} else {
 			value = (

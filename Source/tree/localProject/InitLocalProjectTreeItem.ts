@@ -25,6 +25,7 @@ export class InitLocalProjectTreeItem extends LocalProjectTreeItemBase {
 		folder: WorkspaceFolder,
 	) {
 		super(parent, projectPath, folder);
+
 		this._projectPath = projectPath;
 	}
 
@@ -45,6 +46,7 @@ export class InitLocalProjectTreeItem extends LocalProjectTreeItemBase {
 			commandId: "azureFunctions.initProjectForVSCode",
 			iconPath: new ThemeIcon("warning"),
 		});
+
 		ti.commandArgs = [this._projectPath];
 
 		return [ti];

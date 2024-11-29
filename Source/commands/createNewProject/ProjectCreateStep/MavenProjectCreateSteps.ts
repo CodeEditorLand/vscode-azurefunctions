@@ -33,11 +33,13 @@ export class MavenProjectCreateStep extends ProjectCreateStepBase {
 			os.tmpdir(),
 			fsUtil.getRandomHexString(),
 		);
+
 		await AzExtFsExtra.ensureDir(tempFolder);
 
 		try {
 			// Use maven command to init Java function project.
 			ext.outputChannel.show();
+
 			await mavenUtils.executeMvnCommand(
 				context.telemetry.properties,
 				ext.outputChannel,
@@ -72,6 +74,7 @@ export class MavenProjectCreateStep extends ProjectCreateStepBase {
 				),
 				"-B", // in Batch Mode
 			);
+
 			await fsUtil.copyFolder(
 				context,
 				path.join(tempFolder, artifactId),

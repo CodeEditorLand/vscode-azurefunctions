@@ -26,10 +26,15 @@ import { SlotTreeItem } from "./SlotTreeItem";
 
 export class SlotsTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "azFuncSlots";
+
 	public readonly contextValue: string = SlotsTreeItem.contextValue;
+
 	public readonly label: string = localize("slots", "Slots");
+
 	public readonly childTypeLabel: string = localize("slot", "Slot");
+
 	public readonly parent: SlotTreeItem;
+
 	public suppressMaskLabel: boolean = true;
 
 	private _nextLink: string | undefined;
@@ -99,6 +104,7 @@ export class SlotsTreeItem extends AzExtParentTreeItem {
 		);
 
 		const parsedSite = new ParsedSite(newSite, this.subscription);
+
 		showSiteCreated(parsedSite, context);
 
 		return new SlotTreeItem(

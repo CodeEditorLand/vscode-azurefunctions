@@ -22,7 +22,9 @@ export async function createAndGetAuthRuleName(
 		promptSteps: [new EventHubsNamespaceAuthRuleNameStep()],
 		executeSteps: [new EventHubsNamespaceAuthRuleCreateStep()],
 	});
+
 	await wizard.prompt();
+
 	await wizard.execute();
 
 	return nonNullValue(context.authRule?.name);

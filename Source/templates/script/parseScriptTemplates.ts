@@ -32,15 +32,23 @@ export interface IRawTemplate {
 	id?: string;
 
 	function?: {};
+
 	metadata?: {
 		defaultFunctionName: string;
+
 		name: string;
+
 		language: ProjectLanguage;
+
 		userPrompt?: string[];
+
 		category?: TemplateCategory[];
+
 		categoryStyle?: string;
+
 		triggerType?: string;
 	};
+
 	files?: { [filename: string]: string };
 }
 
@@ -49,19 +57,28 @@ export interface IRawTemplate {
  */
 interface IRawSetting {
 	name: string;
+
 	value: ValueType;
+
 	label: string;
+
 	help?: string;
 
 	defaultValue?: string;
+
 	required?: boolean;
+
 	resource?: ResourceType;
+
 	validators?: {
 		expression: string;
+
 		errorText: string;
 	}[];
+
 	enum?: {
 		value: string;
+
 		display: string;
 	}[];
 }
@@ -70,7 +87,9 @@ interface IRawBinding {
 	type?: string;
 
 	documentation: string;
+
 	displayName: string;
+
 	direction: string;
 
 	settings?: IRawSetting[];
@@ -81,6 +100,7 @@ interface IRawBinding {
  */
 export interface IConfig {
 	variables: IVariables;
+
 	bindings?: IRawBinding[];
 }
 
@@ -113,6 +133,7 @@ function getVariableValue(
 	const matches: RegExpMatchArray | null = data.match(
 		/\[variables\(\'(.*)\'\)\]/,
 	);
+
 	data = matches !== null ? variables[matches[1]] : data;
 
 	return getResourceValue(resources, data);
@@ -151,6 +172,7 @@ export function getResourceValue(
 			if (dontThrow) {
 				return undefined;
 			}
+
 			throw new Error(
 				localize("resourceNotFound", 'Resource "{0}" not found.', data),
 			);
@@ -190,6 +212,7 @@ function parseScriptSetting(
 				? replaceHtmlLinkWithMarkdown(resourceValue)
 				: undefined;
 		}
+
 		return undefined;
 	}
 
@@ -254,6 +277,7 @@ export function parseScriptBindings(
 							config.variables,
 						),
 					);
+
 					result.push({
 						direction: rawBinding.direction,
 						displayName: getResourceValue(
@@ -271,6 +295,7 @@ export function parseScriptBindings(
 			}
 		}
 	}
+
 	return result;
 }
 
@@ -339,6 +364,7 @@ export function parseScriptTemplate(
 
 							setting.assignTo = setting.name;
 						}
+
 						userPromptedSettings.push(setting);
 					}
 				}

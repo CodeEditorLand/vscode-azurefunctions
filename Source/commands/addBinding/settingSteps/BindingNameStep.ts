@@ -32,6 +32,7 @@ export class BindingNameStep extends StringPromptStep {
 					return uniqueValue;
 				} else {
 					count += 1;
+
 					uniqueValue = defaultValue + count.toString();
 				}
 			}

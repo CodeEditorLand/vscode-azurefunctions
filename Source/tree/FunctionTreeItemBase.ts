@@ -28,8 +28,11 @@ import {
 
 export abstract class FunctionTreeItemBase extends AzExtTreeItem {
 	public readonly parent: FunctionsTreeItemBase;
+
 	public readonly project: IProjectTreeItem;
+
 	public readonly function: FunctionBase;
+
 	private _disabled: boolean;
 
 	protected constructor(
@@ -38,7 +41,9 @@ export abstract class FunctionTreeItemBase extends AzExtTreeItem {
 		enableProperties: boolean = true,
 	) {
 		super(parent);
+
 		this.project = this.parent.parent;
+
 		this.function = func;
 
 		if (enableProperties) {

@@ -89,6 +89,7 @@ export class LocalProject implements LocalProjectInternal {
 			const funcTask: Task | undefined = (await tasks.fetchTasks()).find(
 				(t) => t.scope === this.options.folder && isFuncHostTask(t),
 			);
+
 			port = await getFuncPortFromTaskOrProject(
 				context,
 				funcTask,
@@ -106,6 +107,7 @@ export class LocalProject implements LocalProjectInternal {
 		} catch {
 			try {
 				const httpsUrl = url.replace("http", "https");
+
 				await requestUtils.sendRequestWithExtTimeout(context, {
 					url: httpsUrl,
 					method: "GET",

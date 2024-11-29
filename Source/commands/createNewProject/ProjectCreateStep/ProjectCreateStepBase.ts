@@ -22,6 +22,7 @@ export abstract class ProjectCreateStepBase extends AzureWizardExecuteStep<IProj
 		context: IProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void>;
@@ -30,16 +31,20 @@ export abstract class ProjectCreateStepBase extends AzureWizardExecuteStep<IProj
 		context: IProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
 		context.telemetry.properties.projectLanguage = context.language;
+
 		context.telemetry.properties.projectRuntime = context.version;
+
 		context.telemetry.properties.openBehavior = context.openBehavior;
 
 		progress.report({
 			message: localize("creating", "Creating new project..."),
 		});
+
 		await AzExtFsExtra.ensureDir(context.projectPath);
 
 		await this.executeCore(context, progress);

@@ -74,9 +74,11 @@ export async function notifyDeployComplete(
 				async (postDeployContext: IActionContext) => {
 					postDeployContext.telemetry.properties.dialogResult =
 						result && result.title;
+
 					postDeployContext.valuesToMask.push(
 						...context.valuesToMask,
 					);
+
 					context.telemetry.eventVersion = 2;
 
 					if (result === viewOutput) {
@@ -97,6 +99,7 @@ export async function notifyDeployComplete(
 
 	try {
 		const retries: number = 4;
+
 		await retry(
 			async (currentAttempt: number) => {
 				context.telemetry.properties.queryTriggersAttempt =
@@ -111,9 +114,11 @@ export async function notifyDeployComplete(
 								currentAttempt,
 								retries + 1,
 							);
+
 				ext.outputChannel.appendLog(message, {
 					resourceName: node.site.fullName,
 				});
+
 				await listHttpTriggerUrls(context, node);
 			},
 			{ retries, minTimeout: 2 * 1000 },
@@ -121,6 +126,7 @@ export async function notifyDeployComplete(
 	} catch (error) {
 		// suppress error notification and instead display a warning in the output. We don't want it to seem like the deployment failed.
 		context.errorHandling.suppressDisplay = true;
+
 		ext.outputChannel.appendLog(
 			localize(
 				"failedToList",
@@ -141,6 +147,7 @@ async function listHttpTriggerUrls(
 	const functionsNode: RemoteFunctionsTreeItem = <RemoteFunctionsTreeItem>(
 		children.find((n) => n instanceof RemoteFunctionsTreeItem)
 	);
+
 	await node.treeDataProvider.refresh(context, functionsNode);
 
 	const logOptions: {} = { resourceName: node.site.fullName };
@@ -161,6 +168,7 @@ async function listHttpTriggerUrls(
 
 	if (anonFunctions.length > 0) {
 		hasHttpTriggers = true;
+
 		ext.outputChannel.appendLog(
 			localize("anonymousFunctionUrls", "HTTP Trigger Urls:"),
 			logOptions,
@@ -171,6 +179,7 @@ async function listHttpTriggerUrls(
 				await func.getTriggerRequest(context),
 				"triggerRequest",
 			);
+
 			ext.outputChannel.appendLine(
 				`  ${func.label}: ${triggerRequest.url}`,
 			);
@@ -186,6 +195,7 @@ async function listHttpTriggerUrls(
 		)
 	) {
 		hasHttpTriggers = true;
+
 		ext.outputChannel.appendLog(
 			localize(
 				"nonAnonymousWarning",

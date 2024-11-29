@@ -20,6 +20,7 @@ export class ShowMarkdownPreviewExecuteStep<
 		const filename = nonNullProp(this.action, "filePath");
 
 		const content = context.functionTemplate.files[filename] ?? "";
+
 		await showMarkdownPreviewContent(
 			content,
 			filename,

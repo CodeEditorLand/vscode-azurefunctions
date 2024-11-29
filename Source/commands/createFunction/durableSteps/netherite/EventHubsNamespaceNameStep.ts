@@ -27,6 +27,7 @@ export class EventHubsNamespaceNameStep<
 		this.client = await createEventHubClient(
 			<T & ISubscriptionContext>context,
 		);
+
 		context.newEventHubsNamespaceName = (
 			await context.ui.showInputBox({
 				prompt: localize(
@@ -55,9 +56,11 @@ export class EventHubsNamespaceNameStep<
 		if (!validateUtils.isValidLength(name, 6, 50)) {
 			return getInvalidLengthMessage(6, 50);
 		}
+
 		if (!validateUtils.isAlphanumericWithHypens(name)) {
 			return invalidAlphanumericWithHyphens;
 		}
+
 		return undefined;
 	}
 
@@ -74,6 +77,7 @@ export class EventHubsNamespaceNameStep<
 				"The event hub namespace you entered already exists. Please enter a unique name.",
 			);
 		}
+
 		return undefined;
 	}
 }

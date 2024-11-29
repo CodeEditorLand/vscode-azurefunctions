@@ -38,6 +38,7 @@ import { parseDotnetTemplates } from "./parseDotnetTemplates";
 
 export class DotnetTemplateProvider extends TemplateProviderBase {
 	public templateType: TemplateType = TemplateType.Dotnet;
+
 	public templateSchemaVersion: TemplateSchemaVersion =
 		TemplateSchemaVersion.v1;
 
@@ -56,17 +57,21 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 			const watcher = workspace.createFileSystemWatcher(
 				new RelativePattern(projectPath, projGlob),
 			);
+
 			this._disposables.push(watcher);
+
 			this._disposables.push(
 				watcher.onDidChange(() => {
 					this.projKeyMayHaveChanged();
 				}),
 			);
+
 			this._disposables.push(
 				watcher.onDidDelete(() => {
 					this.projKeyMayHaveChanged();
 				}),
 			);
+
 			this._disposables.push(
 				watcher.onDidCreate(() => {
 					this.projKeyMayHaveChanged();
@@ -177,6 +182,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 							projKey,
 							latestProjKeys.join('", "'),
 						);
+
 						ext.outputChannel.appendLog(warning);
 
 						return newTemplateVersion;
@@ -194,6 +200,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 								context,
 								newFuncVersion,
 							);
+
 						netRelease = await this.getNetRelease(
 							context,
 							projKey,
@@ -218,6 +225,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 								oldMajorVersion,
 								newMajorVersion,
 							);
+
 							ext.outputChannel.appendLog(warning);
 
 							return newTemplateVersion;
@@ -227,6 +235,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 					// ignore and try next version
 				}
 			}
+
 			throw new Error(
 				localize(
 					"projKeyError",
@@ -262,6 +271,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 			await this.getNetRelease(context, projKey, latestTemplateVersion),
 			"netRelease",
 		);
+
 		await Promise.all([
 			requestUtils.downloadFile(
 				context,
@@ -308,6 +318,7 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 				{ overwrite: true },
 			);
 		}
+
 		return await this.parseTemplates(context, projKey);
 	}
 
@@ -335,12 +346,15 @@ export class DotnetTemplateProvider extends TemplateProviderBase {
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async cacheTemplates(context: IActionContext): Promise<void> {
 		const projKey = await this.getProjKey(context);
+
 		await this.updateCachedValue(projKey, this._rawTemplates);
 	}
 
 	public async clearCachedTemplates(context: IActionContext): Promise<void> {
 		const projKey = await this.getProjKey(context);
+
 		await this.deleteCachedValue(projKey);
+
 		await AzExtFsExtra.deleteResource(
 			getDotnetTemplateDir(context, this.version, projKey),
 			{ recursive: true },

@@ -23,8 +23,11 @@ export const java21: string = "21";
 
 type javaVersionInfo = {
 	label: string;
+
 	data: string;
+
 	description?: string;
+
 	miniFunc: string;
 };
 
@@ -54,6 +57,7 @@ export class JavaVersionStep extends AzureWizardPromptStep<IJavaProjectWizardCon
 			"selectJavaVersion",
 			"Select a version of Java",
 		);
+
 		context.javaVersion = (
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;
@@ -78,6 +82,7 @@ export class JavaVersionStep extends AzureWizardPromptStep<IJavaProjectWizardCon
 				result.push(version);
 			}
 		}
+
 		return result;
 	}
 

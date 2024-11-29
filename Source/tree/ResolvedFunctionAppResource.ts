@@ -72,45 +72,66 @@ export class ResolvedFunctionAppResource
 	implements ResolvedAppResourceBase
 {
 	public site: ParsedSite;
+
 	public data: Site;
 
 	private _subscription: ISubscriptionContext;
+
 	public logStreamPath: string = "";
+
 	public appSettingsTreeItem: AppSettingsTreeItem;
+
 	public deploymentsNode: DeploymentsTreeItem | undefined;
+
 	public readonly source: ProjectSource = ProjectSource.Remote;
 
 	public static instance = "resolvedFunctionApp";
+
 	public readonly instance = ResolvedFunctionAppResource.instance;
 
 	public contextValuesToAdd?: string[] | undefined;
+
 	public maskedValuesToAdd: string[] = [];
 
 	private _slotsTreeItem: SlotsTreeItem;
+
 	private _functionsTreeItem: RemoteFunctionsTreeItem | undefined;
+
 	private _logFilesTreeItem: LogFilesTreeItem;
+
 	private _siteFilesTreeItem: SiteFilesTreeItem;
 
 	private _cachedVersion: FuncVersion | undefined;
+
 	private _cachedHostJson: IParsedHostJson | undefined;
+
 	private _cachedIsConsumption: boolean | undefined;
 
 	public static pickSlotContextValue: RegExp = new RegExp(/azFuncSlot(?!s)/);
+
 	public static productionContextValue: string = "azFuncProductionSlot";
+
 	public static slotContextValue: string = "azFuncSlot";
+
 	public static flexContextValue: string = "azFuncFlex";
 
 	private _isFlex: boolean;
 
 	commandId?: string | undefined;
+
 	tooltip?: string | undefined;
+
 	commandArgs?: unknown[] | undefined;
 
 	public constructor(subscription: ISubscriptionContext, site: Site) {
 		super(new ParsedSite(site, subscription));
+
 		this.data = this.site.rawSite;
+
 		this._subscription = subscription;
+
 		this.contextValuesToAdd = [];
+
 		this._isFlex = !!site.functionAppConfig;
 
 		if (this._isFlex) {
@@ -154,6 +175,7 @@ export class ResolvedFunctionAppResource
 		site: Site,
 	): ResolvedFunctionAppResource {
 		const resource = new ResolvedFunctionAppResource(subscription, site);
+
 		void resource.site
 			.createClient(context)
 			.then(
@@ -176,6 +198,7 @@ export class ResolvedFunctionAppResource
 		if (this._isFlex) {
 			return localize("flexFunctionApp", "Flex (Preview)");
 		}
+
 		return this._state?.toLowerCase() !== "running"
 			? this._state
 			: undefined;
@@ -196,10 +219,13 @@ export class ResolvedFunctionAppResource
 	 */
 	public async refreshImpl(context: IActionContext): Promise<void> {
 		this._cachedVersion = undefined;
+
 		this._cachedHostJson = undefined;
+
 		this._cachedIsConsumption = undefined;
 
 		const client = await this.site.createClient(context);
+
 		this.site = new ParsedSite(
 			nonNullValue(await client.getSite(), "site"),
 			this._subscription,
@@ -217,6 +243,7 @@ export class ResolvedFunctionAppResource
 
 				const appSettings: StringDictionary =
 					await client.listApplicationSettings();
+
 				version = tryParseFuncVersion(
 					appSettings.properties &&
 						appSettings.properties.FUNCTIONS_EXTENSION_VERSION,
@@ -224,7 +251,9 @@ export class ResolvedFunctionAppResource
 			} catch {
 				// ignore and use default
 			}
+
 			result = version || latestGAVersion;
+
 			this._cachedVersion = result;
 		}
 
@@ -254,8 +283,11 @@ export class ResolvedFunctionAppResource
 			} catch {
 				// ignore and use default
 			}
+
 			const version: FuncVersion = await this.getVersion(context);
+
 			result = parseHostJson(data, version);
+
 			this._cachedHostJson = result;
 		}
 
@@ -286,7 +318,9 @@ export class ResolvedFunctionAppResource
 		if (!settings.properties) {
 			settings.properties = {};
 		}
+
 		settings.properties[key] = value;
+
 		await client.updateApplicationSettings(settings);
 	}
 
@@ -296,11 +330,13 @@ export class ResolvedFunctionAppResource
 		if (result === undefined) {
 			try {
 				const client = await this.site.createClient(context);
+
 				result = await client.getIsConsumption(context);
 			} catch {
 				// ignore and use default
 				result = true;
 			}
+
 			this._cachedIsConsumption = result;
 		}
 
@@ -326,6 +362,7 @@ export class ResolvedFunctionAppResource
 			sourceControl,
 			contextValuesToAdd: ["azFunc"],
 		});
+
 		this.appSettingsTreeItem = new AppSettingsTreeItem(
 			proxyTree,
 			this.site,
@@ -334,11 +371,13 @@ export class ResolvedFunctionAppResource
 				contextValuesToAdd: ["azFunc"],
 			},
 		);
+
 		this._siteFilesTreeItem = new SiteFilesTreeItem(proxyTree, {
 			site: this.site,
 			isReadOnly: true,
 			contextValuesToAdd: ["azFunc"],
 		});
+
 		this._logFilesTreeItem = new LogFilesTreeItem(proxyTree, {
 			site: this.site,
 			contextValuesToAdd: ["azFunc"],
@@ -360,11 +399,13 @@ export class ResolvedFunctionAppResource
 		// Deployment configuration not supported by flex consumption at the time
 		if (!this._isFlex) {
 			children.push(this._logFilesTreeItem);
+
 			children.push(this.deploymentsNode);
 		}
 
 		if (!this.site.isSlot && !this._isFlex) {
 			this._slotsTreeItem = new SlotsTreeItem(proxyTree);
+
 			children.push(this._slotsTreeItem);
 		}
 
@@ -402,6 +443,7 @@ export class ResolvedFunctionAppResource
 				) {
 					return this.appSettingsTreeItem;
 				}
+
 				const deploymentsContextValues = [
 					DeploymentsTreeItem.contextValueConnected,
 					DeploymentsTreeItem.contextValueUnconnected,
@@ -500,6 +542,7 @@ export class ResolvedFunctionAppResource
 		});
 
 		await wizard.prompt();
+
 		await wizard.execute();
 	}
 }
@@ -513,6 +556,7 @@ export function matchContextValue(
 			if (match instanceof RegExp) {
 				return expectedContextValue.toString() === match.toString();
 			}
+
 			return expectedContextValue.test(match);
 		});
 	} else {
@@ -520,6 +564,7 @@ export function matchContextValue(
 			if (match instanceof RegExp) {
 				return match.test(expectedContextValue);
 			}
+
 			return expectedContextValue === match;
 		});
 	}

@@ -22,7 +22,9 @@ export const nodeDebugConfig: DebugConfiguration = {
 
 export class NodeDebugProvider extends FuncDebugProviderBase {
 	public readonly workerArgKey: string = "languageWorkers__node__arguments";
+
 	protected readonly defaultPortOrPipeName: number = defaultNodeDebugPort;
+
 	protected readonly debugConfig: DebugConfiguration = nodeDebugConfig;
 
 	// eslint-disable-next-line @typescript-eslint/require-await

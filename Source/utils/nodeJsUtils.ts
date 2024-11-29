@@ -10,6 +10,7 @@ import { packageJsonFileName } from "../constants";
 
 interface PackageJson {
 	dependencies?: Record<string, string>;
+
 	devDependencies?: Record<string, string>;
 }
 

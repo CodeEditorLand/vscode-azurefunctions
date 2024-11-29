@@ -50,6 +50,8 @@ export async function validateSqlDbConnection(
 			],
 			executeSteps: [new SqlDatabaseConnectionExecuteStep()],
 		});
+
 	await wizard.prompt();
+
 	await wizard.execute();
 }

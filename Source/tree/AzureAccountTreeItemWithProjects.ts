@@ -45,24 +45,29 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 
 	public constructor(testAccount?: {}) {
 		super(undefined, testAccount);
+
 		this.disposables.push(
 			workspace.onDidChangeWorkspaceFolders(async () => {
 				await callWithTelemetryAndErrorHandling(
 					"AzureAccountTreeItemWithProjects.onDidChangeWorkspaceFolders",
 					async (context: IActionContext) => {
 						context.errorHandling.suppressDisplay = true;
+
 						context.telemetry.suppressIfSuccessful = true;
+
 						await this.refresh(context);
 					},
 				);
 			}),
 		);
+
 		this.disposables.push(
 			workspace.onDidChangeConfiguration(async (e) => {
 				await callWithTelemetryAndErrorHandling(
 					"AzureAccountTreeItemWithProjects.onDidChangeConfiguration",
 					async (context: IActionContext) => {
 						context.errorHandling.suppressDisplay = true;
+
 						context.telemetry.suppressIfSuccessful = true;
 
 						const settings: string[] = [
@@ -86,6 +91,7 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 
 	public dispose(): void {
 		super.dispose();
+
 		Disposable.from(...this._projectDisposables).dispose();
 	}
 
@@ -105,7 +111,9 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 		);
 
 		let hasLocalProject: boolean = false;
+
 		Disposable.from(...this._projectDisposables).dispose();
+
 		this._projectDisposables = [];
 
 		const workspaceProjects = await listLocalProjects();
@@ -117,14 +125,18 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 				this,
 				project as LocalProjectInternal,
 			);
+
 			this._projectDisposables.push(treeItem);
+
 			children.push(treeItem);
+
 			this._projectDisposables.push(
 				createRefreshFileWatcher(
 					this,
 					path.join(project.options.folder.uri.fsPath, hostFileName),
 				),
 			);
+
 			this._projectDisposables.push(
 				createRefreshFileWatcher(
 					this,
@@ -139,6 +151,7 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 
 		for (const unintializedProject of workspaceProjects.unintializedProjects) {
 			hasLocalProject = true;
+
 			children.push(
 				new InitLocalProjectTreeItem(
 					this,
@@ -150,6 +163,7 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 
 		for (const invalidProject of workspaceProjects.invalidProjects) {
 			hasLocalProject = true;
+
 			children.push(
 				new InvalidLocalProjectTreeItem(
 					this,
@@ -171,7 +185,9 @@ export class AzureAccountTreeItemWithProjects extends AzureAccountTreeItemBase {
 				contextValue: "createNewProject",
 				iconPath: treeUtils.getThemedIconPath("CreateNewProject"),
 			});
+
 			ti.commandArgs = [];
+
 			children.unshift(ti);
 		}
 

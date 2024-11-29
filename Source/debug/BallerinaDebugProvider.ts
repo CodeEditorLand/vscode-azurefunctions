@@ -22,8 +22,10 @@ export const ballerinaDebugConfig: DebugConfiguration = {
 
 export class BallerinaDebugProvider extends FuncDebugProviderBase {
 	public readonly workerArgKey: string = "BALLERINA_DEBUG_FLAGS";
+
 	protected readonly defaultPortOrPipeName: number =
 		defaultBallerinaDebugPort;
+
 	protected readonly debugConfig: DebugConfiguration = ballerinaDebugConfig;
 
 	public async getWorkerArgValue(folder: WorkspaceFolder): Promise<string> {
@@ -42,6 +44,7 @@ export class BallerinaDebugProvider extends FuncDebugProviderBase {
 		if (debugPort !== undefined) {
 			return parseInt(debugPort);
 		}
+
 		return undefined;
 	}
 }

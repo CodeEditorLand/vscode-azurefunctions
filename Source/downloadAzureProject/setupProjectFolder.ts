@@ -103,6 +103,7 @@ export async function setupProjectFolder(
 							"x-functions-key": hostKeys.masterKey,
 						}),
 					};
+
 					await requestUtils.downloadFile(
 						context,
 						requestOptions,
@@ -128,6 +129,7 @@ export async function setupProjectFolder(
 					vscode.Uri.joinPath(projectFilePathUri, ".devcontainer");
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 				await extract(downloadFilePath, { dir: projectFilePath });
+
 				await requestUtils.downloadFile(
 					context,
 					`https://raw.githubusercontent.com/microsoft/vscode-dev-containers/master/containers/${devContainerName}/.devcontainer/devcontainer.json`,
@@ -136,23 +138,27 @@ export async function setupProjectFolder(
 						"devcontainer.json",
 					).fsPath,
 				);
+
 				await requestUtils.downloadFile(
 					context,
 					`https://raw.githubusercontent.com/microsoft/vscode-dev-containers/master/containers/${devContainerName}/.devcontainer/Dockerfile`,
 					vscode.Uri.joinPath(devContainerFolderPathUri, "Dockerfile")
 						.fsPath,
 				);
+
 				await initProjectForVSCode(
 					context,
 					projectFilePath,
 					getProjectLanguageForLanguage(language),
 				);
+
 				await vscode.window.showInformationMessage(
 					localize(
 						"restartingVsCodeInfoMessage",
 						"Restarting VS Code with your function app project",
 					),
 				);
+
 				await vscode.commands.executeCommand(
 					"vscode.openFolder",
 					vscode.Uri.file(projectFilePath),

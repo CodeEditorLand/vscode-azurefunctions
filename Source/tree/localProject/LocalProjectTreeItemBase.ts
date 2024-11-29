@@ -15,8 +15,11 @@ import { treeUtils } from "../../utils/treeUtils";
 
 export abstract class LocalProjectTreeItemBase extends AzExtParentTreeItem {
 	public readonly label: string = localize("localProject", "Local Project");
+
 	public suppressMaskLabel: boolean = true;
+
 	private readonly _projectSubpath: string;
+
 	private readonly _id: string;
 
 	public constructor(
@@ -25,10 +28,12 @@ export abstract class LocalProjectTreeItemBase extends AzExtParentTreeItem {
 		folder: WorkspaceFolder,
 	) {
 		super(parent);
+
 		this._projectSubpath = path.relative(
 			path.dirname(folder.uri.fsPath),
 			projectPath,
 		);
+
 		this._id = "localProject" + this._projectSubpath;
 	}
 

@@ -29,6 +29,7 @@ export class EnterPythonAliasStep extends AzureWizardPromptStep<IPythonVenvWizar
 			context,
 			context.version,
 		);
+
 		context.pythonAlias = await context.ui.showInputBox({
 			prompt,
 			validateInput: async (value: string): Promise<string | undefined> =>

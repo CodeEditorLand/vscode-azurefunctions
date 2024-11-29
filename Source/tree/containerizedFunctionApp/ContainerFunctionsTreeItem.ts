@@ -24,6 +24,7 @@ import { type ContainerTreeItem } from "./ContainerTreeItem";
 
 export class ContainerFunctionsTreeItem extends FunctionsTreeItemBase {
 	public isReadOnly: boolean = true;
+
 	private _nextLink: string | undefined;
 
 	constructor(

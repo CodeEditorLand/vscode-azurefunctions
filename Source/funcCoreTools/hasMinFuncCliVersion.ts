@@ -31,6 +31,7 @@ export async function hasMinFuncCliVersion(
 		} catch {
 			// use default
 		}
+
 		return true;
 	}
 }

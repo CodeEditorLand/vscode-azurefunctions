@@ -18,6 +18,7 @@ export namespace cliFeedUtils {
 		tags: {
 			[tag: string]: ITag | undefined;
 		};
+
 		releases: {
 			[version: string]: IRelease;
 		};
@@ -25,6 +26,7 @@ export namespace cliFeedUtils {
 
 	export interface IRelease {
 		templates: string;
+
 		workerRuntimes: {
 			dotnet: {
 				[key: string]: IWorkerRuntime;
@@ -39,18 +41,26 @@ export namespace cliFeedUtils {
 	export interface IWorkerRuntime {
 		displayInfo: {
 			displayName: string;
+
 			description?: string;
+
 			hidden: boolean;
 		};
+
 		sdk: {
 			name: string;
 		};
+
 		targetFramework: string;
+
 		itemTemplates: string;
+
 		projectTemplates: string;
+
 		projectTemplateId: {
 			csharp: string;
 		};
+
 		capabilities: string;
 	}
 
@@ -103,6 +113,7 @@ export namespace cliFeedUtils {
 				),
 			);
 		}
+
 		return releaseData.release;
 	}
 

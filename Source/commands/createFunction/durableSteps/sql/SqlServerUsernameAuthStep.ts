@@ -44,9 +44,11 @@ export class SqlServerUsernameAuthStep<
 		if (!validateUtils.isValidLength(name)) {
 			return getInvalidLengthMessage();
 		}
+
 		if (!validateUtils.isAlphanumericWithHypens(name)) {
 			return invalidAlphanumericWithHyphens;
 		}
+
 		return undefined;
 	}
 }

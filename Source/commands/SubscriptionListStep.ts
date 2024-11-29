@@ -15,7 +15,9 @@ import { type IFuncDeployContext } from "./deploy/deploy";
 
 export class SubscriptionListStep extends AzureWizardPromptStep<IFuncDeployContext> {
 	private _picks: IAzureQuickPickItem<AzureSubscription>[] = [];
+
 	private _oneSubscription: boolean = false;
+
 	public async prompt(context: IFuncDeployContext): Promise<void> {
 		context.subscription = (
 			await context.ui.showQuickPick(this._picks, {
@@ -35,6 +37,7 @@ export class SubscriptionListStep extends AzureWizardPromptStep<IFuncDeployConte
 		// auto select if only one subscription
 		if (this._picks.length === 1) {
 			this._oneSubscription = true;
+
 			context.subscription = this._picks[0].data;
 		}
 	}

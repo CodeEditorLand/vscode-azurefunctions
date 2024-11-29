@@ -52,6 +52,8 @@ export async function validateStorageConnection(
 			promptSteps: [new AzureWebJobsStoragePromptStep(options)],
 			executeSteps: [new AzureWebJobsStorageExecuteStep()],
 		});
+
 	await wizard.prompt();
+
 	await wizard.execute();
 }

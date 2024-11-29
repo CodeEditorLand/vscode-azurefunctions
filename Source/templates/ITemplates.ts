@@ -8,5 +8,6 @@ import { type FunctionTemplateBase } from "./IFunctionTemplate";
 
 export interface ITemplates {
 	functionTemplates: FunctionTemplateBase[];
+
 	bindingTemplates: IBindingTemplate[];
 }

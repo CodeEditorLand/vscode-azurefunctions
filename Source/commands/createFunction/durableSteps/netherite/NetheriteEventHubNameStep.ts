@@ -50,6 +50,7 @@ export class NetheriteEventHubNameStep<
 				rgName,
 				ehNamespaceName,
 			);
+
 			this.eventHubs = await uiUtils.listAllIterator(eventHubIterator);
 		}
 
@@ -75,6 +76,7 @@ export class NetheriteEventHubNameStep<
 		if (!validateUtils.isValidLength(name, 1, 256)) {
 			return getInvalidLengthMessage(1, 256);
 		}
+
 		if (!validateUtils.isLowerCaseAlphanumericWithHypens(name)) {
 			return invalidLowerCaseAlphanumericWithHyphens;
 		}
@@ -90,6 +92,7 @@ export class NetheriteEventHubNameStep<
 				name,
 			);
 		}
+
 		return undefined;
 	}
 }

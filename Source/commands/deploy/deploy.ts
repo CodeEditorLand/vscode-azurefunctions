@@ -59,6 +59,7 @@ import { verifyAppSettings } from "./verifyAppSettings";
 // context that is used for deployment but since creation is an option in the deployment command, include ICreateFunctionAppContext
 export type IFuncDeployContext = {
 	site?: Site;
+
 	subscription?: AzureSubscription;
 } & Partial<ICreateFunctionAppContext> &
 	IDeployContext &
@@ -163,6 +164,7 @@ async function deploy(
 
 	if (node.contextValue.includes("container")) {
 		const learnMoreLink: string = "https://aka.ms/deployContainerApps";
+
 		await context.ui.showWarningMessage(
 			localize(
 				"containerFunctionAppError",
@@ -172,6 +174,7 @@ async function deploy(
 		);
 		//suppress display of error message
 		context.errorHandling.suppressDisplay = true;
+
 		context.telemetry.properties.error =
 			"Deploy not supported for containerized function apps";
 
@@ -184,7 +187,9 @@ async function deploy(
 	);
 
 	context.telemetry.properties.projectLanguage = language;
+
 	context.telemetry.properties.projectRuntime = version;
+
 	context.telemetry.properties.languageModel = String(languageModel);
 
 	if (language === ProjectLanguage.Python && !node.site.isLinux) {
@@ -219,12 +224,15 @@ async function deploy(
 			),
 			{ resourceName: node.site.fullName },
 		);
+
 		isZipDeploy = true;
+
 		context.deployMethod = "zip";
 	}
 
 	const isFlexConsumption: boolean =
 		await client.getIsConsumptionV2(actionContext);
+
 	actionContext.telemetry.properties.isFlexConsumption =
 		String(isFlexConsumption);
 	// don't use remote build setting for consumption v2
@@ -233,6 +241,7 @@ async function deploy(
 			remoteBuildSetting,
 			deployPaths.effectiveDeployFsPath,
 		) && !isFlexConsumption;
+
 	actionContext.telemetry.properties.scmDoBuildDuringDeployment =
 		String(doRemoteBuild);
 
@@ -256,6 +265,7 @@ async function deploy(
 			language,
 			context.projectPath,
 		);
+
 	context.telemetry.properties.projectDurableStorageType = durableStorageType;
 
 	const { shouldValidateEventHubs, shouldValidateSqlDb } =
@@ -271,6 +281,7 @@ async function deploy(
 			preselectedConnectionType: ConnectionType.Azure,
 		});
 	}
+
 	if (shouldValidateSqlDb) {
 		await validateSqlDbConnection(context, context.projectPath);
 	}
@@ -284,6 +295,7 @@ async function deploy(
 		isZipDeploy
 	) {
 		const deployCommandId = "azureFunctions.deploy";
+
 		await showDeployConfirmation(context, node.site, deployCommandId);
 	}
 
@@ -345,6 +357,7 @@ async function deploy(
 				deployFsPath = context.originalDeployFsPath;
 
 				const noSubpathWarning: string = `WARNING: Ignoring deploySubPath "${getWorkspaceSetting(deploySubpathSetting, context.originalDeployFsPath)}" for non-zip deploy.`;
+
 				ext.outputChannel.appendLog(noSubpathWarning);
 			}
 
@@ -387,12 +400,14 @@ async function updateWorkerProcessTo64BitIfRequired(
 	if (functionProject === undefined) {
 		return;
 	}
+
 	const projectFiles: dotnetUtils.ProjectFile[] =
 		await dotnetUtils.getProjFiles(context, language, functionProject);
 
 	if (projectFiles.length !== 1) {
 		return;
 	}
+
 	const platformTarget: string | undefined =
 		await dotnetUtils.tryGetPlatformTarget(projectFiles[0]);
 
@@ -419,6 +434,7 @@ async function updateWorkerProcessTo64BitIfRequired(
 		if (dialogResult === deployAnyway) {
 			return;
 		}
+
 		await client.updateConfiguration(config);
 	}
 }
@@ -450,6 +466,7 @@ async function validateGlobSettings(
 			includeKey,
 			excludeKey,
 		);
+
 		await context.ui.showWarningMessage(message, {
 			stepName: "globSettingRemoved",
 		});

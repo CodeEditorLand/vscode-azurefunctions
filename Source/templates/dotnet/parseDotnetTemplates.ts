@@ -31,8 +31,11 @@ import { TemplateSchemaVersion } from "../TemplateProviderBase";
  */
 interface IRawTemplate {
 	DefaultName: string;
+
 	Name: string;
+
 	Identity: string;
+
 	Parameters: {}[];
 }
 
@@ -41,9 +44,13 @@ interface IRawTemplate {
  */
 interface IRawSetting {
 	Documentation: string | undefined;
+
 	Name: string;
+
 	DefaultValue: string | undefined;
+
 	DataType: string | undefined;
+
 	Choices:
 		| {
 				[key: string]: string;
@@ -167,6 +174,7 @@ async function copyCSharpSettingsFromJS(
 		"copyCSharpSettingsFromJS",
 		async (jsContext: IActionContext) => {
 			jsContext.errorHandling.suppressDisplay = true;
+
 			jsContext.telemetry.properties.isActivationEvent = "true";
 
 			const templateProvider = ext.templateProvider.get(jsContext);
@@ -184,6 +192,7 @@ async function copyCSharpSettingsFromJS(
 
 			for (const csharpTemplate of csharpTemplates) {
 				assertTemplateIsV1(csharpTemplate);
+
 				csharpTemplate.templateSchemaVersion = TemplateSchemaVersion.v1;
 
 				const normalizedDotnetId = normalizeDotnetId(csharpTemplate.id);
@@ -196,7 +205,9 @@ async function copyCSharpSettingsFromJS(
 
 				if (jsTemplate) {
 					assertTemplateIsV1(jsTemplate);
+
 					csharpTemplate.name = jsTemplate.name;
+
 					csharpTemplate.defaultFunctionName =
 						jsTemplate.defaultFunctionName;
 
@@ -210,6 +221,7 @@ async function copyCSharpSettingsFromJS(
 
 						if (jsSetting) {
 							cSharpSetting.resourceType = jsSetting.resourceType;
+
 							cSharpSetting.validateSetting =
 								jsSetting.validateSetting;
 						}

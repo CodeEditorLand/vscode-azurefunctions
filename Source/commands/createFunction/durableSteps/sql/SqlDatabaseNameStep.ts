@@ -47,6 +47,7 @@ export class SqlDatabaseNameStep<
 				rgName,
 				serverName,
 			);
+
 			this.databases = await uiUtils.listAllIterator(dbIterator);
 		}
 
@@ -72,6 +73,7 @@ export class SqlDatabaseNameStep<
 		if (!validateUtils.isValidLength(name, 6, 50)) {
 			return getInvalidLengthMessage(6, 50);
 		}
+
 		if (!validateUtils.isAlphanumericWithHypens(name)) {
 			return invalidAlphanumericWithHyphens;
 		}
@@ -87,6 +89,7 @@ export class SqlDatabaseNameStep<
 				name,
 			);
 		}
+
 		return undefined;
 	}
 }

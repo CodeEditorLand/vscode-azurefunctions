@@ -58,7 +58,9 @@ export class EventHubsNamespaceAuthRuleCreateStep<
 			'Creating new access policy "{0}"...',
 			authRuleName,
 		);
+
 		ext.outputChannel.appendLog(creating);
+
 		progress.report({ message: creating });
 
 		context.authRule =

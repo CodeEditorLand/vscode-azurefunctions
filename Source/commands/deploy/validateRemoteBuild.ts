@@ -39,6 +39,7 @@ export async function validateRemoteBuild(
 		const downgrade: vscode.MessageItem = {
 			title: localize("downgrade", "Downgrade config"),
 		};
+
 		await context.ui.showWarningMessage(
 			message,
 			{ learnMoreLink, modal: true, stepName: "validateRemoteBuild" },
@@ -48,11 +49,13 @@ export async function validateRemoteBuild(
 		const projectPath: string =
 			(await tryGetFunctionProjectRoot(context, workspaceFolder)) ||
 			workspaceFolder.uri.fsPath;
+
 		await updateWorkspaceSetting(
 			remoteBuildSetting,
 			false,
 			workspaceFolder,
 		);
+
 		await updateWorkspaceSetting(
 			preDeployTaskSetting,
 			packTaskName,
@@ -69,6 +72,7 @@ export async function validateRemoteBuild(
 			),
 			workspaceFolder,
 		);
+
 		await ensureGitIgnoreContents(projectPath, [zipFileName]);
 	}
 }

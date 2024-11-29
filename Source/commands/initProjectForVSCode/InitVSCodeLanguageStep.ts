@@ -32,6 +32,7 @@ export class InitVSCodeLanguageStep extends AzureWizardPromptStep<IProjectWizard
 		// Display all languages, even if we don't have full support for them
 		const languagePicks: IAzureQuickPickItem<{
 			language: ProjectLanguage;
+
 			model?: number;
 		}>[] = [
 			{
@@ -95,7 +96,9 @@ export class InitVSCodeLanguageStep extends AzureWizardPromptStep<IProjectWizard
 		};
 
 		const option = await context.ui.showQuickPick(languagePicks, options);
+
 		context.language = option.data.language;
+
 		context.languageModel = option.data.model;
 	}
 
@@ -110,6 +113,7 @@ export class InitVSCodeLanguageStep extends AzureWizardPromptStep<IProjectWizard
 			[];
 
 		const promptSteps: AzureWizardPromptStep<IProjectWizardContext>[] = [];
+
 		await addInitVSCodeSteps(context, promptSteps, executeSteps);
 
 		return { promptSteps, executeSteps };

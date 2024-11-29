@@ -26,6 +26,7 @@ import {
 
 export interface IBaseResourceWithName {
 	name?: string;
+
 	_description?: string;
 }
 
@@ -51,6 +52,7 @@ export async function promptForResource<T extends IBaseResourceWithName>(
 								: undefined,
 						)
 						.filter((p: IAzureQuickPickItem<T> | undefined) => p);
+
 			picks.push({
 				label: picks.length
 					? localize("skipForNow", "$(clock) Skip for now")
@@ -72,6 +74,7 @@ export async function promptForResource<T extends IBaseResourceWithName>(
 	if (data?.name) {
 		context.valuesToMask.push(data.name);
 	}
+
 	return data;
 }
 

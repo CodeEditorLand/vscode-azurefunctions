@@ -158,6 +158,7 @@ async function promptForProjectSubpath(
 			stepName: "multipleProjects|select",
 		})
 	).data;
+
 	await updateWorkspaceSetting(projectSubpathSetting, subpath, workspacePath);
 
 	return subpath;

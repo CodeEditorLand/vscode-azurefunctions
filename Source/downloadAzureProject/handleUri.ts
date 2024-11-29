@@ -55,6 +55,7 @@ export async function handleUri(uri: vscode.Uri): Promise<void> {
 							canSelectFiles: false,
 							canSelectMany: false,
 						});
+
 					await setupProjectFolder(uri, filePathUri[0], context);
 				} else {
 					throw new RangeError(

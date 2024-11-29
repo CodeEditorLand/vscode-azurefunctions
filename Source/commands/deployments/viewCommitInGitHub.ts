@@ -19,5 +19,6 @@ export async function viewCommitInGitHub(
 			expectedChildContextValue: "deployment/github",
 		});
 	}
+
 	await node.viewCommitInGitHub(context);
 }

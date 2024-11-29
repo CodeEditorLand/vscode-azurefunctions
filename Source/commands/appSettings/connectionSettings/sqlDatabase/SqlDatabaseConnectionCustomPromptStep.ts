@@ -40,6 +40,7 @@ export class SqlDatabaseConnectionCustomPromptStep<
 		if (!validateUtils.isValidLength(name)) {
 			return getInvalidLengthMessage();
 		}
+
 		return undefined;
 	}
 }

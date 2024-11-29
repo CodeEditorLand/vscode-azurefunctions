@@ -70,6 +70,7 @@ export async function promptForFuncVersion(
 		description: "",
 		data: undefined,
 	};
+
 	picks.push(learnMoreQp);
 
 	const options: IAzureQuickPickOptions = {
@@ -119,6 +120,7 @@ export function getMajorVersion(data: string): string {
 			localize("invalidVersion", 'Invalid version "{0}".', data),
 		);
 	}
+
 	return majorVersion;
 }
 

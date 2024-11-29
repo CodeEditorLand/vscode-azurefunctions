@@ -44,11 +44,14 @@ export async function addBinding(
 
 	if (data instanceof Uri) {
 		functionJsonPath = data.fsPath;
+
 		workspaceFolder = nonNullValue(
 			getContainingWorkspace(functionJsonPath),
 			"workspaceFolder",
 		);
+
 		workspacePath = workspaceFolder.uri.fsPath;
+
 		projectPath =
 			(await tryGetFunctionProjectRoot(
 				context,
@@ -57,7 +60,9 @@ export async function addBinding(
 			)) || workspacePath;
 
 		const verifiedInit = await verifyInitForVSCode(context, projectPath);
+
 		language = verifiedInit.language;
+
 		version = verifiedInit.version;
 	} else {
 		if (!data) {
@@ -65,6 +70,7 @@ export async function addBinding(
 				"noLocalProject",
 				"No matching functions found. C# and Java projects do not support this operation.",
 			);
+
 			data =
 				await ext.rgApi.workspaceResourceTree.showTreeItemPicker<LocalFunctionTreeItem>(
 					/Local;ReadWrite;Function;/i,
@@ -80,13 +86,19 @@ export async function addBinding(
 				),
 			);
 		}
+
 		functionJsonPath = data.functionJsonPath;
 
 		const projectTi: LocalProjectTreeItem = data.parent.parent;
+
 		workspaceFolder = projectTi.workspaceFolder;
+
 		workspacePath = projectTi.workspacePath;
+
 		projectPath = projectTi.effectiveProjectPath;
+
 		language = projectTi.language;
+
 		version = projectTi.version;
 	}
 
@@ -107,6 +119,8 @@ export async function addBinding(
 
 	const wizard: AzureWizard<IBindingWizardContext> =
 		createBindingWizard(wizardContext);
+
 	await wizard.prompt();
+
 	await wizard.execute();
 }

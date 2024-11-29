@@ -21,6 +21,7 @@ export class JavaArtifactIdStep extends AzureWizardPromptStep<IJavaProjectWizard
 			validateInput: validateMavenIdentifier,
 			value: path.basename(context.projectPath),
 		};
+
 		context.javaArtifactId = await context.ui.showInputBox(options);
 	}
 

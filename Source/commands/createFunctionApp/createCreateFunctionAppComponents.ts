@@ -61,10 +61,13 @@ export async function createCreateFunctionAppComponents(
 	language?: string | undefined,
 ): Promise<{
 	wizardContext: IFunctionAppWizardContext;
+
 	promptSteps: AzureWizardPromptStep<IFunctionAppWizardContext>[];
+
 	executeSteps: AzureWizardExecuteStep<IFunctionAppWizardContext>[];
 }> {
 	const version: FuncVersion = await getDefaultFuncVersion(context);
+
 	context.telemetry.properties.projectRuntime = version;
 
 	const wizardContext: IFunctionAppWizardContext = Object.assign(
@@ -101,33 +104,45 @@ export async function createCreateFunctionAppComponents(
 	if (context.dockerfilePath) {
 		const containerizedfunctionAppWizard =
 			await createContainerizedFunctionAppWizard();
+
 		promptSteps.push(...containerizedfunctionAppWizard.promptSteps);
+
 		executeSteps.push(...containerizedfunctionAppWizard.executeSteps);
 	} else {
 		const functionAppWizard = await createFunctionAppWizard(wizardContext);
+
 		promptSteps.push(...functionAppWizard.promptSteps);
+
 		executeSteps.push(...functionAppWizard.executeSteps);
 	}
 
 	if (!wizardContext.advancedCreation) {
 		LocationListStep.addStep(wizardContext, promptSteps);
+
 		wizardContext.useConsumptionPlan = true;
+
 		wizardContext.stackFilter = getRootFunctionsWorkerRuntime(
 			wizardContext.language,
 		);
+
 		promptSteps.push(new ConfigureCommonNamesStep());
+
 		executeSteps.push(new ResourceGroupCreateStep());
+
 		executeSteps.push(
 			new StorageAccountCreateStep(storageAccountCreateOptions),
 		);
+
 		executeSteps.push(new AppInsightsCreateStep());
 
 		if (!context.dockerfilePath) {
 			executeSteps.push(new AppServicePlanCreateStep());
+
 			executeSteps.push(new LogAnalyticsCreateStep());
 		}
 	} else {
 		promptSteps.push(new ResourceGroupListStep());
+
 		promptSteps.push(
 			new StorageAccountListStep(storageAccountCreateOptions, {
 				// The account type must support blobs, queues, and tables.
@@ -143,10 +158,12 @@ export async function createCreateFunctionAppComponents(
 				learnMoreLink: "https://aka.ms/Cfqnrc",
 			}),
 		);
+
 		promptSteps.push(new AppInsightsListStep());
 	}
 
 	const storageProvider = "Microsoft.Storage";
+
 	LocationListStep.addProviderForFiltering(
 		wizardContext,
 		storageProvider,
@@ -168,16 +185,19 @@ async function getDefaultFuncVersion(
 		: getWorkspaceSettingFromAnyFolder(funcVersionSetting);
 	// Try to get VS Code setting for version (aka if they have a project open)
 	let version: FuncVersion | undefined = tryParseFuncVersion(settingValue);
+
 	context.telemetry.properties.runtimeSource = "VSCodeSetting";
 
 	if (version === undefined) {
 		// Try to get the version that matches their local func cli
 		version = await tryGetLocalFuncVersion(context, undefined);
+
 		context.telemetry.properties.runtimeSource = "LocalFuncCli";
 	}
 
 	if (version === undefined) {
 		version = latestGAVersion;
+
 		context.telemetry.properties.runtimeSource = "Backup";
 	}
 
@@ -188,6 +208,7 @@ async function createFunctionAppWizard(
 	wizardContext: IFunctionAppWizardContext,
 ): Promise<{
 	promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[];
+
 	executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[];
 }> {
 	const promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[] = [];
@@ -218,6 +239,7 @@ async function createFunctionAppWizard(
 
 async function createContainerizedFunctionAppWizard(): Promise<{
 	promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[];
+
 	executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[];
 }> {
 	const promptSteps: AzureWizardPromptStep<IAppServiceWizardContext>[] = [];
@@ -225,6 +247,7 @@ async function createContainerizedFunctionAppWizard(): Promise<{
 	const executeSteps: AzureWizardExecuteStep<IAppServiceWizardContext>[] = [];
 
 	executeSteps.push(new DeployWorkspaceProjectStep());
+
 	executeSteps.push(new ContainerizedFunctionAppCreateStep());
 
 	return { promptSteps, executeSteps };

@@ -72,5 +72,6 @@ function getLaunchConfig(folder: WorkspaceFolder): WorkspaceConfiguration {
 
 export interface ILaunchJson {
 	version: string;
+
 	configurations?: DebugConfiguration[];
 }

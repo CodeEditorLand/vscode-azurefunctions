@@ -11,11 +11,17 @@ import { type IProjectWizardContext } from "../IProjectWizardContext";
 
 export interface IJavaProjectWizardContext extends IProjectWizardContext {
 	javaVersion?: string;
+
 	javaGroupId?: string;
+
 	javaArtifactId?: string;
+
 	javaProjectVersion?: string;
+
 	javaPackageName?: string;
+
 	javaAppName?: string;
+
 	buildTool?: JavaBuildTool;
 }
 

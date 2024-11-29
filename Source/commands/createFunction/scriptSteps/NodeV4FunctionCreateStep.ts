@@ -23,6 +23,7 @@ export class NodeV4FunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 		) as string;
 
 		const functionPath = path.join(context.projectPath, functionSubpath);
+
 		await AzExtFsExtra.ensureDir(functionPath);
 
 		const functionName = nonNullProp(context, "functionName");
@@ -35,9 +36,11 @@ export class NodeV4FunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 			context,
 			"functionTemplate",
 		);
+
 		await Promise.all(
 			Object.keys(template.templateFiles).map(async (f) => {
 				let contents = template.templateFiles[f];
+
 				contents = contents.replace(/%functionName%/g, functionName);
 
 				for (const setting of template.userPromptedSettings) {

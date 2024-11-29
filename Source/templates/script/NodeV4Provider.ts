@@ -31,7 +31,9 @@ export class NodeV4Provider extends TemplateProviderBase {
 	}
 
 	protected _rawResources: object;
+
 	protected _rawTemplates: object[];
+
 	protected _rawBindings: object;
 
 	public async getCachedTemplates(): Promise<ITemplates | undefined> {
@@ -82,10 +84,13 @@ export class NodeV4Provider extends TemplateProviderBase {
 
 	protected async parseTemplates(rootPath: string): Promise<ITemplates> {
 		const paths: ITemplatePaths = this.getTemplatePaths(rootPath);
+
 		this._rawTemplates = await AzExtFsExtra.readJSON<object[]>(
 			paths.templates,
 		);
+
 		this._rawBindings = await AzExtFsExtra.readJSON<object>(paths.bindings);
+
 		this._rawResources = await AzExtFsExtra.readJSON<object>(
 			paths.resources,
 		);
@@ -132,6 +137,8 @@ export class NodeV4Provider extends TemplateProviderBase {
 
 interface ITemplatePaths {
 	resources: string;
+
 	templates: string;
+
 	bindings: string;
 }

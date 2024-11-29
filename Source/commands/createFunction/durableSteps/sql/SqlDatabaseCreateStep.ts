@@ -51,7 +51,9 @@ export class SqlDatabaseCreateStep<
 			'Creating new SQL database "{0}"...',
 			newDatabaseName,
 		);
+
 		progress.report({ message: creating });
+
 		ext.outputChannel.appendLog(creating);
 
 		const location: AzExtLocation = await LocationListStep.getLocation(
@@ -67,6 +69,7 @@ export class SqlDatabaseCreateStep<
 				capacity: 1,
 			},
 		};
+
 		context.sqlDatabase = await client.databases.beginCreateOrUpdateAndWait(
 			rgName,
 			serverName,
@@ -78,8 +81,11 @@ export class SqlDatabaseCreateStep<
 			"configuringFirewallRules",
 			"Configuring SQL server firewall to allow all Azure IP's...",
 		);
+
 		progress.report({ message: configuring });
+
 		ext.outputChannel.appendLog(configuring);
+
 		await client.firewallRules.createOrUpdate(
 			rgName,
 			serverName,

@@ -28,6 +28,7 @@ export async function disconnectRepo(
 
 	if (isResolvedFunctionApp(node.parent)) {
 		await disconnectRepository(context, node.site, node.subscription);
+
 		await node.refresh(context);
 	} else {
 		throw Error("Internal error: Action not supported.");

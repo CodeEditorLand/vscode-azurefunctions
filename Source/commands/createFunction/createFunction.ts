@@ -67,6 +67,7 @@ export async function createFunctionInternal(
 
 	if (workspacePath === undefined) {
 		workspaceFolder = await getRootWorkspaceFolder();
+
 		workspacePath = workspaceFolder?.uri.fsPath;
 	} else {
 		workspaceFolder = getContainingWorkspace(workspacePath);
@@ -82,6 +83,7 @@ export async function createFunctionInternal(
 	if (!projectPath) {
 		// If we cannot find a valid Functions project, we need to put the user into the 'Create New Project' flow..
 		context.telemetry.properties.noWorkspaceResult = "createNewProject";
+
 		await createNewProjectInternal(context, options);
 
 		return;
@@ -132,6 +134,8 @@ export async function createFunctionInternal(
 			],
 		},
 	);
+
 	await wizard.prompt();
+
 	await wizard.execute();
 }

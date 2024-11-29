@@ -20,6 +20,8 @@ export async function addBallerinaCreateProjectSteps(
 	executeSteps: AzureWizardExecuteStep<IProjectWizardContext>[],
 ): Promise<void> {
 	await ballerinaUtils.getBallerinaVersion(context);
+
 	promptSteps.push(new BallerinaBackendStep());
+
 	executeSteps.push(new BallerinaProjectCreateStep());
 }

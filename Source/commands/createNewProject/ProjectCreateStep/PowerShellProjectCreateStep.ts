@@ -69,12 +69,14 @@ const requirementspsd1Offine: string = `# This file enables modules to be automa
 
 export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 	private readonly azModuleName: string = "Az";
+
 	private readonly azModuleGalleryUrl: string = `https://aka.ms/PwshPackageInfo?id='${this.azModuleName}'`;
 
 	public async executeCore(
 		context: IProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -139,6 +141,7 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 		context: IProjectWizardContext,
 	): Promise<IHostJsonV2> {
 		const hostJson: IHostJsonV2 = await super.getHostContent(context);
+
 		hostJson.managedDependency = { enabled: true };
 
 		return hostJson;
@@ -148,6 +151,7 @@ export class PowerShellProjectCreateStep extends ScriptProjectCreateStep {
 		context: IActionContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<number | undefined> {

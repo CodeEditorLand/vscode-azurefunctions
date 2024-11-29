@@ -17,6 +17,7 @@ export class WriteToFileExecuteStep<
 > extends ActionSchemaStepBase<T> {
 	public async executeAction(context: T): Promise<void> {
 		context.newFilePath = await this.getFilePath(context);
+
 		await this.writeToFile(context, context.newFilePath);
 
 		if (!isDocumentOpened(Uri.file(context.newFilePath))) {
@@ -45,6 +46,7 @@ export class WriteToFileExecuteStep<
 		if (!filePathValue) {
 			throw new Error();
 		}
+
 		const fileExtension = getFileExtensionFromLanguage(context.language);
 
 		const fullFilePath: string = path.join(

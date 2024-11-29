@@ -20,6 +20,7 @@ export class JavaGroupIdStep extends AzureWizardPromptStep<IJavaProjectWizardCon
 			validateInput: validateMavenIdentifier,
 			value: "com.function",
 		};
+
 		context.javaGroupId = await context.ui.showInputBox(options);
 	}
 

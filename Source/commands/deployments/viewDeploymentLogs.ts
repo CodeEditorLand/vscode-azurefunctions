@@ -19,5 +19,6 @@ export async function viewDeploymentLogs(
 			expectedChildContextValue: DeploymentTreeItem.contextValue,
 		});
 	}
+
 	await node.viewDeploymentLogs(context);
 }

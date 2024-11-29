@@ -245,6 +245,7 @@ export namespace durableUtils {
 					pythonDfPackage,
 					context.projectPath,
 				);
+
 				await venvUtils.runPipInstallCommandIfPossible(
 					context.projectPath,
 				);
@@ -329,6 +330,7 @@ export namespace durableUtils {
 	): Promise<void> {
 		try {
 			const packageVersion = context.languageModel === 4 ? "3" : "2";
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				context.projectPath,
@@ -344,7 +346,9 @@ export namespace durableUtils {
 				'Failed to add or install the "{0}" dependency. Please inspect and verify if it needs to be added manually.',
 				nodeDfPackage,
 			);
+
 			ext.outputChannel.appendLog(pError.message);
+
 			ext.outputChannel.appendLog(dfDepInstallFailed);
 		}
 	}

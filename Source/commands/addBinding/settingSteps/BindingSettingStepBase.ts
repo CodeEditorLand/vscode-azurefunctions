@@ -16,12 +16,16 @@ import {
 
 export abstract class BindingSettingStepBase extends AzureWizardPromptStep<IFunctionWizardContext> {
 	protected readonly _setting: IBindingSetting | ParsedInput;
+
 	protected readonly _resourceType: string;
 
 	constructor(setting: IBindingSetting | ParsedInput) {
 		super();
+
 		this._setting = setting;
+
 		this.id = setting.name;
+
 		this._resourceType =
 			(setting as IBindingSetting).resourceType ??
 			(setting as ParsedInput).resource ??

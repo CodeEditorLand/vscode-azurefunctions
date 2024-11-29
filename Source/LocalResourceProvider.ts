@@ -31,6 +31,7 @@ export class FunctionsLocalResourceProvider
 		const children: AzExtTreeItem[] = [];
 
 		Disposable.from(...this._projectDisposables).dispose();
+
 		this._projectDisposables = [];
 
 		const localProjects = await listLocalProjects();
@@ -42,12 +43,15 @@ export class FunctionsLocalResourceProvider
 				parent,
 				project as LocalProjectInternal,
 			);
+
 			this._projectDisposables.push(treeItem);
+
 			children.push(treeItem);
 		}
 
 		for (const unintializedProject of localProjects.unintializedProjects) {
 			hasLocalProject = true;
+
 			children.push(
 				new InitLocalProjectTreeItem(
 					parent,
@@ -59,6 +63,7 @@ export class FunctionsLocalResourceProvider
 
 		for (const invalidProject of localProjects.invalidProjects) {
 			hasLocalProject = true;
+
 			children.push(
 				new InvalidLocalProjectTreeItem(
 					parent,
@@ -79,12 +84,15 @@ export class FunctionsLocalResourceProvider
 				contextValue: "createNewProject",
 				iconPath: treeUtils.getThemedIconPath("CreateNewProject"),
 			});
+
 			ti.commandArgs = [];
+
 			children.push(ti);
 		}
 
 		return children;
 	}
+
 	private _projectDisposables: Disposable[] = [];
 
 	public dispose(): void {

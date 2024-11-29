@@ -44,6 +44,7 @@ export class PythonInitVSCodeStep extends ScriptInitVSCodeStep {
 				key: pythonVenvSetting,
 				value: this._venvName,
 			});
+
 			await ensureVenvInFuncIgnore(context.projectPath, this._venvName);
 		}
 
@@ -52,6 +53,7 @@ export class PythonInitVSCodeStep extends ScriptInitVSCodeStep {
 		if (this._venvName) {
 			gitignoreLines.push(this._venvName);
 		}
+
 		await ensureGitIgnoreContents(context.projectPath, gitignoreLines);
 	}
 
@@ -143,6 +145,7 @@ export async function ensureGitIgnoreContents(
 				gitignoreContents = gitignoreContents.concat(
 					`${os.EOL}${line}`,
 				);
+
 				writeFile = true;
 			}
 		}

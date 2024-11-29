@@ -60,6 +60,7 @@ export class ServiceBusConnectionCreateStep extends AzureConnectionCreateStepBas
 				),
 			);
 		}
+
 		const keys: AccessKeys = await client.namespaces.listKeys(
 			resourceGroup,
 			name,

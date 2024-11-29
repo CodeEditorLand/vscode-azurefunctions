@@ -13,6 +13,7 @@ export class LocalAppSettingValueStep extends AzureWizardPromptStep<IBindingWiza
 
 	public constructor(key: string) {
 		super();
+
 		this._key = key;
 	}
 

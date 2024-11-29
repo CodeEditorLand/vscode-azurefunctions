@@ -26,6 +26,7 @@ export abstract class ResolvedFunctionAppBase
 	implements ResolvedAppResourceBase
 {
 	public site: ContainerSite | ParsedSite;
+
 	public constructor(site: ContainerSite | ParsedSite) {
 		this.site = site;
 	}

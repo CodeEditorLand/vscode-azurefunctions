@@ -36,6 +36,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 		"azureFunctions.validateFuncCoreToolsIsLatest",
 		async (context: IActionContext) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.telemetry.properties.isActivationEvent = "true";
 
 			const showMultiCoreToolsWarningKey: string =
@@ -61,6 +62,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 					return;
 				} else if (packageManagers.length === 1) {
 					packageManager = packageManagers[0];
+
 					context.telemetry.properties.packageManager =
 						packageManager;
 				} else {
@@ -109,6 +111,7 @@ export async function validateFuncCoreToolsIsLatest(): Promise<void> {
 					if (!localVersion) {
 						return;
 					}
+
 					context.telemetry.properties.localVersion = localVersion;
 
 					const versionFromSetting: FuncVersion | undefined =

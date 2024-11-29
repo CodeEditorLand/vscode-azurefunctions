@@ -56,6 +56,7 @@ export class FunctionAppHostingPlanStep extends AzureWizardPromptStep<IFunctionA
 		[context.useConsumptionPlan, context.planSkuFamilyFilter] = (
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;
+
 		await setLocationsTask(context);
 
 		if (context.useConsumptionPlan) {
@@ -81,6 +82,7 @@ export function setConsumptionPlanProperties(
 	context: IFunctionAppWizardContext,
 ): void {
 	context.newPlanName = `ASP-${nonNullProp(context, "newSiteName")}-${getRandomHexString(4)}`;
+
 	context.newPlanSku = {
 		name: "Y1",
 		tier: "Dynamic",
@@ -94,6 +96,7 @@ export function setFlexConsumptionPlanProperties(
 	context: IAppServiceWizardContext,
 ): void {
 	context.newPlanName = `FLEX-${nonNullProp(context, "newSiteName")}-${getRandomHexString(4)}`;
+
 	context.newPlanSku = {
 		name: "FC1",
 		tier: "FlexConsumption",
@@ -102,6 +105,7 @@ export function setFlexConsumptionPlanProperties(
 	};
 	// flex consumption only supports linux
 	context.newSiteOS = WebsiteOS.linux;
+
 	LocationListStep.setLocationSubset(
 		context,
 		getFlexLocations(context),

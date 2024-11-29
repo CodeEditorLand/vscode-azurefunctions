@@ -63,11 +63,13 @@ export async function startStreamingLogs(
 						'Do you want to enable application logging for "{0}"?',
 						client.fullName,
 					);
+
 					await context.ui.showWarningMessage(
 						message,
 						{ modal: true, stepName: "enableAppLogging" },
 						DialogResponses.yes,
 					);
+
 					await enableFileLogging(context, site, logsConfig);
 				}
 			};
@@ -146,6 +148,7 @@ async function openLiveMetricsStream(
 
 			// Not using `openInPortal` because this url is so unconventional
 			const url: string = `${node.subscription.environment.portalUrl}/#blade/AppInsightsExtension/QuickPulseBladeV2/ComponentId/${componentId}/ResourceId/${resourceId}`;
+
 			await openUrl(url);
 		}
 	}

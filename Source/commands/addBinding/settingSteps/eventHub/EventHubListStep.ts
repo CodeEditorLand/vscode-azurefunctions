@@ -61,6 +61,7 @@ export class EventHubListStep extends AzureWizardPromptStep<IEventHubWizardConte
 		const eventHubs = await uiUtils.listAllIterator(
 			client.eventHubs.listByNamespace(resourceGroupName, namespaceName),
 		);
+
 		picks.push(
 			...eventHubs.map((eb: Eventhub) => {
 				return { data: eb, label: nonNullProp(eb, "name") };

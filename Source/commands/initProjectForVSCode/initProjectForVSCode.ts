@@ -51,6 +51,7 @@ export async function initProjectForVSCode(
 				"selectFunctionAppFolderNew",
 				"Select the folder to initialize for use with VS Code",
 			);
+
 			workspaceFolder = await window.showWorkspaceFolderPick({
 				placeHolder,
 			});
@@ -63,6 +64,7 @@ export async function initProjectForVSCode(
 		}
 	} else {
 		workspaceFolder = getContainingWorkspace(fsPath);
+
 		workspacePath = workspaceFolder ? workspaceFolder.uri.fsPath : fsPath;
 	}
 
@@ -107,7 +109,9 @@ export async function initProjectForVSCode(
 		wizardContext,
 		{ promptSteps: [new InitVSCodeLanguageStep()] },
 	);
+
 	await wizard.prompt();
+
 	await wizard.execute();
 
 	// don't wait

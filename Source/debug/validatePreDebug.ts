@@ -52,6 +52,7 @@ import {
 
 export interface IPreDebugValidateResult {
 	workspace: vscode.WorkspaceFolder;
+
 	shouldContinue: boolean;
 }
 
@@ -71,6 +72,7 @@ export async function preDebugValidate(
 	const workspace: vscode.WorkspaceFolder = getMatchingWorkspace(debugConfig);
 
 	let shouldContinue: boolean;
+
 	context.telemetry.properties.debugType = debugConfig.type;
 
 	try {
@@ -80,6 +82,7 @@ export async function preDebugValidate(
 			"installFuncTools",
 			"You must have the Azure Functions Core Tools installed to debug your local functions.",
 		);
+
 		shouldContinue = await validateFuncCoreToolsInstalled(
 			context,
 			message,
@@ -88,6 +91,7 @@ export async function preDebugValidate(
 
 		if (shouldContinue) {
 			context.telemetry.properties.lastValidateStep = "getProjectRoot";
+
 			context.projectPath = await tryGetFunctionProjectRoot(
 				context,
 				workspace,
@@ -112,11 +116,13 @@ export async function preDebugValidate(
 					);
 
 				context.telemetry.properties.projectLanguage = projectLanguage;
+
 				context.telemetry.properties.projectLanguageModel =
 					projectLanguageModel?.toString();
 
 				context.telemetry.properties.lastValidateStep =
 					"functionVersion";
+
 				shouldContinue = await validateFunctionVersion(
 					context,
 					projectLanguage,
@@ -125,6 +131,7 @@ export async function preDebugValidate(
 				);
 
 				context.telemetry.properties.lastValidateStep = "workerRuntime";
+
 				await validateWorkerRuntime(
 					context,
 					projectLanguage,
@@ -135,6 +142,7 @@ export async function preDebugValidate(
 					case DurableBackend.Netherite:
 						context.telemetry.properties.lastValidateStep =
 							"eventHubsConnection";
+
 						await validateEventHubsConnection(
 							context,
 							context.projectPath,
@@ -145,6 +153,7 @@ export async function preDebugValidate(
 					case DurableBackend.SQL:
 						context.telemetry.properties.lastValidateStep =
 							"sqlDbConnection";
+
 						await validateSqlDbConnection(
 							context,
 							context.projectPath,
@@ -158,6 +167,7 @@ export async function preDebugValidate(
 
 				context.telemetry.properties.lastValidateStep =
 					"azureWebJobsStorage";
+
 				await validateAzureWebJobsStorage(
 					context,
 					projectLanguage,
@@ -168,6 +178,7 @@ export async function preDebugValidate(
 
 				context.telemetry.properties.lastValidateStep =
 					"emulatorRunning";
+
 				shouldContinue = await validateEmulatorIsRunning(
 					context,
 					context.projectPath,
@@ -182,6 +193,7 @@ export async function preDebugValidate(
 		} else {
 			// Don't block debugging for "unexpected" errors. The func cli might still work
 			shouldContinue = true;
+
 			context.telemetry.properties.preDebugValidateError = maskUserInfo(
 				pe.message,
 				[],
@@ -396,6 +408,7 @@ async function validateEmulatorIsRunning(
 				azureWebJobsStorage,
 				{ retryOptions: { maxTries: 1 } },
 			);
+
 			await client.getProperties();
 		} catch (error) {
 			const message: string = localize(

@@ -48,17 +48,21 @@ export function convertToFunctionsTaskLabel(label: string): string {
 
 export interface ITasksJson {
 	version: string;
+
 	tasks?: ITask[];
 }
 
 export interface ITask extends TaskDefinition {
 	label?: string;
+
 	command?: string;
+
 	options?: ITaskOptions;
 }
 
 export interface ITaskOptions {
 	cwd?: string;
+
 	env?: {
 		[key: string]: string;
 	};

@@ -48,7 +48,9 @@ export class EventHubsNamespaceCreateStep<
 			'Creating new event hubs namespace "{0}"...',
 			newNamespaceName,
 		);
+
 		ext.outputChannel.appendLog(creating);
+
 		progress.report({ message: creating });
 
 		const client: EventHubManagementClient = await createEventHubClient(
@@ -66,6 +68,7 @@ export class EventHubsNamespaceCreateStep<
 				capacity: 1,
 			},
 		};
+
 		context.eventHubsNamespace =
 			await client.namespaces.beginCreateOrUpdateAndWait(
 				rgName,

@@ -24,6 +24,7 @@ export class BindingCreateStep extends AzureWizardExecuteStep<IBindingWizardCont
 		context: IBindingWizardContext,
 		_progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -31,13 +32,16 @@ export class BindingCreateStep extends AzureWizardExecuteStep<IBindingWizardCont
 			context,
 			"bindingTemplate",
 		);
+
 		context.telemetry.properties.bindingType = bindingTemplate.type;
+
 		context.telemetry.properties.bindingDirection =
 			bindingTemplate.direction;
 
 		const binding: IFunctionBinding = {};
 
 		binding.type = bindingTemplate.type;
+
 		binding.direction = bindingTemplate.direction;
 
 		for (const b of bindingTemplate.settings) {
@@ -65,6 +69,7 @@ export class BindingCreateStep extends AzureWizardExecuteStep<IBindingWizardCont
 				return functionJson;
 			},
 		);
+
 		context.binding = binding;
 
 		await verifyExtensionBundle(context, bindingTemplate);

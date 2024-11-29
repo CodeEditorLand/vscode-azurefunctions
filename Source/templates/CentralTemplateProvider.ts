@@ -46,17 +46,21 @@ import { type TemplateProviderBase } from "./TemplateProviderBase";
 
 type CachedProviders = {
 	providers: TemplateProviderBase[];
+
 	templatesTask?: Promise<ITemplates>;
 };
 
 export class CentralTemplateProvider implements Disposable {
 	public readonly templateSource: TemplateSource | undefined;
+
 	private readonly _providersMap = new Map<string, CachedProviders>();
+
 	private _disposables: Disposable[] = [];
 
 	public constructor(templateSource?: TemplateSource) {
 		this.templateSource =
 			templateSource || getWorkspaceSetting("templateSource");
+
 		this._disposables.push(
 			workspace.onDidChangeConfiguration((e) => this.onConfigChanged(e)),
 		);
@@ -68,7 +72,9 @@ export class CentralTemplateProvider implements Disposable {
 		for (const p of this._providersMap.values()) {
 			allProviders.push(...p.providers);
 		}
+
 		Disposable.from(...allProviders, ...this._disposables).dispose();
+
 		this._providersMap.clear();
 	}
 
@@ -159,6 +165,7 @@ export class CentralTemplateProvider implements Disposable {
 						);
 					}
 				}
+
 				break;
 		}
 
@@ -238,9 +245,12 @@ export class CentralTemplateProvider implements Disposable {
 
 		for (const provider of providers) {
 			await provider.clearCachedTemplateMetadata();
+
 			await provider.clearCachedTemplates(context);
+
 			provider.projKeyMayHaveChanged();
 		}
+
 		const cachedProviders = this.tryGetCachedProviders(
 			projectPath,
 			language,
@@ -375,6 +385,7 @@ export class CentralTemplateProvider implements Disposable {
 		if (cachedProviders.providers.some((p) => p.supportsProjKey())) {
 			key += projectPath;
 		}
+
 		this._providersMap.set(key, cachedProviders);
 	}
 
@@ -403,6 +414,7 @@ export class CentralTemplateProvider implements Disposable {
 					projectTemplateKey,
 				),
 			};
+
 			this.setCachedProviders(
 				projectPath,
 				language,
@@ -424,6 +436,7 @@ export class CentralTemplateProvider implements Disposable {
 				}),
 			);
 		}
+
 		return cachedProviders;
 	}
 
@@ -439,6 +452,7 @@ export class CentralTemplateProvider implements Disposable {
 		projectTemplateKey: string | undefined,
 	): Promise<ITemplates> {
 		context.telemetry.properties.projectRuntime = version;
+
 		context.telemetry.properties.projectLanguage = language;
 
 		const cachedProviders = await this.getCachedProviders(
@@ -460,6 +474,7 @@ export class CentralTemplateProvider implements Disposable {
 				context,
 				cachedProviders.providers,
 			);
+
 			cachedProviders.templatesTask = templatesTask;
 
 			try {
@@ -509,11 +524,13 @@ export class CentralTemplateProvider implements Disposable {
 		try {
 			const latestTemplateVersion: string =
 				await provider.getLatestTemplateVersion(context);
+
 			context.telemetry.properties.latestTemplateVersion =
 				latestTemplateVersion;
 
 			const cachedTemplateVersion: string | undefined =
 				await provider.getCachedTemplateVersion();
+
 			context.telemetry.properties.cachedTemplateVersion =
 				cachedTemplateVersion;
 
@@ -525,6 +542,7 @@ export class CentralTemplateProvider implements Disposable {
 			// 2. Refresh templates if the cache doesn't match latestTemplateVersion
 			if (!result) {
 				const timeout = requestUtils.getRequestTimeoutMS();
+
 				result = await Promise.race([
 					this.getLatestTemplates(
 						context,
@@ -551,7 +569,9 @@ export class CentralTemplateProvider implements Disposable {
 				"Failed to get latest templates: {0}",
 				errorMessage,
 			);
+
 			ext.outputChannel.appendLog(latestErrorMessage);
+
 			context.telemetry.properties.latestTemplatesError = maskUserInfo(
 				errorMessage,
 				[],
@@ -621,7 +641,9 @@ export class CentralTemplateProvider implements Disposable {
 				context,
 				latestTemplateVersion,
 			);
+
 			await provider.cacheTemplateMetadata(latestTemplateVersion);
+
 			await provider.cacheTemplates(context);
 
 			return result;
@@ -645,6 +667,7 @@ export class CentralTemplateProvider implements Disposable {
 				}
 			} catch (error) {
 				const errorMessage: string = parseError(error).message;
+
 				ext.outputChannel.appendLog(
 					localize(
 						"cachedTemplatesError",
@@ -652,6 +675,7 @@ export class CentralTemplateProvider implements Disposable {
 						errorMessage,
 					),
 				);
+
 				context.telemetry.properties.cachedTemplatesError =
 					maskUserInfo(errorMessage, []);
 			}
@@ -673,17 +697,21 @@ export class CentralTemplateProvider implements Disposable {
 
 				const backupTemplateVersion: string =
 					await provider.getBackupTemplateVersion();
+
 				context.telemetry.properties.backupTemplateVersion =
 					backupTemplateVersion;
 
 				const result: ITemplates =
 					await provider.getBackupTemplates(context);
+
 				await provider.cacheTemplateMetadata(backupTemplateVersion);
+
 				await provider.cacheTemplates(context);
 
 				return result;
 			} catch (error) {
 				const errorMessage: string = parseError(error).message;
+
 				ext.outputChannel.appendLog(
 					localize(
 						"backupTemplatesError",
@@ -691,6 +719,7 @@ export class CentralTemplateProvider implements Disposable {
 						errorMessage,
 					),
 				);
+
 				context.telemetry.properties.backupTemplatesError =
 					maskUserInfo(errorMessage, []);
 			}

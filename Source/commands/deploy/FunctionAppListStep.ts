@@ -85,6 +85,7 @@ export class FunctionAppListStep extends AzureWizardPromptStep<IFuncDeployContex
 					context.workspaceFolder,
 				)
 			: getWorkspaceSettingFromAnyFolder(projectLanguageSetting);
+
 		context.telemetry.properties.projectLanguage = language;
 
 		const { promptSteps, executeSteps } =

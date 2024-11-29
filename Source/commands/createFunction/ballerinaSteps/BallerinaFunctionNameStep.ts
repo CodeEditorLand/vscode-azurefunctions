@@ -26,6 +26,7 @@ export class BallerinaFunctionNameStep extends FunctionNameStepBase<
 			context,
 			"functionTemplate",
 		);
+
 		assertTemplateIsV1(template);
 
 		return await this.getUniqueFsPath(

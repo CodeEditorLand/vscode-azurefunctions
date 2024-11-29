@@ -39,9 +39,11 @@ export class DurableProjectConfigureStep<
 			"configuringDurableProject",
 			"Configuring durable project settings...",
 		);
+
 		progress.report({ message: configuring });
 
 		await this.configureHostAndLocalSettingsJson(context);
+
 		await durableUtils.tryInstallDurableDependencies(context);
 	}
 
@@ -63,6 +65,7 @@ export class DurableProjectConfigureStep<
 				'Unable to find and configure "{0}" in your project root. You may need to configure your durable function settings manually.',
 				hostFileName,
 			);
+
 			ext.outputChannel.appendLog(message);
 
 			const notification: string = localize(
@@ -70,6 +73,7 @@ export class DurableProjectConfigureStep<
 				'Failed to configure your "{0}".',
 				hostFileName,
 			);
+
 			void context.ui
 				.showWarningMessage(notification, { title: viewOutput })
 				.then((result) => {
@@ -84,6 +88,7 @@ export class DurableProjectConfigureStep<
 		const hostJson: IHostJsonV2 = (await AzExtFsExtra.readJSON(
 			hostJsonPath,
 		)) as IHostJsonV2;
+
 		hostJson.extensions ??= {};
 
 		switch (context.newDurableStorageType) {
@@ -96,6 +101,7 @@ export class DurableProjectConfigureStep<
 			case DurableBackend.Netherite:
 				hostJson.extensions.durableTask =
 					durableUtils.getDefaultNetheriteTaskConfig();
+
 				await setLocalAppSetting(
 					context,
 					context.projectPath,
@@ -109,6 +115,7 @@ export class DurableProjectConfigureStep<
 			case DurableBackend.SQL:
 				hostJson.extensions.durableTask =
 					durableUtils.getDefaultSqlTaskConfig();
+
 				await setLocalAppSetting(
 					context,
 					context.projectPath,

@@ -31,6 +31,7 @@ export namespace gradleUtils {
 			if (!context.errorHandling.suppressDisplay) {
 				// don't wait
 				void vscode.window.showErrorMessage(message);
+
 				context.errorHandling.suppressDisplay = true;
 			}
 

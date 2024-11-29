@@ -11,6 +11,7 @@ import { type LocalFunctionsTreeItem } from "./LocalFunctionsTreeItem";
 
 export class LocalFunctionTreeItem extends FunctionTreeItemBase {
 	public readonly parent: LocalFunctionsTreeItem;
+
 	public readonly functionJsonPath: string | undefined;
 
 	private constructor(
@@ -34,6 +35,7 @@ export class LocalFunctionTreeItem extends FunctionTreeItemBase {
 			parent,
 			localFunction,
 		);
+
 		await ti.initAsync(context);
 
 		return ti;

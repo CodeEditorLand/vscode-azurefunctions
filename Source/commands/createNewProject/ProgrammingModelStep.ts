@@ -19,10 +19,12 @@ import { type IProjectWizardContext } from "./IProjectWizardContext";
 
 export class ProgrammingModelStep extends AzureWizardPromptStep<IProjectWizardContext> {
 	public hideStepCount: boolean = true;
+
 	private _options: ProgrammingModelStepOptions;
 
 	public constructor(options: ProgrammingModelStepOptions) {
 		super();
+
 		this._options = options;
 	}
 
@@ -76,6 +78,7 @@ export class ProgrammingModelStep extends AzureWizardPromptStep<IProjectWizardCo
 		} while (result === learnMoreQp);
 
 		context.languageModel = result.data;
+
 		context.templateSchemaVersion = getTemplateVersionFromLanguageAndModel(
 			context.language,
 			context.languageModel,
@@ -111,6 +114,8 @@ interface ProgrammingModelStepOptions {
 	models: IAzureQuickPickItem<number | undefined>[];
 
 	defaultModel?: number;
+
 	learnMoreLink?: string;
+
 	isProjectWizard?: boolean;
 }

@@ -25,7 +25,9 @@ import {
 
 export type FullFunctionAppStack = {
 	stack: FunctionAppStack;
+
 	majorVersion: AppStackMajorVersion<FunctionAppRuntimes>;
+
 	minorVersion: AppStackMinorVersion<FunctionAppRuntimes>;
 };
 
@@ -35,21 +37,29 @@ export interface IFunctionAppWizardContext
 		ExecuteActivityContext,
 		ICreateFunctionAppContext {
 	version: FuncVersion;
+
 	language: string | undefined;
+
 	stackFilter?: string;
+
 	newSiteStack?: FullFunctionAppStack;
+
 	durableStorageType?: DurableBackendValues;
 
 	// Detected local connection string
 	hasAzureStorageConnection?: boolean;
+
 	hasEventHubsConnection?: boolean;
+
 	hasSqlDbConnection?: boolean;
 }
 
 export interface IFlexFunctionAppWizardContext
 	extends IFunctionAppWizardContext {
 	newFlexSku?: Sku | null;
+
 	newFlexInstanceMemoryMB?: number;
+
 	newFlexMaximumInstanceCount?: number;
 }
 

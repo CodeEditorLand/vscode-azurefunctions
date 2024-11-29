@@ -34,12 +34,19 @@ export enum TemplateSchemaVersion {
 
 export abstract class TemplateProviderBase implements Disposable {
 	protected static templateVersionCacheKey: string = "templateVersion";
+
 	protected static projTemplateKeyCacheKey: string = "projectTemplateKey";
+
 	public abstract templateType: TemplateType;
+
 	public abstract templateSchemaVersion: TemplateSchemaVersion;
+
 	public readonly version: FuncVersion;
+
 	public readonly language: ProjectLanguage;
+
 	public readonly projectPath: string | undefined;
+
 	public resourcesLanguage: string | undefined;
 
 	/**
@@ -55,6 +62,7 @@ export abstract class TemplateProviderBase implements Disposable {
 	protected _sessionProjKey: string | undefined;
 
 	protected abstract backupSubpath: string;
+
 	protected _disposables: Disposable[] = [];
 
 	public constructor(
@@ -64,8 +72,11 @@ export abstract class TemplateProviderBase implements Disposable {
 		projectTemplateKey: string | undefined,
 	) {
 		this.version = version;
+
 		this.projectPath = projectPath;
+
 		this.language = language;
+
 		this._sessionProjKey = projectTemplateKey;
 	}
 
@@ -97,20 +108,26 @@ export abstract class TemplateProviderBase implements Disposable {
 	public abstract getLatestTemplateVersion(
 		context: IActionContext,
 	): Promise<string>;
+
 	public abstract getLatestTemplates(
 		context: IActionContext,
 		latestTemplateVersion: string,
 	): Promise<ITemplates>;
+
 	public abstract getCachedTemplates(
 		context: IActionContext,
 	): Promise<ITemplates | undefined>;
+
 	public abstract getBackupTemplates(
 		context: IActionContext,
 	): Promise<ITemplates>;
+
 	public abstract cacheTemplates(context: IActionContext): Promise<void>;
+
 	public abstract clearCachedTemplates(
 		context: IActionContext,
 	): Promise<void>;
+
 	public abstract updateBackupTemplates(
 		context: IActionContext,
 	): Promise<void>;
@@ -135,6 +152,7 @@ export abstract class TemplateProviderBase implements Disposable {
 			TemplateProviderBase.templateVersionCacheKey,
 			templateVersion,
 		);
+
 		await this.updateCachedValue(
 			TemplateProviderBase.projTemplateKeyCacheKey,
 			this._sessionProjKey,
@@ -145,6 +163,7 @@ export abstract class TemplateProviderBase implements Disposable {
 		await this.deleteCachedValue(
 			TemplateProviderBase.templateVersionCacheKey,
 		);
+
 		await this.deleteCachedValue(
 			TemplateProviderBase.projTemplateKeyCacheKey,
 		);
@@ -158,7 +177,9 @@ export abstract class TemplateProviderBase implements Disposable {
 
 	public async updateBackupTemplateVersion(version: string): Promise<void> {
 		const filePath: string = await this.getBackupVersionPath();
+
 		await AzExtFsExtra.ensureFile(filePath);
+
 		await AzExtFsExtra.writeFile(filePath, version);
 	}
 
@@ -256,10 +277,13 @@ export abstract class TemplateProviderBase implements Disposable {
 			hasChanged = false; // proj keys not supported, so it's impossible to have changed
 		} else if (projKey) {
 			hasChanged = this._sessionProjKey !== projKey;
+
 			this._sessionProjKey = projKey;
 		} else if (this._projKeyMayHaveChanged) {
 			const latestProjKey = await this.refreshProjKey(context);
+
 			hasChanged = this._sessionProjKey !== latestProjKey;
+
 			this._sessionProjKey = latestProjKey;
 		} else {
 			hasChanged = false;

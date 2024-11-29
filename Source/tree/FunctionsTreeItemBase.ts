@@ -19,8 +19,11 @@ import {
 
 export abstract class FunctionsTreeItemBase extends AzExtParentTreeItem {
 	public readonly label: string = localize("Functions", "Functions");
+
 	public readonly childTypeLabel: string = localize("Function", "Function");
+
 	public parent: AzExtParentTreeItem & IProjectTreeItem;
+
 	public suppressMaskLabel: boolean = true;
 
 	public abstract isReadOnly: boolean;

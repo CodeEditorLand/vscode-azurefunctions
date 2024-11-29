@@ -64,6 +64,7 @@ export async function installOrUpdateFuncCoreTools(
 						data: pm,
 					};
 				});
+
 			packageManager = (
 				await context.ui.showQuickPick(picks, {
 					placeHolder,
@@ -86,6 +87,7 @@ export async function installOrUpdateFuncCoreTools(
 				),
 			);
 		}
+
 		await updateFuncCoreTools(context, packageManager, version);
 	} else {
 		await installFuncCoreTools(context, packageManagers);

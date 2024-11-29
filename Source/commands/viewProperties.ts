@@ -27,20 +27,24 @@ export async function viewProperties(
 				),
 			);
 		}
+
 		await window.showTextDocument(Uri.file(node.functionJsonPath));
 	} else if (node instanceof ContainerFunctionTreeItem) {
 		await openReadOnlyJson(node, node.rawConfig);
 	} else {
 		const siteNode: SlotTreeItem = node;
+
 		await node.runWithTemporaryDescription(
 			context,
 			localize("retrievingProps", "Retrieving properties..."),
 			async () => {
 				// `siteConfig` already exists on `node.site`, but has very limited properties for some reason. We want to get the full site config
 				const client = await siteNode.site.createClient(context);
+
 				siteNode.site.rawSite.siteConfig = await client.getSiteConfig();
 			},
 		);
+
 		await openReadOnlyJson(node, node.site.rawSite);
 	}
 }

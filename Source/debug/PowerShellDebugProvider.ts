@@ -22,7 +22,9 @@ export const powershellDebugConfig: DebugConfiguration = {
 
 export class PowerShellDebugProvider extends FuncDebugProviderBase {
 	public readonly workerArgKey: string = "PSWorkerCustomPipeName";
+
 	protected defaultPortOrPipeName: string | number = defaultCustomPipeName;
+
 	protected readonly debugConfig: DebugConfiguration = powershellDebugConfig;
 
 	// eslint-disable-next-line @typescript-eslint/require-await

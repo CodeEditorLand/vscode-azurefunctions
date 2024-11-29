@@ -11,5 +11,6 @@ export async function openFile(
 	node: FileTreeItem,
 ): Promise<void> {
 	context.telemetry.eventVersion = 2;
+
 	await node.openReadOnly(context);
 }

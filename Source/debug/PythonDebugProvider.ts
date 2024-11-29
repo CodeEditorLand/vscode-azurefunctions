@@ -31,7 +31,9 @@ export const pythonDebugConfig: DebugConfiguration = {
 
 export class PythonDebugProvider extends FuncDebugProviderBase {
 	public readonly workerArgKey: string = "languageWorkers__python__arguments";
+
 	protected readonly defaultPortOrPipeName: number = defaultPythonDebugPort;
+
 	protected readonly debugConfig: DebugConfiguration = pythonDebugConfig;
 
 	public async getWorkerArgValue(folder: WorkspaceFolder): Promise<string> {

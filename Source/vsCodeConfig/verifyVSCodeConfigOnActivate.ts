@@ -33,7 +33,9 @@ export async function verifyVSCodeConfigOnActivate(
 	folders: readonly vscode.WorkspaceFolder[] | undefined,
 ): Promise<void> {
 	context.telemetry.suppressIfSuccessful = true;
+
 	context.telemetry.properties.isActivationEvent = "true";
+
 	context.errorHandling.suppressDisplay = true; // Swallow errors when verifying. No point in showing an error if we can't understand the project anyways
 
 	if (folders) {
@@ -65,11 +67,13 @@ export async function verifyVSCodeConfigOnActivate(
 						async (templatesContext: IActionContext) => {
 							templatesContext.telemetry.properties.isActivationEvent =
 								"true";
+
 							templatesContext.errorHandling.suppressDisplay =
 								true;
 
 							const templateProvider =
 								ext.templateProvider.get(templatesContext);
+
 							await templateProvider.getFunctionTemplates(
 								templatesContext,
 								projectPath,
@@ -89,6 +93,7 @@ export async function verifyVSCodeConfigOnActivate(
 							projectLanguageSetting,
 							workspacePath,
 						);
+
 					context.telemetry.properties.projectLanguage =
 						projectLanguage;
 
@@ -105,6 +110,7 @@ export async function verifyVSCodeConfigOnActivate(
 						case ProjectLanguage.CSharp:
 						case ProjectLanguage.FSharp:
 							isDotnet = true;
+
 							await verifyTargetFramework(
 								projectLanguage,
 								folder,
@@ -158,9 +164,11 @@ async function promptToInitializeProject(
 
 		if (result === DialogResponses.dontWarnAgain) {
 			context.telemetry.properties.verifyConfigResult = "dontWarnAgain";
+
 			await updateGlobalSetting(settingKey, false);
 		} else {
 			context.telemetry.properties.verifyConfigResult = "update";
+
 			await initProjectForVSCode(context, workspacePath);
 		}
 	} else {

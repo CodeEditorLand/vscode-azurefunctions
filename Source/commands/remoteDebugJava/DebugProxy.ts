@@ -17,19 +17,30 @@ import { ext } from "../../extensionVariables";
 
 export class DebugProxy extends EventEmitter {
 	private _server: Server | undefined;
+
 	private _wsclient: websocket.client | undefined;
+
 	private _wsconnection: websocket.connection | undefined;
+
 	private readonly _site: ParsedSite;
+
 	private readonly _port: number;
+
 	private readonly _publishCredential: User;
+
 	private _keepAlive: boolean;
 
 	constructor(site: ParsedSite, port: number, publishCredential: User) {
 		super();
+
 		this._site = site;
+
 		this._port = port;
+
 		this._publishCredential = publishCredential;
+
 		this._keepAlive = true;
+
 		this._server = createServer();
 	}
 
@@ -45,17 +56,20 @@ export class DebugProxy extends EventEmitter {
 					ext.outputChannel.appendLog(
 						`[Proxy Server] The server is already connected. Rejected connection to "${socket.remoteAddress}:${socket.remotePort}"`,
 					);
+
 					this.emit(
 						"error",
 						new Error(
 							`[Proxy Server]  The server is already connected. Rejected connection to "${socket.remoteAddress}:${socket.remotePort}"`,
 						),
 					);
+
 					socket.destroy();
 				} else {
 					ext.outputChannel.appendLog(
 						`[Proxy Server] client connected ${socket.remoteAddress}:${socket.remotePort}`,
 					);
+
 					socket.pause();
 
 					this._wsclient = new websocket.client();
@@ -66,14 +80,18 @@ export class DebugProxy extends EventEmitter {
 							ext.outputChannel.appendLog(
 								"[WebSocket] client connected",
 							);
+
 							this._wsconnection = connection;
 
 							connection.on("close", () => {
 								ext.outputChannel.appendLog(
 									"[WebSocket] client closed",
 								);
+
 								this.dispose();
+
 								socket.destroy();
+
 								this.emit("end");
 							});
 
@@ -81,8 +99,11 @@ export class DebugProxy extends EventEmitter {
 								ext.outputChannel.appendLog(
 									`[WebSocket] ${err}`,
 								);
+
 								this.dispose();
+
 								socket.destroy();
+
 								this.emit("error", err);
 							});
 
@@ -97,14 +118,18 @@ export class DebugProxy extends EventEmitter {
 									}
 								},
 							);
+
 							socket.resume();
 						},
 					);
 
 					this._wsclient.on("connectFailed", (err: Error) => {
 						ext.outputChannel.appendLog(`[WebSocket] ${err}`);
+
 						this.dispose();
+
 						socket.destroy();
+
 						this.emit("error", err);
 					});
 
@@ -128,14 +153,19 @@ export class DebugProxy extends EventEmitter {
 						ext.outputChannel.appendLog(
 							`[Proxy Server] client disconnected ${socket.remoteAddress}:${socket.remotePort}`,
 						);
+
 						this.dispose();
+
 						this.emit("end");
 					});
 
 					socket.on("error", (err: Error) => {
 						ext.outputChannel.appendLog(`[Proxy Server] ${err}`);
+
 						this.dispose();
+
 						socket.destroy();
+
 						this.emit("error", err);
 					});
 				}
@@ -143,6 +173,7 @@ export class DebugProxy extends EventEmitter {
 
 			this._server.on("listening", () => {
 				ext.outputChannel.appendLog("[Proxy Server] start listening");
+
 				this.emit("start");
 			});
 
@@ -157,16 +188,22 @@ export class DebugProxy extends EventEmitter {
 	public dispose(): void {
 		if (this._wsconnection) {
 			this._wsconnection.close();
+
 			this._wsconnection = undefined;
 		}
+
 		if (this._wsclient) {
 			this._wsclient.abort();
+
 			this._wsclient = undefined;
 		}
+
 		if (this._server) {
 			this._server.close();
+
 			this._server = undefined;
 		}
+
 		this._keepAlive = false;
 	}
 

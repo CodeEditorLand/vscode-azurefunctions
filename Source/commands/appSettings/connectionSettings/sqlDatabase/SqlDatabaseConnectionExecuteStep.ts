@@ -18,6 +18,7 @@ export class SqlDatabaseConnectionExecuteStep<
 	T extends ISqlDatabaseConnectionWizardContext,
 > extends SetConnectionSettingStepBase<T> {
 	public priority: number = 250;
+
 	public debugDeploySetting: ConnectionKeyValues = ConnectionKey.SQL;
 
 	public async execute(context: T): Promise<void> {

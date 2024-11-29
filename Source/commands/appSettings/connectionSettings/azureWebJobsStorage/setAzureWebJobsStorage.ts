@@ -36,6 +36,8 @@ export async function setAzureWebJobsStorage(
 			promptSteps: [new AzureWebJobsStoragePromptStep()],
 			executeSteps: [new AzureWebJobsStorageExecuteStep()],
 		});
+
 	await wizard.prompt();
+
 	await wizard.execute();
 }

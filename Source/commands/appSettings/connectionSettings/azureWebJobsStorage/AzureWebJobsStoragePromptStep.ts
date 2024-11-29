@@ -70,6 +70,7 @@ export class AzureWebJobsStoragePromptStep<
 	public async configureBeforePrompt(
 		context: T & {
 			eventHubsConnectionType?: EventHubsConnectionTypeValues;
+
 			sqlDbConnectionType?: SqlDbConnectionTypeValues;
 		},
 	): Promise<void> {

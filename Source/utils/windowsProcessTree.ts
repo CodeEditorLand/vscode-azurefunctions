@@ -21,6 +21,7 @@ export function getWindowsProcessTree(): IWindowsProcessTree {
 			),
 		);
 	}
+
 	return windowsProcessTree;
 }
 
@@ -34,7 +35,9 @@ export enum ProcessDataFlag {
 
 export interface IProcessInfo {
 	pid: number;
+
 	ppid: number;
+
 	name: string;
 
 	/**

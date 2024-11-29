@@ -22,7 +22,9 @@ export class DeployWorkspaceProjectStep extends AzureWizardExecuteStep<IFunction
 			"creatingCAResources",
 			"Creating container resources; this may take a few minutes...",
 		);
+
 		ext.outputChannel.appendLog(message);
+
 		progress.report({ message });
 
 		const containerAppsApi = await getAzureContainerAppsApi(context);

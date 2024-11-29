@@ -24,6 +24,7 @@ export class DotnetFunctionNameStep extends FunctionNameStepBase<IDotnetFunction
 			context,
 			"functionTemplate",
 		);
+
 		assertTemplateIsV1(template);
 
 		return await this.getUniqueFsPath(

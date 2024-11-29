@@ -31,6 +31,7 @@ export namespace javaUtils {
 				cachedVersions.set(metaDataUrl, match[1].trim());
 			}
 		}
+
 		return cachedVersions.get(metaDataUrl);
 	}
 }

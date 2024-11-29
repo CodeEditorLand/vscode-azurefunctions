@@ -30,6 +30,7 @@ export namespace gitUtils {
 
 	export async function gitInit(workingDirectory: string): Promise<void> {
 		const gitApi = await getGitApi();
+
 		await gitApi.init(Uri.file(workingDirectory));
 	}
 

@@ -44,6 +44,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 	public hideStepCount: boolean = true;
 
 	private readonly _templateId?: string;
+
 	private readonly _functionSettings?: { [key: string]: string | undefined };
 
 	public constructor(
@@ -51,7 +52,9 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 		functionSettings: { [key: string]: string | undefined } | undefined,
 	) {
 		super();
+
 		this._templateId = templateId;
+
 		this._functionSettings = functionSettings;
 	}
 
@@ -125,6 +128,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 			throw new UserCancelledError("viewSampleProjects");
 		} else {
 			context.language = result.language;
+
 			this.setTemplateSchemaVersion(context);
 		}
 	}
@@ -155,6 +159,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 						isProjectWizard: true,
 					}),
 				);
+
 				executeSteps.push(new JavaScriptProjectCreateStep());
 
 				break;
@@ -168,6 +173,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 						isProjectWizard: true,
 					}),
 				);
+
 				executeSteps.push(new TypeScriptProjectCreateStep());
 
 				break;
@@ -175,6 +181,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 			case ProjectLanguage.CSharp:
 			case ProjectLanguage.FSharp:
 				promptSteps.push(await DotnetRuntimeStep.createStep(context));
+
 				executeSteps.push(
 					await DotnetProjectCreateStep.createStep(context),
 				);
@@ -190,6 +197,7 @@ export class NewProjectLanguageStep extends AzureWizardPromptStep<IProjectWizard
 						isProjectWizard: true,
 					}),
 				);
+
 				executeSteps.push(new PythonProjectCreateStep());
 
 				break;

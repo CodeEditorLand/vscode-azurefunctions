@@ -43,6 +43,7 @@ export class EventGridSourceStep extends AzureWizardPromptStep<EventGridExecuteF
 		).data;
 
 		context.telemetry.properties.eventGridSource = eventSource;
+
 		context.eventSource = eventSource;
 	}
 

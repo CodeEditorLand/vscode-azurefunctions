@@ -50,5 +50,6 @@ export async function executeEventGridFunction(
 		});
 
 	await wizard.prompt();
+
 	await wizard.execute();
 }

@@ -25,10 +25,12 @@ type Site20231201 = Site & { isFlex?: boolean };
 
 export class FunctionAppResolver implements AppResourceResolver {
 	private siteCacheLastUpdated = 0;
+
 	private siteCache: Map<string, Site20231201> = new Map<
 		string,
 		Site20231201
 	>();
+
 	private listFunctionAppsTask: Promise<void> | undefined;
 
 	public async resolveResource(
@@ -49,9 +51,11 @@ export class FunctionAppResolver implements AppResourceResolver {
 
 				if (this.siteCacheLastUpdated < Date.now() - 1000 * 3) {
 					this.siteCacheLastUpdated = Date.now();
+
 					this.listFunctionAppsTask = new Promise(
 						(resolve, reject) => {
 							this.siteCache.clear();
+
 							uiUtils
 								.listAllIterator(client.webApps.list())
 								.then((sites) => {
@@ -64,6 +68,7 @@ export class FunctionAppResolver implements AppResourceResolver {
 											site,
 										);
 									}
+
 									resolve();
 								})
 								.catch((reason) => {
@@ -72,6 +77,7 @@ export class FunctionAppResolver implements AppResourceResolver {
 						},
 					);
 				}
+
 				await this.listFunctionAppsTask;
 
 				let site = this.siteCache.get(
@@ -84,6 +90,7 @@ export class FunctionAppResolver implements AppResourceResolver {
 						getResourceGroupFromId(resource.id),
 						resource.name,
 					);
+
 					this.siteCache.set(resource.id.toLowerCase(), site);
 				}
 

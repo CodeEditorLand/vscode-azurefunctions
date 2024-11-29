@@ -46,13 +46,18 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 	public hideStepCount: boolean = true;
 
 	private readonly _options: IFunctionListStepOptions;
+
 	private readonly _functionSettings: { [key: string]: string | undefined };
+
 	private readonly _isProjectWizard: boolean;
 
 	public constructor(options: IFunctionListStepOptions) {
 		super();
+
 		this._options = options;
+
 		this._isProjectWizard = options.isProjectWizard;
+
 		this._functionSettings = options.functionSettings || {};
 	}
 
@@ -202,6 +207,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 						context.projectPath,
 					);
 				}
+
 				context.telemetry.properties.changedFilter = "true";
 			} else if (result === "openAPI") {
 				context.generateFromOpenAPI = true;
@@ -215,6 +221,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 					context.languageModel,
 					nonNullProp(context, "version"),
 				);
+
 				context.telemetry.properties.reloaded = "true";
 			} else {
 				context.functionTemplate = result;
@@ -255,6 +262,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 				templateFilter,
 				context.projectTemplateKey,
 			);
+
 		context.telemetry.measurements.templateCount = templates.length;
 
 		const picks: IAzureQuickPickItem<
@@ -310,6 +318,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 				suppressPersistence: true,
 			});
 		}
+
 		if (context.templateSchemaVersion !== TemplateSchemaVersion.v2) {
 			// don't offer template filter for v2 schema
 			picks.push({
@@ -341,6 +350,7 @@ export class FunctionListStep extends AzureWizardPromptStep<IFunctionWizardConte
 
 interface IFunctionListStepOptions {
 	isProjectWizard: boolean;
+
 	templateId: string | undefined;
 
 	functionSettings: { [key: string]: string | undefined } | undefined;
@@ -429,6 +439,7 @@ function sortTemplates(
 				return 4;
 			}
 		}
+
 		return getPriority(a.id) - getPriority(b.id);
 	}
 

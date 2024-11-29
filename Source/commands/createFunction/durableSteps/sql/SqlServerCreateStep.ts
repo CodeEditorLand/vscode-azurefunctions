@@ -43,7 +43,9 @@ export class SqlServerCreateStep<
 			'Creating new SQL server "{0}"...',
 			newServerName,
 		);
+
 		ext.outputChannel.appendLog(creating);
+
 		progress.report({ message: creating });
 
 		const location: AzExtLocation = await LocationListStep.getLocation(

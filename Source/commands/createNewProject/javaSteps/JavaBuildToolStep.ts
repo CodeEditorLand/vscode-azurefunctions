@@ -34,6 +34,7 @@ export class JavaBuildToolStep extends AzureWizardPromptStep<IJavaProjectWizardC
 			"selectJavaBuildTool",
 			"Select the build tool for Java project",
 		);
+
 		context.buildTool = (
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;

@@ -19,6 +19,7 @@ export async function stopFunctionApp(
 	}
 
 	const client: SiteClient = await node.site.createClient(context);
+
 	await node.runWithTemporaryDescription(
 		context,
 		localize("stopping", "Stopping..."),

@@ -23,6 +23,7 @@ import {
 
 export class RemoteFunctionsTreeItem extends FunctionsTreeItemBase {
 	public readonly parent: SlotTreeItem;
+
 	public isReadOnly: boolean;
 
 	private _nextLink: string | undefined;
@@ -48,6 +49,7 @@ export class RemoteFunctionsTreeItem extends FunctionsTreeItemBase {
 
 	public async refreshImpl(context: IActionContext): Promise<void> {
 		await this.initAsync(context);
+
 		await this.loadAllChildren(context);
 	}
 

@@ -26,6 +26,7 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 		func: ContainerFunctionItem,
 	) {
 		super(parent, func);
+
 		this.commandId = "azureFunctions.viewProperties";
 	}
 
@@ -38,6 +39,7 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 			parent,
 			func,
 		);
+
 		await ti.initAsync(context);
 
 		return ti;
@@ -72,11 +74,13 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 			'Successfully deleted function "{0}".',
 			this.function.name,
 		);
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "confirmDelete" },
 			DialogResponses.deleteResponse,
 		);
+
 		await window.withProgress(
 			{ location: ProgressLocation.Notification, title: deleting },
 			async (): Promise<void> => {
@@ -86,12 +90,15 @@ export class ContainerFunctionTreeItem extends FunctionTreeItemBase {
 					context,
 					this.parent.subscription,
 				]);
+
 				await client.webApps.deleteFunction(
 					nonNullValueAndProp(this.parent.site, "resourceGroup"),
 					nonNullValueAndProp(this.parent.site, "name"),
 					this.function.name,
 				);
+
 				void window.showInformationMessage(deleteSucceeded);
+
 				ext.outputChannel.appendLog(deleteSucceeded);
 			},
 		);

@@ -31,11 +31,13 @@ import path = require("path");
 
 interface InvalidLocalFunction {
 	error: unknown;
+
 	name: string;
 }
 
 interface ListLocalFunctionsResult {
 	functions: ILocalFunction[];
+
 	invalidFunctions: InvalidLocalFunction[];
 }
 
@@ -50,6 +52,7 @@ export async function listLocalFunctions(
 		"listLocalFunctions",
 		async (context) => {
 			context.errorHandling.rethrow = true;
+
 			context.errorHandling.suppressDisplay = true;
 
 			const isFunctionalProgrammingModel =
@@ -89,6 +92,7 @@ export async function listLocalFunctions(
 							new ParsedFunctionJson(
 								await AzExtFsExtra.readJSON(functionJsonPath),
 							);
+
 						result.functions.push(
 							new LocalFunction(project, func, config),
 						);

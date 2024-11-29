@@ -20,6 +20,7 @@ export async function copyFunctionUrl(
 			"noHTTPFunctions",
 			"No HTTP functions found.",
 		);
+
 		node = await ext.rgApi.pickAppResource<FunctionTreeItemBase>(
 			{ ...context, noItemFoundErrorMessage },
 			{

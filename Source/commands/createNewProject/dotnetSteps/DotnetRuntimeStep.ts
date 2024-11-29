@@ -40,6 +40,7 @@ export class DotnetRuntimeStep extends AzureWizardPromptStep<IProjectWizardConte
 					"selectWorkerRuntime",
 					"Select a .NET runtime",
 				);
+
 				workerRuntime = (
 					await context.ui.showQuickPick(
 						new DotnetRuntimeStep().getPicks(
@@ -67,6 +68,7 @@ export class DotnetRuntimeStep extends AzureWizardPromptStep<IProjectWizardConte
 					),
 				);
 			}
+
 			setWorkerRuntime(context, workerRuntime);
 		}
 
@@ -121,6 +123,7 @@ export class DotnetRuntimeStep extends AzureWizardPromptStep<IProjectWizardConte
 				data: runtime,
 			});
 		}
+
 		return picks;
 	}
 }
@@ -155,9 +158,11 @@ async function getRuntimes(
 			// ignore this error - it just means there are no in-process runtimes we need to add
 		}
 	}
+
 	if (runtimes.length === 0) {
 		throw new Error("Internal error: No .NET worker runtimes found.");
 	}
+
 	return runtimes;
 }
 
@@ -178,6 +183,7 @@ function setWorkerRuntime(
 	runtime: cliFeedUtils.IWorkerRuntime,
 ): void {
 	context.workerRuntime = runtime;
+
 	context.projectTemplateKey =
 		dotnetUtils.getTemplateKeyFromFeedEntry(runtime);
 }

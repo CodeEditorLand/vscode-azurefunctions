@@ -53,10 +53,12 @@ export class EventHubsNamespaceListStep<
 		const result: EHNamespace | undefined = (
 			await context.ui.showQuickPick(picksTask, quickPickOptions)
 		).data;
+
 		context.eventHubsNamespace = result;
 
 		if (result) {
 			const rgClient = await createResourceClient(context);
+
 			context.resourceGroup = await rgClient.resourceGroups.get(
 				getResourceGroupFromId(nonNullProp(result, "id")),
 			);
@@ -81,6 +83,7 @@ export class EventHubsNamespaceListStep<
 			[];
 
 		promptSteps.push(new EventHubsNamespaceNameStep());
+
 		executeSteps.push(new EventHubsNamespaceCreateStep());
 
 		promptSteps.push(new ResourceGroupListStep());

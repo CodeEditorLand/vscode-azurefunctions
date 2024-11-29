@@ -23,6 +23,7 @@ export class InvalidLocalProjectTreeItem extends LocalProjectTreeItemBase {
 		folder: WorkspaceFolder,
 	) {
 		super(parent, projectPath, folder);
+
 		this._projectError = projectError;
 	}
 

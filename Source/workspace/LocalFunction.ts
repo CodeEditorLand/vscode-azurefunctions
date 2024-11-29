@@ -17,11 +17,17 @@ export interface IFunction {
 	project: IProjectTreeItem;
 
 	data?: FunctionEnvelope;
+
 	config: ParsedFunctionJson;
+
 	name: string;
+
 	isHttpTrigger: boolean;
+
 	isTimerTrigger: boolean;
+
 	isAnonymous: boolean;
+
 	triggerBindingType: string | undefined;
 
 	getKey(context: IActionContext): Promise<string | undefined>;

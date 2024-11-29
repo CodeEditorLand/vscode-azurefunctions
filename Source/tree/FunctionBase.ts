@@ -41,6 +41,7 @@ export abstract class FunctionBase implements IFunction {
 
 			if (this.data?.invokeUrlTemplate) {
 				triggerUrl = new url.URL(this.data?.invokeUrlTemplate);
+
 				triggerUrl.protocol = hostUrl.protocol; // invokeUrlTemplate seems to use the wrong protocol sometimes. Make sure it matches the hostUrl
 			} else {
 				triggerUrl = hostUrl;
@@ -52,6 +53,7 @@ export abstract class FunctionBase implements IFunction {
 
 				const hostJson: IParsedHostJson =
 					await this.project.getHostJson(context);
+
 				triggerUrl.pathname = `${hostJson.routePrefix}/${route}`;
 			}
 

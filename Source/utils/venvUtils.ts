@@ -51,7 +51,9 @@ export namespace venvUtils {
 				);
 			} catch (error) {
 				const pError: IParsedError = parseError(error);
+
 				ext.outputChannel.appendLog(pError.message);
+
 				ext.outputChannel.appendLog(
 					localize(
 						"pipInstallFailure",
@@ -109,11 +111,13 @@ export namespace venvUtils {
 		// child_process uses cmd or bash, not PowerShell
 		const terminal: Terminal =
 			process.platform === "win32" ? Terminal.cmd : Terminal.bash;
+
 		command = joinCommands(
 			terminal,
 			getVenvActivateCommand(venvName, terminal, process.platform),
 			command,
 		);
+
 		await cpUtils.executeCommand(ext.outputChannel, folderPath, command);
 	}
 
@@ -141,6 +145,7 @@ export namespace venvUtils {
 				}
 			}
 		}
+
 		return false;
 	}
 

@@ -38,29 +38,41 @@ type FunctionsWorkerRuntime =
 
 export interface FunctionAppRuntimes {
 	linuxRuntimeSettings?: FunctionAppRuntimeSettings;
+
 	windowsRuntimeSettings?: FunctionAppRuntimeSettings;
 }
 
 export interface AppSettingsDictionary {
 	FUNCTIONS_WORKER_RUNTIME?: FunctionsWorkerRuntime;
+
 	WEBSITE_NODE_DEFAULT_VERSION?: string;
 }
 
 export interface SiteConfigPropertiesDictionary {
 	use32BitWorkerProcess: boolean;
+
 	linuxFxVersion?: string;
+
 	javaVersion?: string;
+
 	powerShellVersion?: string;
+
 	netFrameworkVersion?: string;
 }
 
 export interface FunctionAppRuntimeSettings extends CommonSettings {
 	runtimeVersion: string;
+
 	remoteDebuggingSupported: boolean;
+
 	appInsightsSettings: AppInsightsSettings;
+
 	gitHubActionSettings: GitHubActionSettings;
+
 	appSettingsDictionary: AppSettingsDictionary;
+
 	siteConfigPropertiesDictionary: SiteConfigPropertiesDictionary;
+
 	supportedFunctionsExtensionVersions: FunctionsExtensionVersion[];
 	// Sku property is only used for flex consumption plans
 	Sku: Sku[] | null;

@@ -26,6 +26,7 @@ export async function uninstallFuncCoreTools(
 	validateNoFuncCliSetting();
 
 	ext.outputChannel.show();
+
 	packageManagers =
 		packageManagers ||
 		(await getFuncPackageManagers(true /* isFuncInstalled */));
@@ -54,6 +55,7 @@ export async function uninstallFuncCoreTools(
 					data: pm,
 				};
 			});
+
 		packageManager = (
 			await context.ui.showQuickPick(picks, {
 				placeHolder,
@@ -85,6 +87,7 @@ export async function uninstallFuncCoreTools(
 				await tryGetInstalledBrewPackageName(version),
 				"brewPackageName",
 			);
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				undefined,

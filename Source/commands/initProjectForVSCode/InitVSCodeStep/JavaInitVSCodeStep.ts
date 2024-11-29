@@ -32,12 +32,14 @@ export class JavaInitVSCodeStep extends InitVSCodeStepBase {
 	protected preDeployTask: string = javaPackageTaskLabel;
 
 	private _debugSubpath: string;
+
 	private _buildTool: JavaBuildTool;
 
 	protected async executeCore(
 		context: IJavaProjectWizardContext,
 	): Promise<void> {
 		this._buildTool = nonNullProp(context, "buildTool");
+
 		this.settings.push({ key: javaBuildTool, value: this._buildTool });
 
 		const functionAppName: string | undefined = await getFunctionAppName(
@@ -47,6 +49,7 @@ export class JavaInitVSCodeStep extends InitVSCodeStepBase {
 
 		if (!functionAppName) {
 			this._debugSubpath = "<function_build_path>";
+
 			void window.showWarningMessage(
 				localize(
 					"functionAppNameNotFound",

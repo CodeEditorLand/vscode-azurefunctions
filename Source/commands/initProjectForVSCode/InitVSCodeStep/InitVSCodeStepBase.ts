@@ -63,15 +63,18 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 	public priority: number = 20;
 
 	protected preDeployTask?: string;
+
 	protected settings: ISettingToAdd[] = [];
 
 	public async execute(context: IProjectWizardContext): Promise<void> {
 		await this.executeCore(context);
 
 		const version: FuncVersion = nonNullProp(context, "version");
+
 		context.telemetry.properties.projectRuntime = version;
 
 		const language: ProjectLanguage = nonNullProp(context, "language");
+
 		context.telemetry.properties.projectLanguage = language;
 
 		context.telemetry.properties.isProjectInSubDir = String(
@@ -79,14 +82,18 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		);
 
 		const vscodePath: string = path.join(context.workspacePath, ".vscode");
+
 		await AzExtFsExtra.ensureDir(vscodePath);
+
 		await this.writeTasksJson(context, vscodePath, language);
+
 		await this.writeLaunchJson(
 			context,
 			context.workspaceFolder,
 			vscodePath,
 			version,
 		);
+
 		await this.writeSettingsJson(
 			context,
 			vscodePath,
@@ -94,6 +101,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			context.languageModel,
 			version,
 		);
+
 		await this.writeExtensionsJson(context, vscodePath, language);
 
 		// Remove '.vscode' from gitignore if applicable
@@ -106,10 +114,12 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			let gitignoreContents: string = (
 				await AzExtFsExtra.readFile(gitignorePath)
 			).toString();
+
 			gitignoreContents = gitignoreContents.replace(
 				/^\.vscode(\/|\\)?\s*$/gm,
 				"",
 			);
+
 			await AzExtFsExtra.writeFile(gitignorePath, gitignoreContents);
 		}
 	}
@@ -121,8 +131,11 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 	protected abstract executeCore(
 		context: IProjectWizardContext,
 	): Promise<void>;
+
 	protected abstract getTasks(language: ProjectLanguage): TaskDefinition[];
+
 	protected getDebugConfiguration?(version: FuncVersion): DebugConfiguration;
+
 	protected getRecommendedExtensions?(language: ProjectLanguage): string[];
 
 	protected setDeploySubpath(
@@ -130,6 +143,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		deploySubpath: string,
 	): string {
 		deploySubpath = this.addSubDir(context, deploySubpath);
+
 		this.settings.push({ key: deploySubpathSetting, value: deploySubpath });
 
 		return deploySubpath;
@@ -157,6 +171,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		for (const task of newTasks) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			let cwd: string = (task.options && task.options.cwd) || ".";
+
 			cwd = this.addSubDir(context, cwd);
 
 			if (!isPathEqual(cwd, ".")) {
@@ -191,6 +206,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			} else if (currentVersion !== tasksVersion) {
 				throw versionMismatchError;
 			}
+
 			await updateTasks(
 				context.workspaceFolder,
 				await this.insertNewTasks(
@@ -202,6 +218,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		} else {
 			// otherwise manually edit json
 			const tasksJsonPath: string = path.join(vscodePath, tasksFileName);
+
 			await confirmEditJsonFile(
 				context,
 				tasksJsonPath,
@@ -211,6 +228,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 					} else if (data.version !== tasksVersion) {
 						throw versionMismatchError;
 					}
+
 					data.tasks = await this.insertNewTasks(
 						context,
 						data.tasks,
@@ -236,6 +254,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			function stringifySorted(value: {}) {
 				return JSON.stringify(value, Object.keys(value).sort());
 			}
+
 			const t1String = stringifySorted(t1);
 
 			return !existingTasks?.some((t2) => {
@@ -278,6 +297,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			const overwrite: MessageItem = {
 				title: localize("overwrite", "Overwrite"),
 			};
+
 			await context.ui.showWarningMessage(
 				message,
 				{ modal: true, stepName: "confirmOverwriteTasks" },
@@ -296,6 +316,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 				} else {
 					return task.label;
 				}
+
 			case "shell":
 			case "process":
 				return task.label;
@@ -337,6 +358,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 				} else if (currentVersion !== launchVersion) {
 					throw versionMismatchError;
 				}
+
 				await updateDebugConfigs(
 					folder,
 					this.insertLaunchConfig(
@@ -350,6 +372,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 					vscodePath,
 					launchFileName,
 				);
+
 				await confirmEditJsonFile(
 					context,
 					launchJsonPath,
@@ -359,6 +382,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 						} else if (data.version !== launchVersion) {
 							throw versionMismatchError;
 						}
+
 						data.configurations = this.insertLaunchConfig(
 							data.configurations,
 							newDebugConfig,
@@ -376,9 +400,11 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 		newConfig: DebugConfiguration,
 	): DebugConfiguration[] {
 		existingConfigs = existingConfigs || [];
+
 		existingConfigs = existingConfigs.filter(
 			(l1) => !isDebugConfigEqual(l1, newConfig),
 		);
+
 		existingConfigs.push(newConfig);
 
 		return existingConfigs;
@@ -447,14 +473,17 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 				vscodePath,
 				settingsFileName,
 			);
+
 			await confirmEditJsonFile(
 				context,
 				settingsJsonPath,
 				(data: {}): {} => {
 					for (const setting of settings) {
 						const key: string = `${setting.prefix || ext.prefix}.${setting.key}`;
+
 						data[key] = setting.value;
 					}
+
 					return data;
 				},
 			);
@@ -470,6 +499,7 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 			vscodePath,
 			"extensions.json",
 		);
+
 		await confirmEditJsonFile(
 			context,
 			extensionsJsonPath,
@@ -500,6 +530,8 @@ export abstract class InitVSCodeStepBase extends AzureWizardExecuteStep<IProject
 
 interface ISettingToAdd {
 	key: string;
+
 	value: string | {};
+
 	prefix?: string;
 }

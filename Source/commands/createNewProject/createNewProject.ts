@@ -101,6 +101,7 @@ export async function createNewProjectInternal(
 		if (!(await validateFuncCoreToolsInstalled(context, message))) {
 			throw new UserCancelledError("validateFuncCoreToolsInstalled");
 		}
+
 		wizardContext.containerizedProject = true;
 	}
 
@@ -114,6 +115,7 @@ export async function createNewProjectInternal(
 		wizardContext.openBehavior = getWorkspaceSetting(
 			projectOpenBehaviorSetting,
 		);
+
 		context.telemetry.properties.openBehaviorFromSetting = String(
 			!!wizardContext.openBehavior,
 		);
@@ -138,6 +140,7 @@ export async function createNewProjectInternal(
 	);
 
 	await wizard.prompt();
+
 	await wizard.execute();
 
 	await ext.rgApi.workspaceResourceTree.refresh(context);

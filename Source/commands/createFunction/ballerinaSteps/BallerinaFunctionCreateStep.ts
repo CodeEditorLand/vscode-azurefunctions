@@ -17,6 +17,7 @@ export class BallerinaFunctionCreateStep extends FunctionCreateStepBase<IBalleri
 		context: IBallerinaFunctionWizardContext,
 	): Promise<string> {
 		const functionPath = context.projectPath;
+
 		await AzExtFsExtra.ensureDir(functionPath);
 
 		const functionName = nonNullProp(context, "functionName");
@@ -27,9 +28,11 @@ export class BallerinaFunctionCreateStep extends FunctionCreateStepBase<IBalleri
 			context,
 			"functionTemplate",
 		);
+
 		await Promise.all(
 			Object.keys(template.templateFiles).map(async (f) => {
 				let contents = template.templateFiles[f];
+
 				contents = contents.replace(/%functionName%/g, functionName);
 
 				for (const setting of template.userPromptedSettings) {

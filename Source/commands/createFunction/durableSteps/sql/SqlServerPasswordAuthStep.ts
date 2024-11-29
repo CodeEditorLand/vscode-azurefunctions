@@ -45,23 +45,27 @@ export class SqlServerPasswordAuthStep<
 		password: string | undefined,
 	): string | undefined {
 		const login: string = nonNullProp(context, "newSqlAdminUsername");
+
 		password = password ? password.trim() : "";
 
 		if (!validateUtils.isValidLength(password, 8, 128)) {
 			return getInvalidLengthMessage(8, 128);
 		}
+
 		if (!validateUtils.meetsBasePasswordStrength(password)) {
 			return localize(
 				"invalidPasswordStrength",
 				"Your password must contain three of the following - uppercase, lowercase, numbers, and symbols.",
 			);
 		}
+
 		if (validateUtils.passwordOverlapsLogin(password, login)) {
 			return localize(
 				"passwordOverlapsLogin",
 				"Your password cannot share 3 or more consecutive characters with your login.",
 			);
 		}
+
 		return undefined;
 	}
 }

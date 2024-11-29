@@ -22,11 +22,14 @@ export class LocalAppSettingCreateStep extends AzureWizardExecuteStep<IBindingWi
 	public priority: number = 210;
 
 	private readonly _setting: IBindingSetting | ParsedInput;
+
 	private readonly _valueKey: string;
 
 	constructor(setting: IBindingSetting | ParsedInput, valueKey: string) {
 		super();
+
 		this._setting = setting;
+
 		this._valueKey = valueKey;
 	}
 
@@ -34,6 +37,7 @@ export class LocalAppSettingCreateStep extends AzureWizardExecuteStep<IBindingWi
 		context: IBindingWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -51,6 +55,7 @@ export class LocalAppSettingCreateStep extends AzureWizardExecuteStep<IBindingWi
 				this._setting.name,
 			),
 		);
+
 		await setLocalAppSetting(
 			context,
 			context.projectPath,

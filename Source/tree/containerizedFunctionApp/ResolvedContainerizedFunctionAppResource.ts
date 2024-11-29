@@ -47,7 +47,9 @@ import { ImageTreeItem } from "./ImageTreeItem";
 
 export type ContainerSite = Site & {
 	defaultHostUrl?: string;
+
 	fullName?: string;
+
 	isSlot?: boolean;
 };
 
@@ -56,17 +58,25 @@ export class ResolvedContainerizedFunctionAppResource
 	implements ResolvedAppResourceBase
 {
 	public site: ContainerSite;
+
 	public maskedValuesToAdd: string[] = [];
+
 	public contextValuesToAdd?: string[] | undefined;
+
 	public static containerContextValue: string = "azFuncContainer";
+
 	private _subscription: ISubscriptionContext;
 
 	public appSettingsTreeItem: AppSettingsTreeItem;
+
 	private _functionsTreeItem: ContainerFunctionsTreeItem;
+
 	private _imageTreeItem: ImageTreeItem;
+
 	private _containerTreeItem: ContainerTreeItem;
 
 	private _cachedVersion: FuncVersion | undefined;
+
 	private _cachedHostJson: IParsedHostJson | undefined;
 
 	public readonly source: ProjectSource = ProjectSource.Remote;
@@ -79,7 +89,9 @@ export class ResolvedContainerizedFunctionAppResource
 				isSlot: false,
 			}),
 		);
+
 		this._subscription = subscription;
+
 		this.contextValuesToAdd = ["azFuncProductionSlot", "container"];
 
 		const valuesToMask = [
@@ -109,6 +121,7 @@ export class ResolvedContainerizedFunctionAppResource
 		);
 
 		const client = await createWebSiteClient([context, subscription]);
+
 		resource.site.siteConfig = await client.webApps.getConfiguration(
 			nonNullProp(resource.site, "resourceGroup"),
 			nonNullProp(resource.site, "name"),
@@ -139,9 +152,12 @@ export class ResolvedContainerizedFunctionAppResource
 			let data: any;
 
 			const version: FuncVersion = await this.getVersion(context);
+
 			result = parseHostJson(data, version);
+
 			this._cachedHostJson = result;
 		}
+
 		return result;
 	}
 
@@ -162,6 +178,7 @@ export class ResolvedContainerizedFunctionAppResource
 
 				const appSettings: StringDictionary =
 					await client.listApplicationSettings();
+
 				version = tryParseFuncVersion(
 					appSettings.properties &&
 						appSettings.properties.FUNCTIONS_EXTENSION_VERSION,
@@ -169,9 +186,12 @@ export class ResolvedContainerizedFunctionAppResource
 			} catch {
 				// ignore and use default
 			}
+
 			result = version || latestGAVersion;
+
 			this._cachedVersion = result;
 		}
+
 		return result;
 	}
 
@@ -211,7 +231,9 @@ export class ResolvedContainerizedFunctionAppResource
 		if (!appSettings.properties) {
 			appSettings.properties = {};
 		}
+
 		appSettings.properties[key] = value;
+
 		await client.updateApplicationSettings(appSettings);
 	}
 
@@ -225,11 +247,13 @@ export class ResolvedContainerizedFunctionAppResource
 			proxyTree,
 			this.site,
 		);
+
 		this._imageTreeItem = new ImageTreeItem(
 			proxyTree,
 			this.site,
 			this.maskedValuesToAdd,
 		);
+
 		this.appSettingsTreeItem = new AppSettingsTreeItem(
 			proxyTree,
 			new ContainerAppSettingsClientProvider(
@@ -280,6 +304,7 @@ export class ResolvedContainerizedFunctionAppResource
 		});
 
 		await wizard.prompt();
+
 		await wizard.execute();
 	}
 

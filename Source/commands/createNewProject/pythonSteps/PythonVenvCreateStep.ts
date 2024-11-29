@@ -21,6 +21,7 @@ export class PythonVenvCreateStep extends AzureWizardExecuteStep<IPythonVenvWiza
 		context: IPythonVenvWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -50,6 +51,7 @@ export class PythonVenvCreateStep extends AzureWizardExecuteStep<IPythonVenvWiza
 			"venv",
 			context.venvName,
 		);
+
 		await venvUtils.runPipInstallCommandIfPossible(
 			context.venvName,
 			context.projectPath,

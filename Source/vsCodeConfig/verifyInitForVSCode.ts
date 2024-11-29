@@ -24,8 +24,11 @@ import { getWorkspaceSetting } from "./settings";
 
 export interface VerifiedInit {
 	language: ProjectLanguage;
+
 	languageModel: number | undefined;
+
 	version: FuncVersion;
+
 	templateSchemaVersion: TemplateSchemaVersion;
 }
 
@@ -40,9 +43,11 @@ export async function verifyInitForVSCode(
 	version?: string,
 ): Promise<VerifiedInit> {
 	language = language || getWorkspaceSetting(projectLanguageSetting, fsPath);
+
 	languageModel =
 		languageModel ||
 		getWorkspaceSetting(projectLanguageModelSetting, fsPath);
+
 	version = tryParseFuncVersion(
 		version || getWorkspaceSetting(funcVersionSetting, fsPath),
 	);
@@ -58,15 +63,19 @@ export async function verifyInitForVSCode(
 			{ modal: true, stepName: "initProject" },
 			DialogResponses.yes,
 		);
+
 		await initProjectForVSCode(context, fsPath);
+
 		language = nonNullOrEmptyValue(
 			getWorkspaceSetting(projectLanguageSetting, fsPath),
 			projectLanguageSetting,
 		);
+
 		languageModel = getWorkspaceSetting(
 			projectLanguageModelSetting,
 			fsPath,
 		);
+
 		version = nonNullOrEmptyValue(
 			tryParseFuncVersion(
 				getWorkspaceSetting(funcVersionSetting, fsPath),

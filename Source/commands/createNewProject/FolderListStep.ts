@@ -20,7 +20,9 @@ export class FolderListStep extends AzureWizardPromptStep<IProjectWizardContext>
 		projectPath: string,
 	): void {
 		context.projectPath = projectPath;
+
 		context.workspaceFolder = getContainingWorkspace(projectPath);
+
 		context.workspacePath =
 			(context.workspaceFolder && context.workspaceFolder.uri.fsPath) ||
 			projectPath;
@@ -35,6 +37,7 @@ export class FolderListStep extends AzureWizardPromptStep<IProjectWizardContext>
 			"selectNewProjectFolder",
 			"Select the folder that will contain your function project",
 		);
+
 		FolderListStep.setProjectPath(
 			context,
 			await selectWorkspaceFolder(context, placeHolder),

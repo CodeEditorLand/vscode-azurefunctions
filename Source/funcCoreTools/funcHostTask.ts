@@ -18,7 +18,9 @@ import { getWorkspaceSetting } from "../vsCodeConfig/settings";
 
 export interface IRunningFuncTask {
 	taskExecution: vscode.TaskExecution;
+
 	processId: number;
+
 	portNumber: string;
 }
 
@@ -51,7 +53,9 @@ class RunningFunctionTaskMap {
 		value: IRunningFuncTask,
 	): void {
 		const values = this._map.get(key) || [];
+
 		values.push(value);
+
 		this._map.set(key, values);
 	}
 
@@ -70,11 +74,13 @@ class RunningFunctionTaskMap {
 				(t.taskExecution.task?.scope as vscode.WorkspaceFolder).uri
 					?.path,
 			);
+
 			buildPath = buildPath?.replace(
 				"${workspaceFolder}",
 				(t.taskExecution.task?.scope as vscode.WorkspaceFolder).uri
 					?.path,
 			);
+
 			return (
 				taskDirectory &&
 				buildPath &&
@@ -101,11 +107,13 @@ class RunningFunctionTaskMap {
 		buildPath?: string,
 	): void {
 		const value = this.get(key, buildPath);
+
 		const values = this._map.get(key) || [];
 
 		if (value) {
 			// remove the individual entry from the array
 			values.splice(values.indexOf(value), 1);
+
 			this._map.set(key, values);
 		}
 
@@ -144,6 +152,7 @@ export function registerFuncHostTaskEvents(): void {
 		vscode.tasks.onDidStartTaskProcess,
 		async (context: IActionContext, e: vscode.TaskProcessStartEvent) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.telemetry.suppressIfSuccessful = true;
 
 			if (
@@ -161,7 +170,9 @@ export function registerFuncHostTaskEvents(): void {
 					taskExecution: e.execution,
 					portNumber,
 				};
+
 				runningFuncTaskMap.set(e.execution.task.scope, runningFuncTask);
+
 				funcTaskStartedEmitter.fire(e.execution.task.scope);
 			}
 		},
@@ -172,6 +183,7 @@ export function registerFuncHostTaskEvents(): void {
 		vscode.tasks.onDidEndTaskProcess,
 		(context: IActionContext, e: vscode.TaskProcessEndEvent) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.telemetry.suppressIfSuccessful = true;
 
 			if (
@@ -192,6 +204,7 @@ export function registerFuncHostTaskEvents(): void {
 		vscode.debug.onDidTerminateDebugSession,
 		(context: IActionContext, debugSession: vscode.DebugSession) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.telemetry.suppressIfSuccessful = true;
 
 			// Used to stop the task started with pickFuncProcess.ts startFuncProcessFromApi.
@@ -206,6 +219,7 @@ export function registerFuncHostTaskEvents(): void {
 				const workspaceFolder = buildPathToWorkspaceFolderMap.get(
 					debugSession.configuration.launchServiceData.buildPath,
 				);
+
 				if (workspaceFolder === undefined) {
 					throw new Error(
 						localize(
@@ -272,6 +286,7 @@ export function stopFuncTaskIfRunning(
 				process.kill(runningFuncTaskItem.processId);
 			}
 		}
+
 		if (buildPath) {
 			runningFuncTaskMap.delete(workspaceFolder, buildPath);
 		}

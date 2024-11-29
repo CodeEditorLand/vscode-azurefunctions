@@ -53,6 +53,7 @@ const hideHiddenValuesItem = {
 
 export class LocalAppSettingListStep extends BindingSettingStepBase {
 	private _showHiddenValues: boolean = false;
+
 	public async promptCore(
 		context: IFunctionWizardContext,
 	): Promise<BindingSettingValue> {
@@ -89,6 +90,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 					data: undefined,
 				},
 			];
+
 			picks = picks.concat(
 				existingSettings.map((s: [string, string]) => {
 					return {
@@ -107,11 +109,13 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 						: showHiddenValuesItem,
 				);
 			}
+
 			result = (await context.ui.showQuickPick(picks, { placeHolder }))
 				.data;
 
 			if (result === "hiddenValues") {
 				this._showHiddenValues = !this._showHiddenValues;
+
 				picks.pop();
 			} else {
 				return result;
@@ -141,6 +145,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 			switch (this._resourceType) {
 				case ResourceType.DocumentDB:
 					azurePromptSteps.push(new CosmosDBListStep());
+
 					azureExecuteSteps.push(
 						new CosmosDBConnectionCreateStep(this._setting),
 					);
@@ -156,6 +161,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 
 				case ResourceType.ServiceBus:
 					azurePromptSteps.push(new ServiceBusListStep());
+
 					azureExecuteSteps.push(
 						new ServiceBusConnectionCreateStep(this._setting),
 					);
@@ -168,6 +174,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 						new EventHubListStep(),
 						new EventHubAuthRuleListStep(),
 					);
+
 					azureExecuteSteps.push(
 						new EventHubConnectionCreateStep(this._setting),
 					);
@@ -203,6 +210,7 @@ export class LocalAppSettingListStep extends BindingSettingStepBase {
 			if (subscriptionPromptStep) {
 				azurePromptSteps.unshift(subscriptionPromptStep);
 			}
+
 			return {
 				promptSteps: azurePromptSteps,
 				executeSteps: azureExecuteSteps,

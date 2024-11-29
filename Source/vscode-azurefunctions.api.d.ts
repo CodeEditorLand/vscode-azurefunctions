@@ -11,9 +11,13 @@ import type * as vscode from "vscode";
 
 export interface ILocalFunction {
 	name: string;
+
 	isHttpTrigger: boolean;
+
 	isTimerTrigger: boolean;
+
 	isAnonymous: boolean;
+
 	triggerBindingType: string | undefined;
 
 	functionJsonPath?: string;
@@ -23,21 +27,29 @@ export class ProjectNotRunningError extends Error {}
 
 interface InvalidLocalFunction {
 	error: unknown;
+
 	name: string;
 }
 
 interface ListLocalFunctionsResult {
 	functions: ILocalFunction[];
+
 	invalidFunctions: InvalidLocalFunction[];
 }
 
 export type LocalProjectOptions = {
 	effectiveProjectPath: string;
+
 	folder: vscode.WorkspaceFolder;
+
 	version: string;
+
 	language: string;
+
 	languageModel?: number;
+
 	preCompiledProjectPath?: string;
+
 	isIsolated?: boolean;
 };
 
@@ -45,6 +57,7 @@ export type WorkspaceProject = { options: LocalProjectOptions };
 
 interface UnitializedLocalProject {
 	workspaceFolder: vscode.WorkspaceFolder;
+
 	projectPath: string;
 }
 
@@ -54,7 +67,9 @@ interface InvalidLocalProject extends UnitializedLocalProject {
 
 interface ListLocalProjectsResult {
 	initializedProjects: WorkspaceProject[];
+
 	unintializedProjects: UnitializedLocalProject[];
+
 	invalidProjects: InvalidLocalProject[];
 }
 
@@ -66,12 +81,14 @@ export interface AzureFunctionsExtensionApi {
 	createFunction(options: ICreateFunctionOptions): Promise<void>;
 
 	downloadAppSettings(client: IAppSettingsClient): Promise<void>;
+
 	uploadAppSettings(
 		client: IAppSettingsClient,
 		exclude?: (RegExp | string)[],
 	): Promise<void>;
 
 	listLocalProjects(): Promise<ListLocalProjectsResult>;
+
 	listLocalFunctions(
 		localProject: WorkspaceProject,
 	): Promise<ListLocalFunctionsResult>;
@@ -115,7 +132,9 @@ export type ProjectVersion = "~1" | "~2" | "~3" | "~4";
 
 export interface IAppSettingsClient {
 	fullName: string;
+
 	listApplicationSettings(): Promise<IStringDictionary>;
+
 	updateApplicationSettings(
 		appSettings: IStringDictionary,
 	): Promise<IStringDictionary>;

@@ -44,11 +44,15 @@ export class JavaFunctionCreateStep extends FunctionCreateStepBase<
 					setting.valueType === "enum"
 						? String(value).toUpperCase()
 						: String(value);
+
 				args.set(setting.name, fixedValue);
 			}
 		}
+
 		args.set("packageName", packageName);
+
 		args.set("functionName", functionName);
+
 		args.set("className", functionName.replace("-", "_"));
 
 		const content: string = substituteParametersInTemplate(template, args);
@@ -58,7 +62,9 @@ export class JavaFunctionCreateStep extends FunctionCreateStepBase<
 			packageName,
 			functionName,
 		);
+
 		await AzExtFsExtra.ensureFile(path);
+
 		await AzExtFsExtra.writeFile(path, content);
 
 		return getJavaFunctionFilePath(
@@ -74,6 +80,7 @@ function substituteParametersInTemplate(
 	args: Map<string, string>,
 ): string {
 	let javaTemplate = template.templateFiles["function.java"];
+
 	args.forEach((value: string, key: string) => {
 		javaTemplate = javaTemplate.replace(
 			new RegExp(`\\$${key}\\$`, "g"),

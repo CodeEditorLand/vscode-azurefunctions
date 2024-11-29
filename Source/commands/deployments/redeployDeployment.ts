@@ -19,5 +19,6 @@ export async function redeployDeployment(
 			expectedChildContextValue: DeploymentTreeItem.contextValue,
 		});
 	}
+
 	await node.redeployDeployment(context);
 }

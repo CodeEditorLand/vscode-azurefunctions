@@ -37,6 +37,7 @@ export class JavaScriptInitVSCodeStep extends ScriptInitVSCodeStep {
 
 		if (this.hasPackageJson) {
 			this.preDeployTask = npmPruneTaskLabel;
+
 			this.settings.push({
 				key: "postDeployTask",
 				value: npmInstallTaskLabel,

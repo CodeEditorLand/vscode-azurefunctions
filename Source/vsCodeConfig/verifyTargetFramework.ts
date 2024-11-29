@@ -82,6 +82,7 @@ export async function verifyTargetFramework(
 				if (result === DialogResponses.dontWarnAgain) {
 					context.telemetry.properties.verifyConfigResult =
 						"dontWarnAgain";
+
 					await updateWorkspaceSetting(settingKey, false, folder);
 				} else if (result === update) {
 					context.telemetry.properties.verifyConfigResult = "update";
@@ -103,6 +104,7 @@ export async function verifyTargetFramework(
 
 interface IVerifyFrameworkResult {
 	mismatchTargetFramework: string;
+
 	update(): Promise<void>;
 }
 
@@ -131,6 +133,7 @@ function verifyTasksFramework(
 					projTargetFramework.toLowerCase()
 			) {
 				mismatchTargetFramework = targetFramework;
+
 				task.options.cwd = task.options.cwd.replace(
 					targetFramework,
 					projTargetFramework,

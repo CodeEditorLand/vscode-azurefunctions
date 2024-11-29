@@ -50,6 +50,7 @@ export async function getRootWorkspaceFolder(): Promise<
 		if (!folder) {
 			throw new UserCancelledError("selectRootWorkspace");
 		}
+
 		return folder;
 	}
 }
@@ -183,6 +184,7 @@ export async function selectWorkspaceItem(
 			description: "",
 			data: undefined,
 		});
+
 		folder = await context.ui.showQuickPick(folderPicks, { placeHolder });
 	}
 

@@ -21,6 +21,7 @@ export class ServiceBusListStep extends AzureWizardPromptStep<IServiceBusWizardC
 
 		const client: ServiceBusManagementClient =
 			await createServiceBusClient(context);
+
 		context.sbNamespace = await promptForResource(
 			context,
 			placeHolder,

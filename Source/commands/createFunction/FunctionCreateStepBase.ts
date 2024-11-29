@@ -25,7 +25,9 @@ import { type IFunctionWizardContext } from "./IFunctionWizardContext";
 
 interface ICachedFunction {
 	projectPath: string;
+
 	newFilePath: string;
+
 	isHttpTrigger: boolean;
 }
 
@@ -58,14 +60,18 @@ export abstract class FunctionCreateStepBase<
 		context: T,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
 		const template: FunctionTemplateBase = nonNullValue(
 			context.functionTemplate,
 		);
+
 		context.telemetry.properties.projectLanguage = context.language;
+
 		context.telemetry.properties.projectRuntime = context.version;
+
 		context.telemetry.properties.templateId = template.id;
 
 		progress.report({
@@ -77,6 +83,7 @@ export abstract class FunctionCreateStepBase<
 		});
 
 		const newFilePath: string = await this.executeCore(context);
+
 		await verifyExtensionBundle(context, template);
 
 		const cachedFunc: ICachedFunction = {
@@ -97,10 +104,12 @@ export abstract class FunctionCreateStepBase<
 			) {
 				const hostJson =
 					await AzExtFsExtra.readJSON<IHostJsonV2>(hostFilePath);
+
 				hostJson.concurrency = {
 					dynamicConcurrencyEnabled: true,
 					snapshotPersistenceEnabled: true,
 				};
+
 				await AzExtFsExtra.writeJSON(hostFilePath, hostJson);
 			}
 		}

@@ -20,6 +20,7 @@ export async function getJavaVersion(): Promise<number> {
 			javaHome ? path.join(javaHome, "bin", "java") : "java",
 		);
 	}
+
 	if (!javaVersion) {
 		const message: string = localize(
 			"javaNotFound",
@@ -28,6 +29,7 @@ export async function getJavaVersion(): Promise<number> {
 
 		throw new Error(message);
 	}
+
 	return javaVersion;
 }
 
@@ -37,6 +39,7 @@ async function checkVersionInReleaseFile(
 	if (!javaHome) {
 		return undefined;
 	}
+
 	const releaseFile = path.join(javaHome, "release");
 
 	if (!(await AzExtFsExtra.pathExists(releaseFile))) {
@@ -63,6 +66,7 @@ async function checkVersionByCLI(
 	if (!javaExec) {
 		return undefined;
 	}
+
 	const result: cpUtils.ICommandResult = await cpUtils.tryExecuteCommand(
 		undefined,
 		undefined,

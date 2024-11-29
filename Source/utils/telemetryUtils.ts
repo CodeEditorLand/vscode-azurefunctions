@@ -26,6 +26,7 @@ export namespace telemetryUtils {
 
 			context.telemetry.measurements[durationKey] =
 				duration + (context.telemetry.measurements[durationKey] || 0);
+
 			context.telemetry.measurements[countKey] =
 				1 + (context.telemetry.measurements[countKey] || 0);
 		}

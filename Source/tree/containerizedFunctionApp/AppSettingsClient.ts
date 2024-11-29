@@ -26,12 +26,15 @@ export class ContainerAppSettingsClientProvider
 	implements AppSettingsClientProvider
 {
 	private _node: ContainerTreeItem;
+
 	private _subscription: ISubscriptionContext;
 
 	constructor(node: ContainerTreeItem, subscription: ISubscriptionContext) {
 		this._node = node;
+
 		this._subscription = subscription;
 	}
+
 	public async createClient(
 		context: IActionContext,
 	): Promise<IAppSettingsClient> {
@@ -43,19 +46,28 @@ export class ContainerAppSettingsClientProvider
 
 export class ContainerAppSettingsClient implements IAppSettingsClient {
 	public fullName: string;
+
 	public isLinux: boolean;
+
 	public isContainer: boolean;
 
 	private _resourceGroup: string;
+
 	private _siteName: string;
+
 	private _client: WebSiteManagementClient;
 
 	constructor(site: Site, client: WebSiteManagementClient) {
 		this._client = client;
+
 		this._resourceGroup = nonNullProp(site, "resourceGroup");
+
 		this.isLinux = true;
+
 		this.isContainer = true;
+
 		this._siteName = nonNullProp(site, "name");
+
 		this.fullName = this._siteName;
 	}
 

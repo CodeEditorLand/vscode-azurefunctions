@@ -26,11 +26,14 @@ export const azureFunctionsDependencyVersion: string = "^4.0.0";
 
 export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 	protected gitignore: string = nodeGitignore;
+
 	protected functionSubpath: string;
+
 	protected shouldAddIndexFile: boolean;
 
 	constructor() {
 		super();
+
 		this.funcignore.push("*.js.map", "*.ts", "tsconfig.json");
 		// default functionSubpath value is a string
 		this.functionSubpath = getWorkspaceSetting(
@@ -44,6 +47,7 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 		context: IProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -60,6 +64,7 @@ export class JavaScriptProjectCreateStep extends ScriptProjectCreateStep {
 				this.getPackageJson(context),
 			);
 		}
+
 		await this._installDependencies(context.projectPath);
 
 		if (isNodeV4Plus(context) && this.shouldAddIndexFile) {

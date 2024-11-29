@@ -20,6 +20,7 @@ export class TypeScriptProjectCreateStep extends JavaScriptProjectCreateStep {
 		context: IProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -93,18 +94,21 @@ export class TypeScriptProjectCreateStep extends JavaScriptProjectCreateStep {
 		switch (context.version) {
 			case FuncVersion.v4:
 				funcTypesVersion = "3";
+
 				nodeTypesVersion = "20";
 
 				break;
 
 			case FuncVersion.v3:
 				funcTypesVersion = "2";
+
 				nodeTypesVersion = "14";
 
 				break;
 
 			case FuncVersion.v2:
 				funcTypesVersion = "1";
+
 				nodeTypesVersion = "10";
 
 				break;
@@ -126,7 +130,9 @@ export class TypeScriptProjectCreateStep extends JavaScriptProjectCreateStep {
 		}
 
 		devDeps["@types/node"] = `^${nodeTypesVersion}.x`;
+
 		devDeps["typescript"] = "^4.0.0";
+
 		devDeps["rimraf"] = "^5.0.0";
 
 		return devDeps;

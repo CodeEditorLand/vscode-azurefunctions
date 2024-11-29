@@ -11,11 +11,18 @@ import { type IFunctionWizardContext } from "../createFunction/IFunctionWizardCo
 
 export interface IBindingWizardContext extends IFunctionWizardContext {
 	functionJsonPath: string;
+
 	language: ProjectLanguage;
+
 	version: FuncVersion;
+
 	bindingDirection?: string;
+
 	bindingTemplate?: IBindingTemplate;
+
 	binding?: IFunctionBinding;
+
 	bindingName?: string;
+
 	useStorageEmulator?: boolean;
 }

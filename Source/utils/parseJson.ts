@@ -57,6 +57,7 @@ export function getLineAndColumnFromOffset(
 		lineCount += 1;
 
 		const lineLength: number = line.length + 1;
+
 		charCount += lineLength;
 
 		if (charCount >= offset) {
@@ -65,5 +66,6 @@ export function getLineAndColumnFromOffset(
 			break;
 		}
 	}
+
 	return [lineCount, column];
 }

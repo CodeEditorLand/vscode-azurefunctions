@@ -52,6 +52,7 @@ export class ScriptInitVSCodeStep extends InitVSCodeStepBase {
 
 			if (await AzExtFsExtra.pathExists(extensionsCsprojPath)) {
 				this.useFuncExtensionsInstall = true;
+
 				context.telemetry.properties.hasExtensionsCsproj = "true";
 			} else if (context.version === FuncVersion.v2) {
 				// no need to check v1 or v3+

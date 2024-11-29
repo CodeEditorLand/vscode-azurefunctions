@@ -59,6 +59,7 @@ export class ExistingFileStep<
 				)
 			) {
 				// remove file extension (if any);
+
 				context[this.input.assignTo] =
 					this.input.defaultValue.split(".")[0];
 			}

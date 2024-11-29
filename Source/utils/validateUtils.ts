@@ -12,6 +12,7 @@ export namespace validateUtils {
 		const thirtyTwoBitMaxSafeInteger = 2147483647;
 
 		lower ??= 1;
+
 		upper =
 			!upper || upper > thirtyTwoBitMaxSafeInteger
 				? thirtyTwoBitMaxSafeInteger
@@ -71,6 +72,7 @@ export namespace validateUtils {
 			if (i + consecutiveChars > login.length) {
 				break;
 			}
+
 			consecutiveCharSet.add(login.slice(i, i + consecutiveChars - 1));
 		}
 
@@ -79,6 +81,7 @@ export namespace validateUtils {
 			if (i + consecutiveChars > password.length) {
 				break;
 			}
+
 			if (
 				consecutiveCharSet.has(
 					password.slice(i, i + consecutiveChars - 1),

@@ -14,7 +14,9 @@ import {
 
 export class ContainerTreeItem extends SlotContainerTreeItemBase {
 	public resolved: ResolvedContainerizedFunctionAppResource;
+
 	public readonly contextValue: string;
+
 	public site: ContainerSite;
 
 	public readonly source: ProjectSource = ProjectSource.Remote;
@@ -24,8 +26,11 @@ export class ContainerTreeItem extends SlotContainerTreeItemBase {
 		resolvedContainerizedFunctionAppResource: ResolvedContainerizedFunctionAppResource,
 	) {
 		super(parent, resolvedContainerizedFunctionAppResource);
+
 		this.resolved = resolvedContainerizedFunctionAppResource;
+
 		this.contextValue = "azFuncContainer";
+
 		this.site = this.resolved.site;
 	}
 

@@ -32,6 +32,7 @@ import { parseScriptTemplates } from "./parseScriptTemplates";
 
 export class ScriptTemplateProvider extends TemplateProviderBase {
 	public templateType: TemplateType = TemplateType.Script;
+
 	public templateSchemaVersion: TemplateSchemaVersion =
 		TemplateSchemaVersion.v1;
 
@@ -40,11 +41,15 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 	}
 
 	protected _rawResources: object;
+
 	protected _rawTemplates: object[];
+
 	protected _rawBindings: object;
 
 	private readonly _templatesKey: string = "FunctionTemplates";
+
 	private readonly _bindingsKey: string = "FunctionTemplateConfig";
+
 	private readonly _resourcesKey: string = "FunctionTemplateResources";
 
 	public async getCachedTemplates(): Promise<ITemplates | undefined> {
@@ -92,6 +97,7 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 
 		try {
 			const filePath: string = path.join(templatesPath, "templates.zip");
+
 			await requestUtils.downloadFile(
 				context,
 				templateRelease.templates,
@@ -127,6 +133,7 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 
 		for (const [file, data] of fileData) {
 			await AzExtFsExtra.ensureFile(file);
+
 			await AzExtFsExtra.writeJSON(file, data);
 		}
 	}
@@ -134,14 +141,18 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async cacheTemplates(): Promise<void> {
 		await this.updateCachedValue(this._templatesKey, this._rawTemplates);
+
 		await this.updateCachedValue(this._bindingsKey, this._rawBindings);
+
 		await this.updateCachedValue(this._resourcesKey, this._rawResources);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async clearCachedTemplates(): Promise<void> {
 		await this.deleteCachedValue(this._templatesKey);
+
 		await this.deleteCachedValue(this._bindingsKey);
+
 		await this.deleteCachedValue(this._resourcesKey);
 	}
 
@@ -156,12 +167,15 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 
 	protected async parseTemplates(rootPath: string): Promise<ITemplates> {
 		const paths: ITemplatePaths = this.getTemplatePaths(rootPath);
+
 		this._rawResources = await AzExtFsExtra.readJSON<object>(
 			paths.resources,
 		);
+
 		this._rawTemplates = await AzExtFsExtra.readJSON<object[]>(
 			paths.templates,
 		);
+
 		this._rawBindings = await AzExtFsExtra.readJSON<object>(paths.bindings);
 
 		return parseScriptTemplates(
@@ -202,6 +216,8 @@ export class ScriptTemplateProvider extends TemplateProviderBase {
 
 interface ITemplatePaths {
 	resources: string;
+
 	templates: string;
+
 	bindings: string;
 }

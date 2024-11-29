@@ -10,9 +10,13 @@ import { type BindingSettingValue } from "../funcConfig/function";
  */
 export interface IBindingTemplate {
 	type: string;
+
 	direction: string;
+
 	displayName: string;
+
 	isHttpTrigger: boolean;
+
 	isTimerTrigger: boolean;
 
 	settings: IBindingSetting[];
@@ -23,14 +27,21 @@ export interface IBindingTemplate {
  */
 export interface IBindingSetting {
 	resourceType: ResourceType | undefined;
+
 	valueType: ValueType | undefined;
 
 	defaultValue: BindingSettingValue;
+
 	required: boolean | undefined;
+
 	enums: IEnumValue[];
+
 	label: string;
+
 	description?: string;
+
 	name: string;
+
 	validateSetting(value: string | undefined): string | undefined;
 	// used by the new V2 schema as token to replace in content
 	assignTo: string;
@@ -55,5 +66,6 @@ export enum ValueType {
 
 export interface IEnumValue {
 	value: string;
+
 	displayName: string;
 }

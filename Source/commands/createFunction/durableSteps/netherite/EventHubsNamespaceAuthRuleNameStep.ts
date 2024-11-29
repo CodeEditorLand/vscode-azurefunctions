@@ -45,6 +45,7 @@ export class EventHubsNamespaceAuthRuleNameStep<
 			rgName,
 			namespaceName,
 		);
+
 		this.authRules = await uiUtils.listAllIterator(authRulesIterator);
 
 		context.newAuthRuleName = (
@@ -69,6 +70,7 @@ export class EventHubsNamespaceAuthRuleNameStep<
 		if (!validateUtils.isValidLength(name, 1, 50)) {
 			return getInvalidLengthMessage(1, 50);
 		}
+
 		if (!/^[a-zA-Z0-9]+(?:[._-][a-zA-Z0-9]+)*$/.test(name)) {
 			return localize(
 				"invalidAlphanumericOrHyphenWithSymbols",

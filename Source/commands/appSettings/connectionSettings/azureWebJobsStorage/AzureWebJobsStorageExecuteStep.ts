@@ -19,6 +19,7 @@ export class AzureWebJobsStorageExecuteStep<
 	T extends IAzureWebJobsStorageWizardContext,
 > extends SetConnectionSettingStepBase<T> {
 	public priority: number = 230;
+
 	public debugDeploySetting: ConnectionKeyValues = ConnectionKey.Storage;
 
 	public async execute(context: T): Promise<void> {

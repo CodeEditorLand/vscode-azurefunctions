@@ -32,10 +32,12 @@ export class GradleProjectCreateStep extends ScriptProjectCreateStep {
 		context: IJavaProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
 		await gradleUtils.validateGradleInstalled(context);
+
 		await super.executeCore(context, progress);
 
 		const settingsGradlePath: string = path.join(
@@ -131,6 +133,7 @@ azurefunctions {
       os = 'windows'
       javaVersion = '${context.javaVersion}'
     }
+
     localDebug = "transport=dt_socket,server=y,suspend=n,address=5005"
 }
 `;

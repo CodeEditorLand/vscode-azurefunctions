@@ -14,6 +14,7 @@ const npmRegistryUri: string = "https://aka.ms/AA2qmnu";
 
 export interface INpmDistTag {
 	tag: string;
+
 	value: string;
 }
 
@@ -54,5 +55,6 @@ export async function getNpmDistTag(
 			),
 		);
 	}
+
 	return { tag: majorVersion, value: maxVersion };
 }

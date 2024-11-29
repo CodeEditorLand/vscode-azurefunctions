@@ -23,12 +23,14 @@ export namespace dotnetUtils {
 
 	export class ProjectFile {
 		public name: string;
+
 		public fullPath: string;
 		// We likely need to check a few things in quick succession, so we'll cache the contents here
 		private _cachedContents: string | undefined;
 
 		constructor(name: string, projectPath: string) {
 			this.name = name;
+
 			this.fullPath = path.join(projectPath, name);
 		}
 
@@ -38,6 +40,7 @@ export namespace dotnetUtils {
 					this.fullPath,
 				);
 			}
+
 			return this._cachedContents;
 		}
 	}
@@ -201,6 +204,7 @@ export namespace dotnetUtils {
 
 			if (projFiles.length === 1) {
 				targetFramework = await getTargetFramework(projFiles[0]);
+
 				isIsolated = await getIsIsolated(projFiles[0]);
 			}
 		}
@@ -228,6 +232,7 @@ export namespace dotnetUtils {
 		if (isIsolated) {
 			result += "-isolated";
 		}
+
 		return result;
 	}
 

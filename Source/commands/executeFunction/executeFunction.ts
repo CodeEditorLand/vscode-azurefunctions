@@ -32,6 +32,7 @@ export async function executeFunction(
 			"noFunctions",
 			"No functions found.",
 		);
+
 		node = await ext.rgApi.pickAppResource<FunctionTreeItemBase>(
 			{ ...context, noItemFoundErrorMessage },
 			{
@@ -43,12 +44,14 @@ export async function executeFunction(
 
 	try {
 		ext.isExecutingFunction = true;
+
 		ext.currentExecutingFunctionNode = node;
 
 		const func =
 			node instanceof FunctionTreeItemBase ? node.function : node;
 
 		const triggerBindingType: string | undefined = node.triggerBindingType;
+
 		context.telemetry.properties.triggerBindingType = triggerBindingType;
 
 		let functionInput: string | {} = "";
@@ -68,6 +71,7 @@ export async function executeFunction(
 					await node.project.getVersion(context);
 
 				const templateProvider = ext.templateProvider.get(context);
+
 				value = await templateProvider.tryGetSampleData(
 					context,
 					version,
@@ -77,6 +81,7 @@ export async function executeFunction(
 				if (value) {
 					// Clean up the whitespace to make it more friendly for a one-line input box
 					value = value.replace(/[\r\n\t]/g, " ");
+
 					value = value.replace(/ +/g, " ");
 				}
 			}
@@ -97,6 +102,7 @@ export async function executeFunction(
 		await executeFunctionWithInput(context, functionInput, node);
 	} finally {
 		ext.isExecutingFunction = false;
+
 		ext.currentExecutingFunctionNode = undefined;
 	}
 }
@@ -117,11 +123,13 @@ export async function executeFunctionWithInput(
 			await func.getTriggerRequest(context),
 			"triggerRequest",
 		);
+
 		body = functionInput;
 	} else {
 		triggerRequest = await func.project.getHostRequest(context);
 		// https://docs.microsoft.com/azure/azure-functions/functions-manually-run-non-http
 		triggerRequest.url = `${triggerRequest.url}/admin/functions/${func.name}`;
+
 		body = { input: functionInput };
 	}
 
@@ -143,6 +151,7 @@ export async function executeFunctionWithInput(
 				(await client.listHostKeys()).masterKey ?? "",
 			);
 		}
+
 		try {
 			responseText = (
 				await requestUtils.sendRequestWithExtTimeout(context, {
@@ -173,6 +182,7 @@ export async function executeFunctionWithInput(
 					}),
 					headers: headers.toJSON(),
 				});
+
 				responseText = await response.text();
 			} else {
 				context.telemetry.maskEntireErrorMessage = true; // since the response is directly related to the code the user authored themselves
@@ -201,8 +211,10 @@ export async function executeFunctionWithInput(
 				responseText,
 			)
 		: localize("executed", 'Executed function "{0}"', func.name);
+
 	void window.showInformationMessage(message);
 
 	ext.isExecutingFunction = false;
+
 	ext.currentExecutingFunctionNode = undefined;
 }

@@ -15,6 +15,7 @@ export class GetTemplateFileContentExecuteStep<
 > extends ActionSchemaStepBase<T> {
 	public async executeAction(context: T): Promise<void> {
 		const filePath = nonNullProp(this.action, "filePath");
+
 		assertTemplateIsV2(context.functionTemplate);
 
 		let source: string | undefined =
@@ -46,6 +47,7 @@ export class GetTemplateFileContentExecuteStep<
 		}
 
 		const assignTo = nonNullProp(this.action, "assignTo");
+
 		context[assignTo] = source;
 	}
 }

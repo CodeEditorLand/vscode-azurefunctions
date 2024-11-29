@@ -48,11 +48,13 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 		const args: string[] = [];
 
 		args.push(`--input-file:${cpUtils.wrapArgInQuotes(uri.fsPath)}`);
+
 		args.push(`--version:3.0.6320`);
 
 		switch (wizardContext.language) {
 			case ProjectLanguage.TypeScript:
 				args.push("--azure-functions-typescript");
+
 				args.push("--no-namespace-folders:True");
 
 				break;
@@ -61,6 +63,7 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 				args.push(
 					`--namespace:${nonNullProp(wizardContext, "namespace")}`,
 				);
+
 				args.push("--azure-functions-csharp");
 
 				break;
@@ -69,13 +72,16 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 				args.push(
 					`--namespace:${nonNullProp(wizardContext, "javaPackageName")}`,
 				);
+
 				args.push("--azure-functions-java");
 
 				break;
 
 			case ProjectLanguage.Python:
 				args.push("--azure-functions-python");
+
 				args.push("--no-namespace-folders:True");
+
 				args.push("--no-async");
 
 				break;
@@ -90,6 +96,7 @@ export class OpenAPICreateStep extends AzureWizardExecuteStep<IFunctionWizardCon
 		}
 
 		args.push("--generate-metadata:false");
+
 		args.push(
 			`--output-folder:${cpUtils.wrapArgInQuotes(wizardContext.projectPath)}`,
 		);
@@ -154,6 +161,7 @@ async function validateAutorestInstalled(
 						await openUrl("https://aka.ms/autorest");
 					}
 				});
+
 			context.errorHandling.suppressDisplay = true;
 		}
 
@@ -182,6 +190,7 @@ async function addAutorestSpecificTypescriptDependencies(
 			if (!data.devDependencies[coreHttp]) {
 				data.devDependencies[coreHttp] = coreHttpVersion;
 			}
+
 			return data;
 		},
 	);

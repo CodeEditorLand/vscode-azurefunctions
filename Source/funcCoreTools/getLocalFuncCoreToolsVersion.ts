@@ -40,8 +40,10 @@ export async function getLocalFuncCoreToolsVersion(
 			if (localVersion === "220.0.0-beta.0") {
 				localVersion = "2.0.1-beta.25";
 			}
+
 			return semver.valid(localVersion);
 		}
+
 		return null;
 	}
 }

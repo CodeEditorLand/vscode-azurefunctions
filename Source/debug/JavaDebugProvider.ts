@@ -22,7 +22,9 @@ export const javaDebugConfig: DebugConfiguration = {
 
 export class JavaDebugProvider extends FuncDebugProviderBase {
 	public readonly workerArgKey: string = "languageWorkers__java__arguments";
+
 	protected readonly defaultPortOrPipeName: number = defaultJavaDebugPort;
+
 	protected readonly debugConfig: DebugConfiguration = javaDebugConfig;
 
 	// eslint-disable-next-line @typescript-eslint/require-await

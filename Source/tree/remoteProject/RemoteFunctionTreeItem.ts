@@ -26,6 +26,7 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 
 	private constructor(parent: RemoteFunctionsTreeItem, func: RemoteFunction) {
 		super(parent, func, false);
+
 		this.commandId = "azureResourceGroups.viewProperties";
 	}
 
@@ -38,6 +39,7 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 			parent,
 			func,
 		);
+
 		await ti.initAsync(context);
 
 		return ti;
@@ -76,11 +78,13 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 			'Successfully deleted function "{0}".',
 			this.function.name,
 		);
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "confirmDelete" },
 			DialogResponses.deleteResponse,
 		);
+
 		await window.withProgress(
 			{ location: ProgressLocation.Notification, title: deleting },
 			async (): Promise<void> => {
@@ -88,8 +92,11 @@ export class RemoteFunctionTreeItem extends FunctionTreeItemBase {
 
 				const client =
 					await this.parent.parent.site.createClient(context);
+
 				await client.deleteFunction(this.function.name);
+
 				void window.showInformationMessage(deleteSucceeded);
+
 				ext.outputChannel.appendLog(deleteSucceeded);
 			},
 		);

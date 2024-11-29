@@ -27,9 +27,13 @@ export function isSlotTreeItem(
 
 export class SlotTreeItem extends SlotContainerTreeItemBase {
 	public logStreamPath: string = "";
+
 	public readonly appSettingsTreeItem: AppSettingsTreeItem;
+
 	public deploymentsNode: DeploymentsTreeItem | undefined;
+
 	public readonly source: ProjectSource = ProjectSource.Remote;
+
 	public site: ParsedSite;
 
 	public readonly contextValue: string;
@@ -41,6 +45,7 @@ export class SlotTreeItem extends SlotContainerTreeItemBase {
 		resolvedFunctionAppResource: ResolvedFunctionAppResource,
 	) {
 		super(parent, resolvedFunctionAppResource);
+
 		this.resolved = resolvedFunctionAppResource;
 		// this is for the slotContextValue because it never gets resolved by the Resources extension
 		const slotContextValue = this.resolved.site.isSlot
@@ -48,10 +53,14 @@ export class SlotTreeItem extends SlotContainerTreeItemBase {
 			: ResolvedFunctionAppResource.productionContextValue;
 
 		const contextValues = [slotContextValue, "slot"];
+
 		this.contextValue = Array.from(new Set(contextValues)).sort().join(";");
+
 		this.site = this.resolved.site;
+
 		this.iconPath = treeUtils.getIconPath(slotContextValue);
 	}
+
 	public get logStreamLabel(): string {
 		return this.resolved.logStreamLabel;
 	}

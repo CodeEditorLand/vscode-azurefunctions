@@ -13,6 +13,7 @@ export interface IAzureWebJobsStorageWizardContext
 	extends ISetConnectionSettingContext,
 		Partial<ISubscriptionContext> {
 	storageAccount?: StorageAccount;
+
 	newStorageAccountName?: string;
 
 	azureWebJobsStorageType?: StorageConnectionTypeValues;

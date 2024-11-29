@@ -25,6 +25,7 @@ export class BallerinaBackendStep extends AzureWizardPromptStep<IBallerinaProjec
 			"selectBallerinaBackend",
 			"Select the backend for Ballerina project",
 		);
+
 		context.balBackend = (
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;

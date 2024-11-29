@@ -20,14 +20,20 @@ export interface ISqlDatabaseConnectionWizardContext
 
 	// Connection Types
 	azureWebJobsStorageType?: StorageConnectionTypeValues;
+
 	sqlDbConnectionType?: SqlDbConnectionTypeValues;
 
 	// SQL
 	newSqlServerName?: string;
+
 	newSqlDatabaseName?: string;
+
 	newSqlAdminUsername?: string;
+
 	newSqlAdminPassword?: string;
+
 	sqlServer?: Server;
+
 	sqlDatabase?: Database;
 
 	customSqlConnection?: string;

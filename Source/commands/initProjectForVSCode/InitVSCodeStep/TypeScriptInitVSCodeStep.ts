@@ -32,6 +32,7 @@ const npmCleanTaskLabel: string = convertToFunctionsTaskLabel("npm clean");
 
 export class TypeScriptInitVSCodeStep extends JavaScriptInitVSCodeStep {
 	public readonly preDeployTask: string = npmPruneTaskLabel;
+
 	private hasCleanScript = false;
 
 	protected async executeCore(context: IProjectWizardContext): Promise<void> {
@@ -41,6 +42,7 @@ export class TypeScriptInitVSCodeStep extends JavaScriptInitVSCodeStep {
 			const packageJson = await AzExtFsExtra.readJSON<{
 				scripts: Record<string, string>;
 			}>(path.join(context.projectPath, packageJsonFileName));
+
 			this.hasCleanScript = !!packageJson.scripts.clean;
 		} catch {
 			// ignore

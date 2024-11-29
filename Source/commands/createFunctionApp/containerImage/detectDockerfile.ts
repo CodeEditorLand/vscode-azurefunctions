@@ -23,6 +23,7 @@ export async function detectDockerfile(
 		const workspacePath = context.workspaceFolder.uri.fsPath;
 
 		let dockerfilePath: string = workspacePath;
+
 		context.rootPath = workspacePath;
 
 		//check for dockerfile location
@@ -35,6 +36,7 @@ export async function detectDockerfile(
 			if (files.length === 0) {
 				return;
 			}
+
 			dockerfilePath = path.dirname(files[0].fsPath);
 		}
 
@@ -96,5 +98,6 @@ export async function detectFunctionsDockerfile(
 			return true;
 		}
 	}
+
 	return false;
 }

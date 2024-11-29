@@ -14,5 +14,6 @@ export async function restartFunctionApp(
 	node?: SlotTreeItem,
 ): Promise<void> {
 	node = await stopFunctionApp(context, node);
+
 	await startFunctionApp(context, node);
 }

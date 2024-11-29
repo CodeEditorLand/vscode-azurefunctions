@@ -38,7 +38,9 @@ export class ScriptProjectCreateStep extends ProjectCreateStepBase {
 		"local.settings.json",
 		"test",
 	];
+
 	protected gitignore: string = "";
+
 	protected localSettingsJson: ILocalSettingsJson = {
 		IsEncrypted: false,
 		Values: {
@@ -50,6 +52,7 @@ export class ScriptProjectCreateStep extends ProjectCreateStepBase {
 		context: IProjectWizardContext,
 		_progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -65,6 +68,7 @@ export class ScriptProjectCreateStep extends ProjectCreateStepBase {
 				version === FuncVersion.v1
 					? {}
 					: await this.getHostContent(context);
+
 			await AzExtFsExtra.writeJSON(hostJsonPath, hostJson);
 		}
 

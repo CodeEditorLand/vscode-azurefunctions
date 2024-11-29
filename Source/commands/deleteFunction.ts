@@ -20,5 +20,6 @@ export async function deleteFunction(
 		"noFunctionsToDelete",
 		"No matching functions found or your function app is read-only.",
 	);
+
 	await deleteNode(context, /Remote;ReadWrite;Function;/i, node);
 }

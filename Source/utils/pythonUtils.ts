@@ -40,6 +40,7 @@ export namespace pythonUtils {
 		}
 
 		lines.push(dependency);
+
 		await AzExtFsExtra.writeFile(requirementsPath, lines.join("\n"));
 
 		const added: string = localize(
@@ -47,6 +48,7 @@ export namespace pythonUtils {
 			'Added Python dependency: "{0}"',
 			dependency,
 		);
+
 		ext.outputChannel.appendLog(added);
 	}
 

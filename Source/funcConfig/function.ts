@@ -5,15 +5,21 @@
 
 export interface IFunctionJson {
 	disabled?: boolean;
+
 	scriptFile?: string;
+
 	bindings?: IFunctionBinding[];
 }
 
 export interface IFunctionBinding {
 	type?: string;
+
 	name?: string;
+
 	route?: string;
+
 	direction?: string;
+
 	authLevel?: string;
 	[propertyName: string]: BindingSettingValue;
 }

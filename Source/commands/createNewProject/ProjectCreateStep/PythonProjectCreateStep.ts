@@ -39,6 +39,7 @@ export class PythonProjectCreateStep extends ScriptProjectCreateStep {
 		context: IProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -58,6 +59,7 @@ export class PythonProjectCreateStep extends ScriptProjectCreateStep {
 						context,
 						context.workspacePath,
 					);
+
 				isOldFuncCli =
 					!!currentVersion &&
 					semver.lte(currentVersion, oldFuncVersion);

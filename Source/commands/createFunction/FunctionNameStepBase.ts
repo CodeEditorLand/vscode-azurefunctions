@@ -23,10 +23,12 @@ export abstract class FunctionNameStepBase<
 			context,
 			"functionTemplate",
 		);
+
 		assertTemplateIsV1(template);
 
 		const uniqueFunctionName: string | undefined =
 			await this.getUniqueFunctionName(context);
+
 		context.functionName = await context.ui.showInputBox({
 			placeHolder: localize("funcNamePlaceholder", "Function name"),
 			prompt: localize("funcNamePrompt", "Provide a function name"),
@@ -43,6 +45,7 @@ export abstract class FunctionNameStepBase<
 	protected abstract getUniqueFunctionName(
 		context: T,
 	): Promise<string | undefined>;
+
 	protected abstract validateFunctionNameCore(
 		context: T,
 		name: string,
@@ -73,6 +76,7 @@ export abstract class FunctionNameStepBase<
 			) {
 				return fileName;
 			}
+
 			count += 1;
 		}
 

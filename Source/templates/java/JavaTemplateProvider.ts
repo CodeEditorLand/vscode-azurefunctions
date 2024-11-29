@@ -32,6 +32,7 @@ interface IRawJavaTemplates {
  */
 export class JavaTemplateProvider extends ScriptTemplateProvider {
 	public templateType: TemplateType = TemplateType.Java;
+
 	public templateSchemaVersion: TemplateSchemaVersion =
 		TemplateSchemaVersion.v1;
 
@@ -71,6 +72,7 @@ export class JavaTemplateProvider extends ScriptTemplateProvider {
 		context: IActionContext,
 	): Promise<ITemplates> {
 		this.validateGradleProject();
+
 		await mavenUtils.validateMavenInstalled(context);
 
 		const projectPath: string = this.getProjectPath();
@@ -91,7 +93,9 @@ export class JavaTemplateProvider extends ScriptTemplateProvider {
 			this._rawTemplates = parseJson<IRawJavaTemplates>(
 				regExpResult[1],
 			).templates;
+
 			this._rawBindings = parseJson(regExpResult[2]);
+
 			this._rawResources = parseJson(regExpResult[3]);
 
 			return parseScriptTemplates(

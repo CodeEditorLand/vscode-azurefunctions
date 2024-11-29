@@ -42,19 +42,31 @@ export class LocalProjectTreeItem
 	implements Disposable, IProjectTreeItem
 {
 	public static contextValue: string = "azFuncLocalProject";
+
 	public contextValue: string = LocalProjectTreeItem.contextValue;
+
 	public readonly source: ProjectSource = ProjectSource.Local;
+
 	public readonly effectiveProjectPath: string;
+
 	public readonly preCompiledProjectPath: string | undefined;
+
 	public readonly workspacePath: string;
+
 	public readonly workspaceFolder: WorkspaceFolder;
+
 	public readonly version: FuncVersion;
+
 	public readonly language: ProjectLanguage;
+
 	public readonly languageModel: number | undefined;
+
 	public readonly isIsolated: boolean;
+
 	public readonly project: LocalProjectInternal;
 
 	private readonly _disposables: Disposable[] = [];
+
 	private readonly _localFunctionsTreeItem: LocalFunctionsTreeItem;
 
 	public constructor(
@@ -68,14 +80,23 @@ export class LocalProjectTreeItem
 			options.preCompiledProjectPath || options.effectiveProjectPath,
 			options.folder,
 		);
+
 		this.effectiveProjectPath = options.effectiveProjectPath;
+
 		this.workspacePath = options.folder.uri.fsPath;
+
 		this.workspaceFolder = options.folder;
+
 		this.preCompiledProjectPath = options.preCompiledProjectPath;
+
 		this.version = options.version;
+
 		this.language = options.language;
+
 		this.languageModel = options.languageModel;
+
 		this.isIsolated = !!options.isIsolated;
+
 		this.project = localProject;
 
 		this._disposables.push(
@@ -84,6 +105,7 @@ export class LocalProjectTreeItem
 				path.join(this.effectiveProjectPath, "*", functionJsonFileName),
 			),
 		);
+
 		this._disposables.push(
 			createRefreshFileWatcher(
 				this,
@@ -94,6 +116,7 @@ export class LocalProjectTreeItem
 		this._disposables.push(
 			onFuncTaskStarted(async (scope) => this.onFuncTaskChanged(scope)),
 		);
+
 		this._disposables.push(
 			onDotnetFuncTaskReady(async (scope) =>
 				this.onFuncTaskChanged(scope),
@@ -178,7 +201,9 @@ export class LocalProjectTreeItem
 			async (context: IActionContext) => {
 				if (this.workspaceFolder === scope) {
 					context.errorHandling.suppressDisplay = true;
+
 					context.telemetry.suppressIfSuccessful = true;
+
 					await this.refresh(context);
 				}
 			},

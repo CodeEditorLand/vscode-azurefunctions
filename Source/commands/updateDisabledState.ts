@@ -39,6 +39,7 @@ async function updateDisabledState(
 		const noItemFoundErrorMessage: string = isDisabled
 			? localize("noEnabledFuncs", "No enabled functions found.")
 			: localize("noDisabledFuncs", "No disabled functions found.");
+
 		node = await ext.rgApi.pickAppResource<FunctionTreeItemBase>(
 			{ ...context, noItemFoundErrorMessage },
 			{
@@ -64,6 +65,7 @@ async function updateDisabledState(
 			String(isDisabled),
 		);
 	}
+
 	await node.parent.parent.refresh(context);
 
 	const message: string = isDisabled
@@ -79,6 +81,7 @@ async function updateDisabledState(
 			);
 	// don't wait
 	void window.showInformationMessage(message);
+
 	ext.outputChannel.appendLog(message, {
 		resourceName: node.parent.parent.label,
 	});

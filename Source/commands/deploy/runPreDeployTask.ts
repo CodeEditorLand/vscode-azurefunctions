@@ -105,6 +105,7 @@ async function promptToBuildNativeDeps(
 
 	if (result === DialogResponses.yes) {
 		context.telemetry.properties.preDeployTaskResponse = "packNativeDeps";
+
 		await updateWorkspaceSetting(
 			preDeployTaskSetting,
 			`${packTaskName} ${buildNativeDeps}`,
@@ -114,6 +115,7 @@ async function promptToBuildNativeDeps(
 		return await tryRunPreDeployTask(context, deployFsPath, scmType);
 	} else if (result === DialogResponses.learnMore) {
 		context.telemetry.properties.preDeployTaskResponse = "packLearnMore";
+
 		await openUrl("https://aka.ms/func-python-publish");
 
 		throw new UserCancelledError("funcPackFailed|learnMore");

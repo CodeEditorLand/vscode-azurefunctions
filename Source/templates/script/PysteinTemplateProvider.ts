@@ -26,6 +26,7 @@ import { ScriptBundleTemplateProvider } from "./ScriptBundleTemplateProvider";
 
 export class PysteinTemplateProvider extends ScriptBundleTemplateProvider {
 	public templateType: TemplateType = TemplateType.Script;
+
 	public templateSchemaVersion: TemplateSchemaVersion =
 		TemplateSchemaVersion.v2;
 
@@ -34,8 +35,11 @@ export class PysteinTemplateProvider extends ScriptBundleTemplateProvider {
 	}
 
 	protected _resources: { en: { [key: string]: string } };
+
 	protected _rawTemplates: RawTemplateV2[];
+
 	protected _rawBindings: object[];
+
 	protected _language: string;
 
 	public async getLatestTemplates(
@@ -79,12 +83,15 @@ export class PysteinTemplateProvider extends ScriptBundleTemplateProvider {
 		const paths: ITemplatePaths = this.getTemplatePaths(
 			this.getBackupPath(),
 		);
+
 		this._rawTemplates = <RawTemplateV2[]>(
 			await AzExtFsExtra.readJSON(paths.templates)
 		);
+
 		this._rawBindings = <object[]>(
 			await AzExtFsExtra.readJSON(paths.bindings)
 		);
+
 		this._resources = await AzExtFsExtra.readJSON(paths.resources);
 
 		return {
@@ -139,6 +146,8 @@ export class PysteinTemplateProvider extends ScriptBundleTemplateProvider {
 
 interface ITemplatePaths {
 	templates: string;
+
 	bindings: string;
+
 	resources: string;
 }

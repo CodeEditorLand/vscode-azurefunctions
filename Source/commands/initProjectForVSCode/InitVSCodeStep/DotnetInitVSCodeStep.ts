@@ -49,6 +49,7 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 		if (language === ProjectLanguage.FSharp) {
 			recs.push("ionide.ionide-fsharp");
 		}
+
 		return recs;
 	}
 
@@ -98,6 +99,7 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 
 		const versionInProjFile: string | undefined =
 			await dotnetUtils.tryGetFuncVersion(projFile);
+
 		context.telemetry.properties.versionInProjFile = versionInProjFile;
 		// The version from the proj file takes precedence over whatever was set in `context` before this
 		context.version =
@@ -137,10 +139,12 @@ export class DotnetInitVSCodeStep extends InitVSCodeStepBase {
 
 		const targetFramework: string =
 			await dotnetUtils.getTargetFramework(projFile);
+
 		this.setDeploySubpath(
 			context,
 			`bin/Release/${targetFramework}/publish`,
 		);
+
 		this._debugSubpath = dotnetUtils.getDotnetDebugSubpath(targetFramework);
 	}
 

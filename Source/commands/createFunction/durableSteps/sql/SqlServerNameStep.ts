@@ -52,9 +52,11 @@ export class SqlServerNameStep<
 		if (!validateUtils.isValidLength(name, 1, 63)) {
 			return getInvalidLengthMessage(1, 63);
 		}
+
 		if (!validateUtils.isLowerCaseAlphanumericWithHypens(name)) {
 			return invalidLowerCaseAlphanumericWithHyphens;
 		}
+
 		return undefined;
 	}
 
@@ -75,6 +77,7 @@ export class SqlServerNameStep<
 				name,
 			);
 		}
+
 		return undefined;
 	}
 }

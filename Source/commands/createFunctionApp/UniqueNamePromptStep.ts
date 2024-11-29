@@ -34,11 +34,14 @@ export class ConfigureCommonNamesStep extends AzureWizardPromptStep<IAppServiceW
 					),
 				);
 			}
+
 			context.newResourceGroupName =
 				context.newResourceGroupName || newName;
 
 			setConsumptionPlanProperties(context);
+
 			context.newStorageAccountName = newName;
+
 			context.newAppInsightsName = newName;
 		}
 	}

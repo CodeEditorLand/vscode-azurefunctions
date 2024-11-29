@@ -43,6 +43,7 @@ export async function downloadAppSettings(
 
 	const client: IAppSettingsClient =
 		await node.clientProvider.createClient(context);
+
 	await node.runWithTemporaryDescription(
 		context,
 		localize("downloading", "Downloading..."),
@@ -78,6 +79,7 @@ export async function downloadAppSettingsInternal(
 
 	if (localSettings.IsEncrypted) {
 		await decryptLocalSettings(context, localSettingsUri);
+
 		localSettings =
 			await AzExtFsExtra.readJSON<ILocalSettingsJson>(localSettingsPath);
 	}
@@ -105,6 +107,7 @@ export async function downloadAppSettingsInternal(
 		}
 
 		await AzExtFsExtra.ensureFile(localSettingsPath);
+
 		await AzExtFsExtra.writeJSON(localSettingsPath, localSettings);
 	} finally {
 		if (isEncrypted) {
@@ -133,6 +136,7 @@ export async function downloadAppSettingsInternal(
 			if (result === openFile) {
 				const doc: vscode.TextDocument =
 					await vscode.workspace.openTextDocument(localSettingsUri);
+
 				await vscode.window.showTextDocument(doc);
 			} else if (result === viewOutput) {
 				ext.outputChannel.show();

@@ -9,7 +9,10 @@ import { type EventGridSource } from "./eventGridSources";
 
 export interface EventGridExecuteFunctionContext extends IActionContext {
 	eventSource?: EventGridSource;
+
 	selectedFileName?: string;
+
 	selectedFileUrl?: string;
+
 	fileOpened?: boolean;
 }

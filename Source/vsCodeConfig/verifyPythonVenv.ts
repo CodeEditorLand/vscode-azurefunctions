@@ -61,6 +61,7 @@ export async function verifyPythonVenv(
 
 			if (result === createVenv) {
 				context.errorHandling.suppressDisplay = false;
+
 				context.telemetry.properties.verifyConfigResult = "update";
 
 				const wizardContext: IPythonVenvWizardContext = {
@@ -80,7 +81,9 @@ export async function verifyPythonVenv(
 							"Create virtual environment",
 						),
 					});
+
 				await wizard.prompt();
+
 				await wizard.execute();
 
 				// don't wait
@@ -93,6 +96,7 @@ export async function verifyPythonVenv(
 			} else if (result === DialogResponses.dontWarnAgain) {
 				context.telemetry.properties.verifyConfigResult =
 					"dontWarnAgain";
+
 				await updateGlobalSetting(settingKey, false);
 			}
 		}

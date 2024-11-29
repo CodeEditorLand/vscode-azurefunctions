@@ -34,6 +34,7 @@ export class JobsListStep extends AzureWizardPromptStep<IFunctionWizardContext> 
 			"selectJob",
 			"Select template creation type",
 		);
+
 		context.job = (
 			await context.ui.showQuickPick(this.getPicks(context), {
 				placeHolder,
@@ -51,12 +52,14 @@ export class JobsListStep extends AzureWizardPromptStep<IFunctionWizardContext> 
 		if (context.job) {
 			const promptSteps: AzureWizardPromptStep<FunctionV2WizardContext>[] =
 				[];
+
 			context.job.parsedInputs.map((pi) => {
 				promptSteps.push(promptStepFactory(pi));
 			});
 
 			const executeSteps: AzureWizardExecuteStep<FunctionV2WizardContext>[] =
 				[];
+
 			context.job.parsedActions.map((pa, index) => {
 				// add index to increment the priority number; start at 500 so other execute steps can be injected
 				executeSteps.push(actionStepFactory(pa, index + 500));
@@ -74,6 +77,7 @@ export class JobsListStep extends AzureWizardPromptStep<IFunctionWizardContext> 
 		// if this is a new project, we can default to the new project job
 		if (this.isProjectWizard && !!context.functionTemplate) {
 			assertTemplateIsV2(context.functionTemplate);
+
 			context.job = context.functionTemplate.wizards.find(
 				(j) => j.type === JobType.CreateNewApp,
 			);

@@ -43,6 +43,7 @@ import { type ISqlDatabaseConnectionWizardContext } from "./sqlDatabase/ISqlData
 
 export interface IResourceResult {
 	name: string;
+
 	connectionString: string;
 }
 
@@ -167,7 +168,9 @@ export async function getEventHubsConnectionString(
 			'There are no connection strings available on your namespace\'s shared access policy. Locate a valid access policy and add the connection string to "{0}".',
 			localSettingsFileName,
 		);
+
 		void context.ui.showWarningMessage(message, { learnMoreLink });
+
 		ext.outputChannel.appendLog(message);
 	}
 

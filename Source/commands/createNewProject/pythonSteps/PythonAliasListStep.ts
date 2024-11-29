@@ -34,9 +34,11 @@ export class PythonAliasListStep extends AzureWizardPromptStep<IPythonVenvWizard
 
 		if (typeof result === "string") {
 			context.pythonAlias = result;
+
 			context.telemetry.properties.pythonAliasBehavior = "selectAlias";
 		} else {
 			context.manuallyEnterAlias = result;
+
 			context.telemetry.properties.pythonAliasBehavior = result
 				? "enterAlias"
 				: "skipVenv";
@@ -106,6 +108,7 @@ async function getPicks(
 				description: version,
 				data: alias,
 			});
+
 			versions.push(version);
 		}
 	}

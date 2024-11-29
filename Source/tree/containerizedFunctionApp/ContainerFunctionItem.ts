@@ -62,6 +62,7 @@ export class ContainerFunctionItem extends FunctionBase {
 				}
 			}
 		}
+
 		const hostKeys: HostKeys = await client.webApps.listHostKeys(
 			nonNullValueAndProp(this.site, "resourceGroup"),
 			nonNullValueAndProp(this.site, "name"),

@@ -22,6 +22,7 @@ import {
 
 export class BallerinaTemplateProvider extends TemplateProviderBase {
 	public templateType: TemplateType = TemplateType.Ballerina;
+
 	public templateSchemaVersion: TemplateSchemaVersion =
 		TemplateSchemaVersion.v1;
 
@@ -30,7 +31,9 @@ export class BallerinaTemplateProvider extends TemplateProviderBase {
 	}
 
 	protected _rawResources: object;
+
 	protected _rawTemplates: object[];
+
 	protected _rawBindings: object;
 
 	public async getCachedTemplates(): Promise<ITemplates | undefined> {
@@ -81,10 +84,13 @@ export class BallerinaTemplateProvider extends TemplateProviderBase {
 
 	protected async parseTemplates(rootPath: string): Promise<ITemplates> {
 		const paths: ITemplatePaths = this.getTemplatePaths(rootPath);
+
 		this._rawTemplates = await AzExtFsExtra.readJSON<object[]>(
 			paths.templates,
 		);
+
 		this._rawBindings = await AzExtFsExtra.readJSON<object>(paths.bindings);
+
 		this._rawResources = await AzExtFsExtra.readJSON<object>(
 			paths.resources,
 		);
@@ -131,6 +137,8 @@ export class BallerinaTemplateProvider extends TemplateProviderBase {
 
 interface ITemplatePaths {
 	resources: string;
+
 	templates: string;
+
 	bindings: string;
 }

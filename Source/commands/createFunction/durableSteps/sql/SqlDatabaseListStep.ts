@@ -62,6 +62,7 @@ export class SqlDatabaseListStep<
 		const result: Database | undefined = (
 			await context.ui.showQuickPick(picksTask, quickPickOptions)
 		).data;
+
 		context.sqlDatabase = result;
 	}
 
@@ -85,6 +86,7 @@ export class SqlDatabaseListStep<
 				new SqlDatabaseNameStep(),
 				new ResourceGroupListStep(),
 			);
+
 			executeSteps.push(new SqlDatabaseCreateStep());
 		}
 

@@ -52,6 +52,7 @@ export class EventHubConnectionCreateStep extends AzureConnectionCreateStepBase<
 				namespaceName,
 				authRuleName,
 			);
+
 			connectionString = `${nonNullProp(keys, "primaryConnectionString")};EntityPath=${eventHubName}`;
 		} else {
 			const keys: AccessKeys = await client.eventHubs.listKeys(
@@ -60,6 +61,7 @@ export class EventHubConnectionCreateStep extends AzureConnectionCreateStepBase<
 				eventHubName,
 				authRuleName,
 			);
+
 			connectionString = nonNullProp(keys, "primaryConnectionString");
 		}
 

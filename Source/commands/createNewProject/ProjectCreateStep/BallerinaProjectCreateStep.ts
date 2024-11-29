@@ -20,6 +20,7 @@ export class BallerinaProjectCreateStep extends ScriptProjectCreateStep {
 		context: IBallerinaProjectWizardContext,
 		progress: Progress<{
 			message?: string | undefined;
+
 			increment?: number | undefined;
 		}>,
 	): Promise<void> {
@@ -38,12 +39,15 @@ export class BallerinaProjectCreateStep extends ScriptProjectCreateStep {
 				await AzExtFsExtra.readFile(ballerinaTomlPath);
 
 			const buildOptions: string = await this.getBuildOptions(context);
+
 			ballerinaTomlContents = ballerinaTomlContents + buildOptions;
+
 			await AzExtFsExtra.writeFile(
 				ballerinaTomlPath,
 				ballerinaTomlContents,
 			);
 		}
+
 		await super.executeCore(context, progress);
 	}
 

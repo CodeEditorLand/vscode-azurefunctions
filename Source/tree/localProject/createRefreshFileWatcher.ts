@@ -19,7 +19,9 @@ export function createRefreshFileWatcher(
 			"refreshFileWatcher",
 			async (context: IActionContext) => {
 				context.errorHandling.suppressDisplay = true;
+
 				context.telemetry.suppressIfSuccessful = true;
+
 				await ti.refresh(context);
 			},
 		);

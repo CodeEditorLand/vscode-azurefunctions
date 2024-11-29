@@ -19,6 +19,7 @@ export interface IEventHubsConnectionWizardContext
 
 	// Connection Types
 	azureWebJobsStorageType?: StorageConnectionTypeValues;
+
 	eventHubsConnectionType?: EventHubsConnectionTypeValues;
 
 	// Netherite uses all of the eventhub namespace settings in IEventHubWizardContext

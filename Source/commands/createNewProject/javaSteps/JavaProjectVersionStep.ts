@@ -19,6 +19,7 @@ export class JavaProjectVersionStep extends AzureWizardPromptStep<IJavaProjectWi
 			),
 			value: "1.0-SNAPSHOT",
 		};
+
 		context.javaProjectVersion = await context.ui.showInputBox(options);
 	}
 

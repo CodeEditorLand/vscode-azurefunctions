@@ -75,7 +75,9 @@ export async function verifyExtensionBundle(
 
 			if (!hostJson.extensionBundle) {
 				context.telemetry.properties.bundleResult = "addedBundle";
+
 				await bundleFeedUtils.addDefaultBundle(context, hostJson);
+
 				await AzExtFsExtra.writeJSON(hostFilePath, hostJson);
 			} else {
 				context.telemetry.properties.bundleResult = "alreadyHasBundle";
@@ -97,6 +99,7 @@ export async function verifyExtensionsConfig(
 			"mismatchExtensionsCsproj",
 			'Your project is not configured to work with "extensions.csproj".',
 		);
+
 		await promptToReinitializeProject(
 			projectPath,
 			"showExtensionsCsprojWarning",

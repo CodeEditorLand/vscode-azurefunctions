@@ -17,6 +17,7 @@ export class JavaPackageNameStep extends AzureWizardPromptStep<IJavaProjectWizar
 			validateInput: validatePackageName,
 			value: context.javaGroupId || "com.function",
 		};
+
 		context.javaPackageName = await context.ui.showInputBox(options);
 	}
 
@@ -32,6 +33,7 @@ function validatePackageName(packageName: string): string | undefined {
 			"The package name cannot be empty.",
 		);
 	}
+
 	for (const s of packageName.split(".")) {
 		const result: string | undefined = validateJavaName(s);
 
@@ -39,6 +41,7 @@ function validatePackageName(packageName: string): string | undefined {
 			return result;
 		}
 	}
+
 	return undefined;
 }
 

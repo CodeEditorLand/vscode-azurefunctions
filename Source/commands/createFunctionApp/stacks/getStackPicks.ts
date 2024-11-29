@@ -152,6 +152,7 @@ export async function getStackPicks(
 						"endOfLife",
 						`$(extensions-warning-message)`,
 					);
+
 					hasEndOfLife = true;
 				}
 
@@ -162,6 +163,7 @@ export async function getStackPicks(
 					data: { stack, majorVersion, minorVersion },
 					agentMetadata: {},
 				});
+
 				stackHasPicks = true;
 			}
 		}
@@ -200,6 +202,7 @@ export async function getStackPicks(
 			agentMetadata: { notApplicableToAgentPick: true },
 		});
 	}
+
 	return picks;
 }
 
@@ -274,11 +277,13 @@ async function getStacks(
 					),
 				}),
 			);
+
 			stacksArmResponse = <StacksArmResponse>result.parsedBody;
 		} catch (error) {
 			// Some environments (like Azure Germany/Mooncake) don't support the stacks ARM API yet
 			// And since the stacks don't change _that_ often, we'll just use a backup hard-coded value
 			stacksArmResponse = <StacksArmResponse>JSON.parse(backupStacks);
+
 			context.telemetry.properties.getStacksError = maskUserInfo(
 				parseError(error).message,
 				[],
@@ -288,6 +293,7 @@ async function getStacks(
 		context._stacks = stacksArmResponse.value.map((d) => d.properties);
 
 		removeDeprecatedStacks(context._stacks);
+
 		removeHiddenStacksAndProperties(context._stacks);
 	}
 
@@ -342,6 +348,7 @@ async function getFlexStacks(
 						return mv.minorVersions.length > 0;
 					});
 			}
+
 			flexFunctionAppStacks.push(
 				...stacksArmResponse.value.map((d) => d.properties),
 			);
@@ -392,6 +399,7 @@ function removeHiddenStacksAndProperties(stacks: FunctionAppStack[]): void {
 						minor.stackSettings.linuxRuntimeSettings.isHidden =
 							false;
 					}
+
 					if (minor.stackSettings.windowsRuntimeSettings) {
 						minor.stackSettings.windowsRuntimeSettings.isHidden =
 							false;
@@ -427,5 +435,6 @@ export function shouldShowEolWarning(
 
 		return endOfLife <= sixMonthsFromNow;
 	}
+
 	return false;
 }

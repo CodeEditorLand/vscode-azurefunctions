@@ -54,6 +54,7 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 						namespaceName,
 					),
 				);
+
 			namespaceRules.forEach(
 				(r: IBaseResourceWithName) =>
 					(r._description = namespaceDescription),
@@ -66,6 +67,7 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 					eventHubName,
 				),
 			);
+
 			hubRules.forEach(
 				(r: IBaseResourceWithName) => (r._description = hubDescription),
 			);
@@ -87,6 +89,7 @@ export class EventHubAuthRuleListStep extends AzureWizardPromptStep<IEventHubWiz
 
 		if (result) {
 			context.authRule = result;
+
 			context.isNamespaceAuthRule =
 				result._description === namespaceDescription;
 		}

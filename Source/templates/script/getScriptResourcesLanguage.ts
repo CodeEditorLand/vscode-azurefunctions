@@ -43,6 +43,7 @@ export function getScriptResourcesLanguage(
 
 		if (!locale) {
 			const regExp: RegExp = new RegExp(`^${language}$`, "i");
+
 			supportedLanguage = supportedLanguages.find((f) => regExp.test(f));
 		}
 
@@ -53,6 +54,7 @@ export function getScriptResourcesLanguage(
 				`^${language}(-${locale})?$`,
 				"i",
 			);
+
 			supportedLanguage = supportedLanguages.find((f) => regExp.test(f));
 		}
 

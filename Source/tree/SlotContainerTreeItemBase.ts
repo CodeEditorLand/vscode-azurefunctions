@@ -26,9 +26,11 @@ export class SlotContainerTreeItemBase
 	implements IProjectTreeItem
 {
 	public contextValue: string;
+
 	public resolved:
 		| ResolvedFunctionAppResource
 		| ResolvedContainerizedFunctionAppResource;
+
 	public readonly source: ProjectSource = ProjectSource.Remote;
 
 	public constructor(
@@ -38,6 +40,7 @@ export class SlotContainerTreeItemBase
 			| ResolvedContainerizedFunctionAppResource,
 	) {
 		super(parent);
+
 		this.resolved = resolvedFunctionAppResource;
 	}
 

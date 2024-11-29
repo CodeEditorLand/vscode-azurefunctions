@@ -84,7 +84,9 @@ export class ScriptFunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 			context,
 			"functionTemplate",
 		);
+
 		await AzExtFsExtra.ensureDir(functionPath);
+
 		await Promise.all(
 			Object.keys(template.templateFiles).map(async (f) => {
 				await AzExtFsExtra.writeFile(
@@ -113,6 +115,7 @@ export class ScriptFunctionCreateStep extends FunctionCreateStepBase<IScriptFunc
 			functionPath,
 			functionJsonFileName,
 		);
+
 		await AzExtFsExtra.writeJSON(functionJsonPath, functionJson);
 
 		const language: ProjectLanguage = nonNullProp(context, "language");

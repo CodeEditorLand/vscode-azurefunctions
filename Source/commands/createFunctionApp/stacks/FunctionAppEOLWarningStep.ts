@@ -27,6 +27,7 @@ export class FunctionAppEOLWarningStep extends AzureWizardPromptStep<IFunctionAp
 
 			while (result === DialogResponses.learnMore) {
 				await openUrl(funcVersionLink);
+
 				result = await this.showEOLWarningMessage(context);
 			}
 

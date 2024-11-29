@@ -46,9 +46,13 @@ import { type PythonDebugProvider } from "./PythonDebugProvider";
 
 export class FuncTaskProvider implements TaskProvider {
 	private readonly _nodeDebugProvider: NodeDebugProvider;
+
 	private readonly _pythonDebugProvider: PythonDebugProvider;
+
 	private readonly _javaDebugProvider: JavaDebugProvider;
+
 	private readonly _ballerinaDebugProvider: BallerinaDebugProvider;
+
 	private readonly _powershellDebugProvider: PowerShellDebugProvider;
 
 	constructor(
@@ -59,9 +63,13 @@ export class FuncTaskProvider implements TaskProvider {
 		powershellDebugProvider: PowerShellDebugProvider,
 	) {
 		this._nodeDebugProvider = nodeDebugProvider;
+
 		this._pythonDebugProvider = pythonDebugProvider;
+
 		this._javaDebugProvider = javaDebugProvider;
+
 		this._ballerinaDebugProvider = ballerinaDebugProvider;
+
 		this._powershellDebugProvider = powershellDebugProvider;
 	}
 
@@ -74,7 +82,9 @@ export class FuncTaskProvider implements TaskProvider {
 			"provideTasks",
 			async (context: IActionContext) => {
 				context.telemetry.properties.isActivationEvent = "true";
+
 				context.errorHandling.suppressDisplay = true;
+
 				context.telemetry.suppressIfSuccessful = true;
 
 				if (workspace.workspaceFolders) {
@@ -104,6 +114,7 @@ export class FuncTaskProvider implements TaskProvider {
 
 								if (language === ProjectLanguage.Python) {
 									commands.push(packCommand);
+
 									commands.push(
 										`${packCommand} ${buildNativeDeps}`,
 									);
@@ -147,7 +158,9 @@ export class FuncTaskProvider implements TaskProvider {
 			"resolveTask",
 			async (context: IActionContext) => {
 				context.telemetry.properties.isActivationEvent = "true";
+
 				context.errorHandling.suppressDisplay = true;
+
 				context.telemetry.suppressIfSuccessful = true;
 
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -206,6 +219,7 @@ export class FuncTaskProvider implements TaskProvider {
 
 		if (/^\s*(host )?start/i.test(command)) {
 			problemMatcher = getFuncWatchProblemMatcher(language);
+
 			options = await this.getHostStartOptions(folder, language);
 		}
 

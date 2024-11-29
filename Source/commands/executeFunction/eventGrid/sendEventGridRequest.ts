@@ -30,7 +30,9 @@ export async function sendEventGridRequest(
 
 		throw new Error(errorMsg);
 	}
+
 	const document = activeEditor.document;
+
 	await document.save();
 
 	const requestContent: string = document.getText();

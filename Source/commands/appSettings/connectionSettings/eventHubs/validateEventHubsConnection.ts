@@ -80,6 +80,7 @@ export async function validateEventHubsConnection(
 		localEventHubsEmulatorConnectionRegExp.test(eventHubsConnection)
 	) {
 		promptSteps.push(new EventHubsConnectionPromptStep(options));
+
 		executeSteps.push(new EventHubsConnectionExecuteStep());
 	}
 
@@ -96,6 +97,7 @@ export async function validateEventHubsConnection(
 		});
 
 	await wizard.prompt();
+
 	await wizard.execute();
 }
 

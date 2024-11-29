@@ -34,11 +34,17 @@ import path = require("path");
 
 export type LocalProjectOptionsInternal = {
 	effectiveProjectPath: string;
+
 	folder: vscode.WorkspaceFolder;
+
 	version: FuncVersion;
+
 	language: ProjectLanguage;
+
 	languageModel?: number;
+
 	preCompiledProjectPath?: string;
+
 	isIsolated?: boolean;
 };
 
@@ -109,12 +115,15 @@ export async function listLocalProjects(): Promise<ListLocalProjectsResult> {
 
 							if (compiledProjectInfo) {
 								preCompiledProjectPath = projectPath;
+
 								effectiveProjectPath =
 									compiledProjectInfo.compiledProjectPath;
+
 								isIsolated = compiledProjectInfo.isIsolated;
 							} else {
 								effectiveProjectPath = projectPath;
 							}
+
 							result.initializedProjects.push(
 								new LocalProject({
 									effectiveProjectPath,

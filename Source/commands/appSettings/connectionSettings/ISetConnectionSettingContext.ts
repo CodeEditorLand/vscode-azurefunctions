@@ -9,6 +9,7 @@ import { type CodeActionValues, type ConnectionKey } from "../../../constants";
 
 export interface ISetConnectionSettingContext extends IActionContext {
 	action: CodeActionValues;
+
 	projectPath: string;
 
 	// Remote connections for deploy

@@ -52,6 +52,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 			};
 
 			const picks = await this.getPicks(context, isFlex);
+
 			result = (await context.ui.showQuickPick(picks, options)).data;
 
 			if (!result) {
@@ -99,6 +100,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 		if (shouldShowEolWarning(context.newSiteStack?.minorVersion)) {
 			promptSteps.push(new FunctionAppEOLWarningStep());
 		}
+
 		if (context.newSiteOS === undefined) {
 			promptSteps.push(new SiteOSStep());
 		} else {
@@ -158,6 +160,7 @@ export class FunctionAppStackStep extends AzureWizardPromptStep<IFlexFunctionApp
 				"$(warning) No stacks found for Azure Functions v{0} due to being EOL. Learn how to upgrade to V4...",
 				majorVersion,
 			);
+
 			picks.push({
 				label: isEol ? upgradeMessage : noPicksMessage,
 				data: undefined,

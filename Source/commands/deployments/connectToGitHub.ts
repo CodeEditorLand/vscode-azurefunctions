@@ -43,6 +43,7 @@ export async function connectToGitHub(
 			deployments.subscription,
 			ScmType.GitHub,
 		);
+
 		await deployments.refresh(context);
 	} else {
 		throw Error("Internal error: Action not supported.");

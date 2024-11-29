@@ -38,6 +38,7 @@ export class OpenBehaviorStep extends AzureWizardPromptStep<IProjectWizardContex
 			"selectOpenBehavior",
 			"Select how you would like to open your project",
 		);
+
 		context.openBehavior = (
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;

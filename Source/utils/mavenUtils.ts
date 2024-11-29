@@ -45,6 +45,7 @@ export namespace mavenUtils {
 							await openUrl("https://aka.ms/azurefunction_maven");
 						}
 					});
+
 				context.errorHandling.suppressDisplay = true;
 			}
 
@@ -81,6 +82,7 @@ export namespace mavenUtils {
 								return;
 							}
 						}
+
 						resolve(undefined);
 					},
 				);
@@ -114,11 +116,13 @@ export namespace mavenUtils {
 					errorOutput += `${line.trim() ? line.trim() : ""}\n`;
 				}
 			}
+
 			errorOutput = errorOutput.replace(/^\[ERROR\]/gm, "");
 
 			if (telemetryProperties) {
 				telemetryProperties.mavenErrors = errorOutput;
 			}
+
 			if (outputChannel) {
 				outputChannel.show();
 
@@ -142,6 +146,7 @@ export namespace mavenUtils {
 				);
 			}
 		}
+
 		return result.cmdOutput;
 	}
 

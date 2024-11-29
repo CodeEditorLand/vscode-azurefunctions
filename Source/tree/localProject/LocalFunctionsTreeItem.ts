@@ -25,10 +25,12 @@ export class ProjectNotRunningError extends Error {}
 
 export class LocalFunctionsTreeItem extends FunctionsTreeItemBase {
 	public readonly parent: LocalProjectTreeItem;
+
 	public isReadOnly: boolean;
 
 	public constructor(parent: LocalProjectTreeItem) {
 		super(parent);
+
 		this.isReadOnly = !!this.parent.preCompiledProjectPath;
 	}
 
@@ -78,6 +80,7 @@ export class LocalFunctionsTreeItem extends FunctionsTreeItemBase {
 				});
 				// By default `GenericTreeItem` will pass itself as the args, but VS Code doesn't seem to like that so pass empty array
 				ti.commandArgs = [];
+
 				children.push(ti);
 			}
 

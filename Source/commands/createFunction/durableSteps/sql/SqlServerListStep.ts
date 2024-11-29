@@ -45,6 +45,7 @@ export class SqlServerListStep<
 		const result: Server | undefined = (
 			await context.ui.showQuickPick(picksTask, quickPickOptions)
 		).data;
+
 		context.sqlServer = result;
 	}
 
@@ -69,6 +70,7 @@ export class SqlServerListStep<
 				}),
 				new ResourceGroupListStep(),
 			);
+
 			executeSteps.push(new SqlServerCreateStep());
 		}
 

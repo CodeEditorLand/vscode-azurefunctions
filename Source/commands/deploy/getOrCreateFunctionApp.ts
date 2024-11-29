@@ -68,6 +68,7 @@ export async function getOrCreateFunctionApp(
 			'Create Function App "{0}"',
 			nonNullProp(context, "newSiteName"),
 		);
+
 		await wizard.execute();
 
 		const resolved = context.dockerfilePath
@@ -79,6 +80,7 @@ export async function getOrCreateFunctionApp(
 					context as ISubscriptionContext,
 					nonNullProp(context, "site"),
 				);
+
 		node = await ext.rgApi.tree.findTreeItem(resolved.id, context);
 
 		await ext.rgApi.tree.refresh(context);

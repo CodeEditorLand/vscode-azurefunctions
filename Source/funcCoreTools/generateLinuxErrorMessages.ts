@@ -9,6 +9,7 @@ import { localize } from "../localize";
 
 export interface ILinuxErrorMessages {
 	noPackageManager: string;
+
 	failedInstall: string;
 }
 
@@ -85,6 +86,7 @@ export async function generateLinuxErrorMessages(
 						"failedInstallOptions",
 						'Try re-running the last command with "sudo" or click "Learn more" for more options.',
 					);
+
 				failedInstall += " " + linuxDistroInfo;
 			}
 		}

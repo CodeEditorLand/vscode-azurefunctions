@@ -24,6 +24,7 @@ import { ScriptTemplateProvider } from "./ScriptTemplateProvider";
 
 export class ScriptBundleTemplateProvider extends ScriptTemplateProvider {
 	public templateType: TemplateType = TemplateType.ScriptBundle;
+
 	public templateSchemaVersion: TemplateSchemaVersion =
 		TemplateSchemaVersion.v1;
 

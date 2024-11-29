@@ -25,16 +25,19 @@ export namespace bundleFeedUtils {
 
 	interface IBundleFeed {
 		defaultVersionRange: string;
+
 		bundleVersions: {
 			[bundleVersion: string]: {
 				templates: string;
 			};
 		};
+
 		templates: {
 			v1: {
 				// This is the feed's internal schema version, aka _not_ the runtime version
 				[templateVersion: string]: ITemplatesReleaseV1;
 			};
+
 			v2: {
 				// This is the feed's internal schema version, aka _not_ the runtime version
 				[templateVersion: string]: ITemplatesReleaseV2;
@@ -44,6 +47,7 @@ export namespace bundleFeedUtils {
 
 	export interface ITemplatesReleaseBase {
 		functions: string;
+
 		resources: string;
 	}
 
@@ -190,6 +194,7 @@ export namespace bundleFeedUtils {
 			const baseUrl: string =
 				envVarUri ||
 				`https://functionscdn${suffix}.azureedge.net/public`;
+
 			url = `${baseUrl}/ExtensionBundles/${bundleId}/index-v2.json`;
 		}
 

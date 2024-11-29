@@ -34,6 +34,7 @@ export async function addPythonInitVSCodeSteps(
 
 	if (await AzExtFsExtra.pathExists(context.projectPath)) {
 		const fsPaths = await AzExtFsExtra.readDirectory(context.projectPath);
+
 		await Promise.all(
 			fsPaths.map(async (venvFile) => {
 				if (
@@ -58,6 +59,7 @@ export async function addPythonInitVSCodeSteps(
 		}
 	} else if (createPythonVenv) {
 		promptSteps.push(new PythonAliasListStep());
+
 		executeSteps.push(new PythonVenvCreateStep());
 	}
 

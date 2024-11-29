@@ -8,28 +8,36 @@ import { FuncVersion } from "../FuncVersion";
 
 export interface IHostJsonV2 {
 	version?: string;
+
 	customHandler?: {};
 	// https://github.com/Azure/azure-functions-templates/issues/906
 	logging?: {
 		applicationInsights?: {
 			samplingSettings?: {
 				isEnabled?: boolean;
+
 				excludedTypes?: string;
 			};
 		};
 	};
+
 	managedDependency?: {
 		enabled?: boolean;
 	};
+
 	extensionBundle?: IBundleMetadata;
+
 	extensions?: {
 		durableTask?: IDurableTaskJson;
+
 		http?: {
 			routePrefix?: string;
 		};
 	};
+
 	concurrency?: {
 		dynamicConcurrencyEnabled: boolean;
+
 		snapshotPersistenceEnabled: boolean;
 	};
 }
@@ -47,11 +55,16 @@ export interface IStorageTaskJson {
 
 export interface INetheriteTaskJson {
 	hubName?: string;
+
 	useGracefulShutdown?: boolean;
+
 	storageProvider?: {
 		type?: DurableBackend.Netherite;
+
 		partitionCount?: number;
+
 		StorageConnectionName?: string;
+
 		EventHubsConnectionName?: string;
 	};
 }
@@ -59,15 +72,20 @@ export interface INetheriteTaskJson {
 export interface ISqlTaskJson {
 	storageProvider?: {
 		type?: DurableBackend.SQL;
+
 		connectionStringName?: string;
+
 		taskEventLockTimeout?: string;
+
 		createDatabaseIfNotExists?: boolean;
+
 		schemaName?: string | null;
 	};
 }
 
 export interface IBundleMetadata {
 	id?: string;
+
 	version?: string;
 }
 
@@ -79,6 +97,7 @@ export interface IHostJsonV1 {
 
 export interface IParsedHostJson {
 	readonly routePrefix: string;
+
 	readonly bundle?: IBundleMetadata;
 }
 

@@ -18,6 +18,7 @@ export class PythonVenvListStep extends AzureWizardPromptStep<IPythonVenvWizardC
 
 	public constructor(venvs: string[]) {
 		super();
+
 		this._venvs = venvs;
 	}
 
@@ -30,6 +31,7 @@ export class PythonVenvListStep extends AzureWizardPromptStep<IPythonVenvWizardC
 			"selectVenv",
 			"Select a virtual environment to use for your project",
 		);
+
 		context.venvName = (
 			await context.ui.showQuickPick(picks, {
 				placeHolder,

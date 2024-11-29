@@ -27,6 +27,7 @@ export async function updateFuncCoreTools(
 	switch (packageManager) {
 		case PackageManager.npm:
 			const distTag: INpmDistTag = await getNpmDistTag(context, version);
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				undefined,
@@ -55,6 +56,7 @@ export async function updateFuncCoreTools(
 					"uninstall",
 					installedBrewPackageName,
 				);
+
 				await cpUtils.executeCommand(
 					ext.outputChannel,
 					undefined,
@@ -71,6 +73,7 @@ export async function updateFuncCoreTools(
 					brewPackageName,
 				);
 			}
+
 			break;
 
 		default:

@@ -22,5 +22,6 @@ export async function stopStreamingLogs(
 	const site: ParsedSite = isSlotTreeItem(node)
 		? node.site
 		: node.parent.parent.site;
+
 	await appservice.stopStreamingLogs(site, node.logStreamPath);
 }

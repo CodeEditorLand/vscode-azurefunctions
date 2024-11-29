@@ -29,6 +29,7 @@ export class StorageTypePromptStep extends AzureWizardPromptStep<IFunctionWizard
 
 	constructor(setting: IBindingSetting | ParsedInput) {
 		super();
+
 		this._setting = setting;
 	}
 

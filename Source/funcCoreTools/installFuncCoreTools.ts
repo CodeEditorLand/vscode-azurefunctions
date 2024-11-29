@@ -35,12 +35,14 @@ export async function installFuncCoreTools(
 	switch (packageManagers[0]) {
 		case PackageManager.npm:
 			const distTag: INpmDistTag = await getNpmDistTag(context, version);
+
 			lastCoreToolsInstallCommand = [
 				"npm",
 				"install",
 				"-g",
 				`${funcPackageName}@${distTag.tag}`,
 			];
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				undefined,
@@ -52,14 +54,18 @@ export async function installFuncCoreTools(
 
 		case PackageManager.brew:
 			const brewPackageName: string = getBrewPackageName(version);
+
 			lastCoreToolsInstallCommand = ["brew", "tap", "azure/functions"];
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				undefined,
 				lastCoreToolsInstallCommand[0],
 				...lastCoreToolsInstallCommand.slice(1),
 			);
+
 			lastCoreToolsInstallCommand = ["brew", "install", brewPackageName];
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				undefined,

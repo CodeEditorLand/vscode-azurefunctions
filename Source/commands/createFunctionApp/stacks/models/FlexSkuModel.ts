@@ -5,12 +5,15 @@
 
 export interface Sku {
 	skuCode: string;
+
 	instanceMemoryMB: InstanceMemoryMB[];
+
 	maximumInstanceCount: MaximumInstanceCount;
 
 	functionAppConfigProperties: {
 		runtime: {
 			name: string;
+
 			version: string;
 		};
 	};
@@ -18,11 +21,13 @@ export interface Sku {
 
 interface InstanceMemoryMB {
 	size: number;
+
 	isDefault: boolean;
 }
 
 interface MaximumInstanceCount {
 	lowestMaximumInstanceCount: number;
+
 	highestMaximumInstanceCount: number;
 
 	defaultValue: number;

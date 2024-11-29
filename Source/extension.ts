@@ -60,18 +60,24 @@ export async function activateInternal(
 	ignoreBundle?: boolean,
 ): Promise<apiUtils.AzureExtensionApiProvider> {
 	ext.context = context;
+
 	ext.ignoreBundle = ignoreBundle;
+
 	ext.outputChannel = createAzExtOutputChannel("Azure Functions", ext.prefix);
+
 	context.subscriptions.push(ext.outputChannel);
 
 	registerUIExtensionVariables(ext);
+
 	registerAzureUtilsExtensionVariables(ext);
+
 	registerAppServiceExtensionVariables(ext);
 
 	await callWithTelemetryAndErrorHandling(
 		"azureFunctions.activate",
 		async (activateContext: IActionContext) => {
 			activateContext.telemetry.properties.isActivationEvent = "true";
+
 			activateContext.telemetry.measurements.mainFileLoad =
 				(perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
 
@@ -81,6 +87,7 @@ export async function activateInternal(
 
 			const validateEventId: string =
 				"azureFunctions.validateFunctionProjects";
+
 			void callWithTelemetryAndErrorHandling(
 				validateEventId,
 				async (actionContext: IActionContext) => {
@@ -90,6 +97,7 @@ export async function activateInternal(
 					);
 				},
 			);
+
 			registerEvent(
 				validateEventId,
 				vscode.workspace.onDidChangeWorkspaceFolders,
@@ -105,13 +113,16 @@ export async function activateInternal(
 			);
 
 			const templateProvider = new CentralTemplateProvider();
+
 			ext.templateProvider.registerExtensionVariable(templateProvider);
+
 			context.subscriptions.push(templateProvider);
 
 			// Suppress "Report an Issue" button for all errors in favor of the command
 			registerErrorHandler(
 				(c) => (c.errorHandling.suppressReportIssue = true),
 			);
+
 			registerReportIssueCommand("azureFunctions.reportIssue");
 
 			registerCommands();
@@ -140,30 +151,35 @@ export async function activateInternal(
 					nodeDebugProvider,
 				),
 			);
+
 			context.subscriptions.push(
 				vscode.debug.registerDebugConfigurationProvider(
 					"python",
 					pythonDebugProvider,
 				),
 			);
+
 			context.subscriptions.push(
 				vscode.debug.registerDebugConfigurationProvider(
 					"java",
 					javaDebugProvider,
 				),
 			);
+
 			context.subscriptions.push(
 				vscode.debug.registerDebugConfigurationProvider(
 					"ballerina",
 					ballerinaDebugProvider,
 				),
 			);
+
 			context.subscriptions.push(
 				vscode.debug.registerDebugConfigurationProvider(
 					"PowerShell",
 					powershellDebugProvider,
 				),
 			);
+
 			context.subscriptions.push(
 				vscode.workspace.registerTaskProvider(
 					func,
@@ -187,15 +203,18 @@ export async function activateInternal(
 
 			ext.experimentationService =
 				await createExperimentationService(context);
+
 			ext.rgApi = await getResourceGroupsApi();
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			ext.azureAccountTreeItem = ext.rgApi.appResourceTree
 				._rootTreeItem as AzureAccountTreeItemBase;
+
 			ext.rgApi.registerApplicationResourceResolver(
 				AzExtResourceType.FunctionApp,
 				new FunctionAppResolver(),
 			);
+
 			ext.rgApi.registerWorkspaceResourceProvider(
 				"func",
 				new FunctionsLocalResourceProvider(),

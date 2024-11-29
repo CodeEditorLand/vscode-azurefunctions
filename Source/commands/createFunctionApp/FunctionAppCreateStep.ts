@@ -67,11 +67,15 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		);
 
 		context.telemetry.properties.newSiteOS = os;
+
 		context.telemetry.properties.newSiteStack = stack.stack.value;
+
 		context.telemetry.properties.newSiteMajorVersion =
 			stack.majorVersion.value;
+
 		context.telemetry.properties.newSiteMinorVersion =
 			stack.minorVersion.value;
+
 		context.telemetry.properties.planSkuTier = context.plan?.sku?.tier;
 
 		const message: string = localize(
@@ -79,7 +83,9 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 			'Creating new function app "{0}"...',
 			context.newSiteName,
 		);
+
 		ext.outputChannel.appendLog(message);
+
 		progress.report({ message });
 
 		const siteName: string = nonNullProp(context, "newSiteName");
@@ -95,6 +101,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 			siteName,
 			stack,
 		);
+
 		context.activityResult = context.site as AppResource;
 
 		const site = new ParsedSite(context.site, context);
@@ -165,6 +172,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 		customLocation: CustomLocation,
 	): void {
 		nonNullProp(site, "siteConfig").alwaysOn = true;
+
 		site.extendedLocation = {
 			name: customLocation.id,
 			type: "customLocation",
@@ -246,7 +254,9 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 					? "linuxRuntimeSettings"
 					: "windowsRuntimeSettings",
 			);
+
 			newSiteConfig = stackSettings.siteConfigPropertiesDictionary;
+
 			appSettings = appSettings.concat(
 				[
 					{
@@ -286,6 +296,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 				name: contentConnectionStringKey,
 				value: storageConnectionString,
 			});
+
 			appSettings.push({
 				name: contentShareKey,
 				value: getNewFileShareName(nonNullProp(context, "newSiteName")),
@@ -359,6 +370,7 @@ export class FunctionAppCreateStep extends AzureWizardExecuteStep<IFunctionAppWi
 			const storageConnectionString: string = (
 				await getStorageConnectionString(context)
 			).connectionString;
+
 			await tryCreateStorageContainer(result, storageConnectionString);
 		}
 
@@ -385,9 +397,11 @@ function getSiteKind(context: IAppServiceWizardContext): string {
 	if (context.newSiteOS === "linux") {
 		kind += ",linux";
 	}
+
 	if (context.customLocation) {
 		kind += ",kubernetes";
 	}
+
 	return kind;
 }
 

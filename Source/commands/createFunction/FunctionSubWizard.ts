@@ -82,6 +82,7 @@ export class FunctionSubWizard {
 					) {
 						promptSteps.push(new ScriptFunctionNameStep());
 					}
+
 					break;
 			}
 
@@ -101,6 +102,7 @@ export class FunctionSubWizard {
 				return { promptSteps };
 			} else {
 				assertTemplateIsV1(template);
+
 				addBindingSettingSteps(
 					template.userPromptedSettings,
 					promptSteps,
@@ -178,6 +180,7 @@ export class FunctionSubWizard {
 			}
 
 			promptSteps.push(new OpenAPIGetSpecificationFileStep());
+
 			executeSteps.push(await OpenAPICreateStep.createStep(context));
 
 			const title: string = localize(

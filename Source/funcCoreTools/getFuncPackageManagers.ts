@@ -34,6 +34,7 @@ export async function getFuncPackageManagers(
 					"npm",
 					"--version",
 				);
+
 		result.push(PackageManager.npm);
 	} catch (error) {
 		// an error indicates no npm

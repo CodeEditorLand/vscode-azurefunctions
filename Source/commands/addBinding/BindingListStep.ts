@@ -29,6 +29,7 @@ export class BindingListStep extends AzureWizardPromptStep<IBindingWizardContext
 			'Select binding with direction "{0}"',
 			direction,
 		);
+
 		context.bindingTemplate = (
 			await context.ui.showQuickPick(this.getPicks(context, direction), {
 				placeHolder,
@@ -49,6 +50,7 @@ export class BindingListStep extends AzureWizardPromptStep<IBindingWizardContext
 		if (binding) {
 			const promptSteps: AzureWizardPromptStep<IBindingWizardContext>[] =
 				[];
+
 			addBindingSettingSteps(binding.settings, promptSteps);
 
 			return { promptSteps };

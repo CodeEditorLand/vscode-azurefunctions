@@ -66,6 +66,7 @@ export async function validateFuncCoreToolsInstalled(
 			) {
 				innerContext.telemetry.properties.validateFuncCoreTools =
 					"false";
+
 				installed = true;
 			} else if (await funcToolsInstalled(innerContext, workspacePath)) {
 				installed = true;
@@ -90,6 +91,7 @@ export async function validateFuncCoreToolsInstalled(
 					if (linuxErrorMessages.noPackageManager) {
 						message += " " + linuxErrorMessages.noPackageManager;
 					}
+
 					if (linuxErrorMessages.failedInstall) {
 						failedInstall += " " + linuxErrorMessages.failedInstall;
 					}
@@ -101,6 +103,7 @@ export async function validateFuncCoreToolsInstalled(
 					{ modal: true },
 					...items,
 				);
+
 				innerContext.telemetry.properties.dialogResult = input.title;
 
 				if (input === install) {
@@ -111,11 +114,13 @@ export async function validateFuncCoreToolsInstalled(
 								workspacePath,
 							),
 						);
+
 					await installFuncCoreTools(
 						innerContext,
 						packageManagers,
 						version,
 					);
+
 					installed = true;
 				} else if (input === DialogResponses.learnMore) {
 					await openUrl(getInstallUrl());
@@ -148,7 +153,9 @@ export async function validateFuncCoreToolsInstalled(
 		} else if (result === copyCommand) {
 			const lastInstallCommand: string =
 				lastCoreToolsInstallCommand.join(" ");
+
 			await env.clipboard.writeText(lastInstallCommand);
+
 			ext.outputChannel.appendLog(
 				localize(
 					"copiedClipboard",
@@ -168,6 +175,7 @@ export async function funcToolsInstalled(
 ): Promise<boolean> {
 	try {
 		const funcCliPath = await getFuncCliPath(context, workspacePath);
+
 		await cpUtils.executeCommand(
 			undefined,
 			workspacePath,

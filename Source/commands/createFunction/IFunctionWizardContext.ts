@@ -24,6 +24,7 @@ export interface IFunctionWizardContext
 
 	// Durable Functions
 	hasDurableStorage?: boolean;
+
 	newDurableStorageType?: DurableBackendValues;
 
 	useStorageEmulator?: boolean;
@@ -31,6 +32,7 @@ export interface IFunctionWizardContext
 
 export interface FunctionV2WizardContext extends IFunctionWizardContext {
 	job?: ParsedJob;
+
 	newFilePath?: string;
 }
 

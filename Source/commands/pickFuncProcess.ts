@@ -100,10 +100,13 @@ export async function startFuncProcessFromApi(
 					buildPath,
 					funcTask,
 				);
+
 				result.processId = await pickChildProcess(taskInfo);
+
 				result.success = true;
 			} catch (err) {
 				const pError = parseError(err);
+
 				result.error = pError.message;
 			}
 		},
@@ -152,6 +155,7 @@ export async function pickFuncProcess(
 	const buildPath: string =
 		(funcTask.execution as vscode.ShellExecution)?.options?.cwd ||
 		result.workspace.uri.fsPath;
+
 	await waitForPrevFuncTaskToStop(result.workspace, buildPath);
 
 	const taskInfo = await startFuncTask(
@@ -178,8 +182,10 @@ async function waitForPrevFuncTaskToStop(
 		if (!runningFuncTaskMap.has(workspaceFolder)) {
 			return;
 		}
+
 		await delay(1000);
 	}
+
 	throw new Error(
 		localize(
 			"failedToFindFuncHost",
@@ -212,6 +218,7 @@ async function startFuncTask(
 			),
 		);
 	}
+
 	context.telemetry.properties.timeoutInSeconds = timeoutInSeconds.toString();
 
 	let taskError: Error | undefined;
@@ -232,6 +239,7 @@ async function startFuncTask(
 						e.exitCode,
 					),
 				);
+
 				errorListener.dispose();
 			}
 		},
@@ -294,6 +302,7 @@ async function startFuncTask(
 						if (requestUtils.isTimeoutError(error)) {
 							// Timeout likely means localhost isn't ready yet, but we'll increase the timeout each time it fails just in case it's a slow computer that can't handle a request that fast
 							statusRequestTimeout *= 2;
+
 							context.telemetry.measurements.maxStatusTimeout =
 								statusRequestTimeout;
 						} else {
@@ -332,11 +341,13 @@ async function pickChildProcess(taskInfo: IRunningFuncTask): Promise<string> {
 	// Workaround for https://github.com/microsoft/vscode-azurefunctions/issues/2656
 	if (!isRunning(taskInfo.processId) && vscode.window.activeTerminal) {
 		const terminalPid = await vscode.window.activeTerminal.processId;
+
 		if (terminalPid) {
 			// NOTE: Intentionally updating the object so that `runningFuncTaskMap` is affected, too
 			taskInfo.processId = terminalPid;
 		}
 	}
+
 	const children: OSAgnosticProcess[] =
 		process.platform === "win32"
 			? await getWindowsChildren(taskInfo.processId)

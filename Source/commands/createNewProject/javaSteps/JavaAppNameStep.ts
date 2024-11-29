@@ -17,6 +17,7 @@ export class JavaAppNameStep extends AzureWizardPromptStep<IJavaProjectWizardCon
 			prompt: localize("appNamePrompt", "Provide an app name"),
 			value: `${nonNullProp(context, "javaArtifactId")}-${Date.now()}`,
 		};
+
 		context.javaAppName = await context.ui.showInputBox(options);
 	}
 

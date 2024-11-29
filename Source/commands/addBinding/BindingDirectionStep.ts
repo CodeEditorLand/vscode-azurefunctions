@@ -24,6 +24,7 @@ export class BindingDirectionStep extends AzureWizardPromptStep<IBindingWizardCo
 			{ label: "in", data: "in" },
 			{ label: "out", data: "out" },
 		];
+
 		context.bindingDirection = (
 			await context.ui.showQuickPick(picks, { placeHolder })
 		).data;

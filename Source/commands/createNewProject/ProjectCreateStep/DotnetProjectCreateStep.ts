@@ -77,6 +77,7 @@ export class DotnetProjectCreateStep extends ProjectCreateStepBase {
 							context.workerRuntime,
 							"targetFramework",
 						);
+
 			await cpUtils.executeCommand(
 				ext.outputChannel,
 				context.projectPath,
@@ -98,6 +99,7 @@ export class DotnetProjectCreateStep extends ProjectCreateStepBase {
 		if (language === ProjectLanguage.FSharp) {
 			identity = identity.replace("CSharp", "FSharp"); // they don't have FSharp in the feed yet
 		}
+
 		const functionsVersion: string = "v" + majorVersion;
 
 		const projTemplateKey = nonNullProp(context, "projectTemplateKey");
@@ -163,6 +165,7 @@ export class DotnetProjectCreateStep extends ProjectCreateStepBase {
 				"Overwrite existing files?: {0}",
 				existingFiles.join(", "),
 			);
+
 			await context.ui.showWarningMessage(
 				message,
 				{ modal: true, stepName: "overwriteExistingFiles" },

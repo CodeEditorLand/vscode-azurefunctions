@@ -28,6 +28,7 @@ export class JavaFunctionNameStep extends FunctionNameStepBase<
 			context,
 			"functionTemplate",
 		);
+
 		assertTemplateIsV1(template);
 
 		const packageName: string = nonNullProp(context, "javaPackageName");

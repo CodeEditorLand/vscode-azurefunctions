@@ -38,11 +38,15 @@ import { SlotTreeItem } from "./SlotTreeItem";
 
 export interface ICreateFunctionAppContext extends ICreateChildImplContext {
 	newResourceGroupName?: string;
+
 	workspaceFolder?: WorkspaceFolder;
 
 	dockerfilePath?: string;
+
 	rootPath?: string;
+
 	deployWorkspaceResult?: DeployWorkspaceProjectResults;
+
 	skipExecute?: boolean;
 }
 
@@ -51,6 +55,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 		"FunctionApp",
 		"Function App in Azure",
 	);
+
 	public supportsAdvancedCreation: boolean = true;
 
 	private _nextLink: string | undefined;
@@ -102,6 +107,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 				if (resolved.site.isFunctionApp) {
 					return new SlotTreeItem(this, resolved);
 				}
+
 				return undefined;
 			},
 			(site: Site) => {
@@ -149,11 +155,13 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 		await wizard.prompt();
 		// if the providers aren't registered yet, await it here because it is required by this point
 		await registerProvidersTask;
+
 		wizardContext.activityTitle = localize(
 			"functionAppCreateActivityTitle",
 			'Create Function App "{0}"',
 			nonNullProp(wizardContext, "newSiteName"),
 		);
+
 		await wizard.execute();
 
 		let node: SlotTreeItem | ContainerTreeItem;
@@ -163,12 +171,14 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 				subscription.subscription,
 				nonNullProp(wizardContext, "site"),
 			);
+
 			node = new ContainerTreeItem(subscription, resolved);
 		} else {
 			const resolved = new ResolvedFunctionAppResource(
 				subscription.subscription,
 				nonNullProp(wizardContext, "site"),
 			);
+
 			node = new SlotTreeItem(subscription, resolved);
 		}
 

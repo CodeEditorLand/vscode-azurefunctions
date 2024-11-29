@@ -34,6 +34,7 @@ export async function remoteDebugJavaFunctionApp(
 	if (!node) {
 		node = await pickFunctionApp(context);
 	}
+
 	const client: SiteClient = await node.site.createClient(context);
 
 	const portNumber: number = await findFreePort();
@@ -94,13 +95,17 @@ export async function remoteDebugJavaFunctionApp(
 								return;
 							} else {
 								await updateSiteConfig(client, p, siteConfig);
+
 								await updateAppSettings(client, p, appSettings);
 							}
 						}
 
 						p.report({ message: "starting debug proxy..." });
+
 						ext.outputChannel.appendLog("starting debug proxy...");
+
 						void debugProxy.startProxy(context);
+
 						debugProxy.on("start", resolve);
 					} catch (error) {
 						reject(error);
@@ -127,6 +132,7 @@ export async function remoteDebugJavaFunctionApp(
 					if (debugProxy !== undefined) {
 						debugProxy.dispose();
 					}
+
 					terminateDebugListener.dispose();
 				}
 			},
@@ -139,20 +145,27 @@ async function updateSiteConfig(
 	siteConfig: SiteConfigResource,
 ): Promise<void> {
 	p.report({ message: "Fetching site configuration..." });
+
 	ext.outputChannel.appendLog("Fetching site configuration...");
 
 	if (needUpdateSiteConfig(siteConfig)) {
 		siteConfig.use32BitWorkerProcess = false;
+
 		siteConfig.webSocketsEnabled = true;
+
 		p.report({
 			message:
 				"Updating site configuration to enable remote debugging...",
 		});
+
 		ext.outputChannel.appendLog(
 			"Updating site configuration to enable remote debugging...",
 		);
+
 		await client.updateConfiguration(siteConfig);
+
 		p.report({ message: "Updating site configuration done..." });
+
 		ext.outputChannel.appendLog("Updating site configuration done...");
 	}
 }
@@ -163,6 +176,7 @@ async function updateAppSettings(
 	appSettings: StringDictionary,
 ): Promise<void> {
 	p.report({ message: "Fetching application settings..." });
+
 	ext.outputChannel.appendLog("Fetching application settings...");
 
 	if (
@@ -170,17 +184,23 @@ async function updateAppSettings(
 		needUpdateAppSettings(appSettings.properties)
 	) {
 		appSettings.properties.JAVA_OPTS = JAVA_OPTS;
+
 		appSettings.properties.HTTP_PLATFORM_DEBUG_PORT =
 			HTTP_PLATFORM_DEBUG_PORT;
+
 		p.report({
 			message:
 				"Updating application settings to enable remote debugging...",
 		});
+
 		ext.outputChannel.appendLog(
 			"Updating application settings to enable remote debugging...",
 		);
+
 		await client.updateApplicationSettings(appSettings);
+
 		p.report({ message: "Updating application settings done..." });
+
 		ext.outputChannel.appendLog("Updating application settings done...");
 	}
 }
