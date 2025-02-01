@@ -14,45 +14,21 @@
 //
 // The tests should import '../extension.bundle'. At design-time they live in tests/ and so will pick up this file (extension.bundle.ts).
 // At runtime the tests live in dist/tests and will therefore pick up the main webpack bundle at dist/extension.bundle.js.
-export {
-	createAzureClient,
-	createGenericClient,
-} from "@microsoft/vscode-azext-azureutils";
-
-export {
-	AzExtTreeDataProvider,
-	DialogResponses,
-	IActionContext,
-	nonNullValue,
-	parseError,
-	registerOnActionStartHandler,
-} from "@microsoft/vscode-azext-utils";
-
-export * from "./src/commands/addBinding/addBinding";
-
-export * from "./src/commands/copyFunctionUrl";
-
-export * from "./src/commands/createFunction/createFunction";
-
-export * from "./src/commands/createFunction/dotnetSteps/DotnetNamespaceStep";
-
-export * from "./src/commands/createFunctionApp/createFunctionApp";
-
-export * from "./src/commands/createNewProject/createNewProject";
-
-export * from "./src/commands/createNewProject/ProjectCreateStep/JavaScriptProjectCreateStep";
-
-export * from "./src/commands/deleteFunctionApp";
-
-export * from "./src/commands/deploy/deploy";
-
-export * from "./src/commands/deploy/verifyAppSettings";
-
-export * from "./src/commands/initProjectForVSCode/initProjectForVSCode";
-
-export * from "./src/utils/durableUtils";
-
-export * from "./src/constants";
+export { createAzureClient, createGenericClient } from '@microsoft/vscode-azext-azureutils';
+export { AzExtTreeDataProvider, DialogResponses, IActionContext, nonNullValue, parseError, registerOnActionStartHandler } from '@microsoft/vscode-azext-utils';
+export * from './src/commands/addBinding/addBinding';
+export * from './src/commands/copyFunctionUrl';
+export * from './src/commands/createFunction/createFunction';
+export * from './src/commands/createFunction/dotnetSteps/DotnetNamespaceStep';
+export * from './src/commands/createFunctionApp/createFunctionApp';
+export * from './src/commands/createNewProject/createNewProject';
+export * from './src/commands/createNewProject/ProjectCreateStep/JavaScriptProjectCreateStep';
+export * from './src/commands/deleteFunctionApp';
+export * from './src/commands/deploy/deploy';
+export * from './src/commands/deploy/verifyAppSettings';
+export * from './src/commands/initProjectForVSCode/initProjectForVSCode';
+export * from './src/constants';
+export * from './src/utils/durableUtils';
 // Export activate/deactivate for main.js
 export { activateInternal, deactivateInternal } from "./src/extension";
 
